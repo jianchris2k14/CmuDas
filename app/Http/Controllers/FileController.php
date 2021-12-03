@@ -31,11 +31,11 @@ class FileController extends Controller
     
     public function update(Request $request, $id)
     {
-        // $request->validate([
-        //     'code' 		         => 	'required|alpha_num',
-        //     'filename' 		     =>     'required|string',
-        //     'slug' 		         => 	'required|string|max:24',
-        // ]);
+        $request->validate([
+            'code' 		         => 	'required|alpha_num',
+            'filename' 		     =>     'required|string',
+            'slug' 		         => 	'required|string|max:24',
+        ]);
 
         $file = File::find($id);
  
