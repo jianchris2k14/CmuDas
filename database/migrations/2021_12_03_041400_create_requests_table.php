@@ -14,7 +14,11 @@ class CreateRequestsTable extends Migration
     public function up()
     {
         Schema::create('requests', function (Blueprint $table) {
-            $table->id();
+            $table->id('request_id');
+            $table->text('description');
+            $table->dateTime('request_date');
+            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->foreignId('file_id')->constrained('files');
             $table->timestamps();
         });
     }
