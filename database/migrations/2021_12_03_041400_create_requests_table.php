@@ -17,9 +17,15 @@ class CreateRequestsTable extends Migration
             $table->id('request_id');
             $table->text('description');
             $table->dateTime('request_date');
-            $table->foreignId('user_id')->nullable()->constrained('users');
-            $table->foreignId('file_id')->constrained('files');
             $table->timestamps();
+        });
+
+        Schema::table('requests', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('file_id');
+        
+            $table->foreign('user_id')->references('user_id')->on('users');
+            $table->foreign('file_id')->references('file_id')->on('files');
         });
     }
 

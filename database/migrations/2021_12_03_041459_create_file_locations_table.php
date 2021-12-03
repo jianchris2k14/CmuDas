@@ -17,8 +17,13 @@ class CreateFileLocationsTable extends Migration
             $table->id('file_location_id');
             $table->text('file_location');
             $table->dateTime('retention_date');
-            $table->foreignId('file_id')->constrained('files');
             $table->timestamps();
+        });
+
+        Schema::table('file_locations', function (Blueprint $table) {
+            $table->unsignedBigInteger('file_id');
+        
+            $table->foreign('file_id')->references('file_id')->on('files');
         });
     }
 

@@ -18,9 +18,14 @@ class CreateFilesTable extends Migration
             $table->string('code');
             $table->string('filename');
             $table->string('slug');
-            $table->text('description')
-            $table->foreignId('user_id')->constrained('users');
+            $table->text('description');
             $table->timestamps();
+        });
+
+        Schema::table('files', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id');
+        
+            $table->foreign('user_id')->references('user_id')->on('users');
         });
     }
 
