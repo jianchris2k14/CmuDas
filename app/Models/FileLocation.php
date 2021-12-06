@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class FileLocation extends Model
 {
     use HasFactory;
+
+    protected $primaryKey = 'file_location_id';
+
+    protected $fillable = [
+        'file_location',
+        'retention_date',
+        'file_id',
+    ];
+
 }

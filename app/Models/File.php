@@ -14,7 +14,9 @@ class File extends Model
     protected $fillable = [
         'code',
         'filename',
-        'slug'
+        'slug',
+        'description',
+        'user_id'
     ];
 
 }
