@@ -23,6 +23,21 @@ class FileController extends Controller
         return new FileResource(File::findOrFail($id));
     }
 
+    public function search(Request $request)
+    {
+        $request->validate([
+            'keyword' 		         => 	'required|string|min:2',
+        ]);
+
+        $files = File::where('filename', 'like', '%' . $request->keyword . '%')
+                ->orWhere('code', 'like', '%' . $request->keyword . '%')
+                ->orWhere('slug', 'like', '%' . $request->keyword . '%')
+                ->orWhere('description', 'like', '%' . $request->keyword . '%')
+                ->paginate($this->pagination_no);
+
+        return FileResource::collection($files);
+    }
+
     private function validation(Request $request)
     {
         $request->validate([
@@ -60,21 +75,6 @@ class FileController extends Controller
 
         if($file->delete())
             return new FileResource($file);
-    }
-
-    public function search(Request $request)
-    {
-        $request->validate([
-            'keyword' 		         => 	'required|string|min:2',
-        ]);
-
-        $files = File::where('filename', 'like', '%' . $request->keyword . '%')
-                ->orWhere('code', 'like', '%' . $request->keyword . '%')
-                ->orWhere('slug', 'like', '%' . $request->keyword . '%')
-                ->orWhere('description', 'like', '%' . $request->keyword . '%')
-                ->paginate($this->pagination_no);
-
-        return FileResource::collection($files);
     }
 
 }
