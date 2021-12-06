@@ -18,7 +18,7 @@ class AuthController extends Controller
             'password'      => 'required|string|confirmed',
             'user_type'     => 'required|string|alpha',
             'phone_no'      => 'required|string',
-            'address'       => 'required|string',
+            'address'       => 'required|string'
         ]);
 
         $user = User::create([
@@ -27,7 +27,7 @@ class AuthController extends Controller
             'password'      => bcrypt($fields['password']),
             'user_type'     => $fields['user_type'],
             'phone_no'      => $fields['phone_no'],
-            'address'       => $fields['address'],
+            'address'       => $fields['address']
         ]);
 
         $token = $user->createToken('cmudas')->plainTextToken;
