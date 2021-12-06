@@ -11,8 +11,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/files', [FileController::class, 'index']);
-Route::post('/files/{id}', [FileController::class, 'show']);
-Route::get('/files/search/{name}', [FileController::class, 'search']);
+Route::get('/files/{id}', [FileController::class, 'show']);
+Route::post('/files/search', [FileController::class, 'search']);
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {

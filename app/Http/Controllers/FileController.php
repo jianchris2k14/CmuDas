@@ -4,57 +4,77 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use Illuminate\Http\Request;
+use App\Http\Resources\FileResource;
 
 class FileController extends Controller
 {
+
+    private $pagination_no = 10;
     
     public function index()
     {
-        return File::all();
-    }
+        $files = File::paginate($this->pagination_no);
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'code' 		         => 	'required|alpha_num',
-            'filename' 		     =>     'required|string',
-            'slug' 		         => 	'required|string|max:24',
-        ]);
-
-        return File::create($request->all());
+        return FileResource::collection($files);
     }
 
     public function show($id)
     { 
-        return File::find($id);
+        return new FileResource(File::findOrFail($id));
     }
-    
-    public function update(Request $request, $id)
+
+    private function validation(Request $request)
     {
         $request->validate([
             'code' 		         => 	'required|alpha_num',
             'filename' 		     =>     'required|string',
             'slug' 		         => 	'required|string|max:24',
+            'description' 		 =>     'required|string',
+            'user_id' 		     =>     'required|numeric',
         ]);
+    }
 
-        $file = File::find($id);
+    public function store(Request $request)
+    {
+        $this->validation($request);
+
+        $file = File::create($request->all());
+
+        return new FileResource();
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validation($request);
+
+        $file = File::findOrFail($id);
  
         $file->update($request->all());
 
-        return $file;
+        return new FileResource($file);
     }
     
     public function destroy($id)
     {
-        return File::destroy($id);
+        $file = File::findOrFail($id);
+
+        if($file->delete())
+            return new FileResource($file);
     }
 
-    public function search($name)
+    public function search(Request $request)
     {
-        return File::where('filename', 'like', '%' . $name . '%')
-                ->orWhere('code', 'like', '%' . $name . '%')
-                ->orWhere('slug', 'like', '%' . $name . '%')
-                ->get();
+        $request->validate([
+            'keyword' 		         => 	'required|string|min:2',
+        ]);
+
+        $files = File::where('filename', 'like', '%' . $request->keyword . '%')
+                ->orWhere('code', 'like', '%' . $request->keyword . '%')
+                ->orWhere('slug', 'like', '%' . $request->keyword . '%')
+                ->orWhere('description', 'like', '%' . $request->keyword . '%')
+                ->paginate($this->pagination_no);
+
+        return FileResource::collection($files);
     }
 
 }
