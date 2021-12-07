@@ -9,6 +9,8 @@ class FileLocation extends Model
 {
     use HasFactory;
 
+    protected $table = 'file_locations';
+
     protected $primaryKey = 'file_location_id';
 
     protected $fillable = [

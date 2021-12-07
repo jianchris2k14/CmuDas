@@ -13,7 +13,8 @@ class FileController extends Controller
     
     public function index()
     {
-        $files = File::paginate($this->pagination_no);
+        $files = File::leftJoin('users', 'requests.user_id', '=', 'users.user_id')
+                ->paginate($this->pagination_no);
 
         return FileResource::collection($files);
     }
@@ -33,6 +34,7 @@ class FileController extends Controller
                 ->orWhere('code', 'like', '%' . $request->keyword . '%')
                 ->orWhere('slug', 'like', '%' . $request->keyword . '%')
                 ->orWhere('description', 'like', '%' . $request->keyword . '%')
+                ->leftJoin('users', 'requests.user_id', '=', 'users.user_id')
                 ->paginate($this->pagination_no);
 
         return FileResource::collection($files);
@@ -55,7 +57,7 @@ class FileController extends Controller
 
         $file = File::create($request->all());
 
-        return new FileResource();
+        return new FileResource($file);
     }
 
     public function update(Request $request, $id)
