@@ -55,7 +55,6 @@ class RequestController extends Controller
 
     public function store(Request $request)
     {
-
         $this->validation($request);
 
         $req = Req::create($request->all());
