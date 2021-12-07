@@ -2,83 +2,77 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FileLocation;
 use Illuminate\Http\Request;
+use App\Http\Resources\FileLocationResource;
 
 class FileLocationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    private $pagination_no = 10;
+    
     public function index()
     {
-        //
+        $files = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')
+                ->paginate($this->pagination_no);
+
+        return FileLocationResource::collection($files);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show($id)
+    { 
+        return new FileLocationResource(FileLocation::findOrFail($id));
+    }
+
+    public function search(Request $request)
     {
-        //
+        $request->validate([
+            'keyword' 		         => 	'required|string|min:2',
+        ]);
+
+        $files = FileLocation::where('filename', 'like', '%' . $request->keyword . '%')
+                ->orWhere('file_location', 'like', '%' . $request->keyword . '%')
+                ->leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')
+                ->paginate($this->pagination_no);
+
+        return FileLocationResource::collection($files);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    private function validation(Request $request)
+    {
+        $request->validate([
+            'file_location'         => 	'required|string',
+            'retention_date' 		=>  'required|date',
+            'file_id' 		        =>  'required|numeric',
+        ]);
+    }
+
     public function store(Request $request)
     {
-        //
+        $this->validation($request);
+
+        $file = FileLocation::create($request->all());
+
+        return new FileLocationResource($file);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $this->validation($request);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+        $file = FileLocation::findOrFail($id);
+ 
+        $file->update($request->all());
+
+        return new FileLocationResource($file);
+    }
+    
     public function destroy($id)
     {
-        //
+        $file = FileLocation::findOrFail($id);
+
+        if($file->delete())
+            return new FileLocationResource($file);
     }
+
 }
