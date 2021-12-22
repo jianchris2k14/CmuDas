@@ -12,6 +12,9 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link rel="shortcut icon" href="{{ asset('src/img/icons/icon-48x48.png') }}" />
 
+	<!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 	<title>CMU | Digital Archiving System</title>
 
 	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
