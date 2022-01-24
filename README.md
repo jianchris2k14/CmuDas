@@ -1,4 +1,4 @@
-## Central Mindanao University - Digital Archiving System
+## Anonymous
 
 A System created based on Laravel. 
 
