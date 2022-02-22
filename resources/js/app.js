@@ -7,6 +7,33 @@
 require('./bootstrap');
 
 window.Vue = require('vue').default;
+import Vue from 'vue'
+import router from './router'
+
+/** ANIMATE ON SCROLL */
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+
+
+/** ANIMATE CSS */
+import 'animate.css'
+
+
+/* VUEX STORE */
+import store from './store/index'
+
+
+/**DATA TABLES */
+/* import { VuejsDatatableFactory } from 'vuejs-datatable';
+Vue.use( VuejsDatatableFactory ); */
+
+
+/** SCROLL SPY */
+import scrollSpy, { Easing } from 'vue2-scrollspy';
+
+Vue.use(scrollSpy, {
+  easing: Easing.Cubic.In
+});
 
 /**
  * The following block of code may be used to automatically register your
@@ -19,7 +46,7 @@ window.Vue = require('vue').default;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('app-component', require('./components/App.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29,4 +56,10 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
-});
+    router,
+    mounted() {
+        AOS.init({
+            duration: 1200,
+        })
+    },
+}).$mount('#app');
