@@ -5,7 +5,6 @@
  */
 
 require('./bootstrap');
-
 window.Vue = require('vue').default;
 import Vue from 'vue'
 import router from './router'
@@ -24,8 +23,20 @@ import store from './store/index'
 
 
 /**DATA TABLES */
-/* import { VuejsDatatableFactory } from 'vuejs-datatable';
-Vue.use( VuejsDatatableFactory ); */
+
+import "datatables.net-bs5"
+import "datatables.net-bs5/css/dataTables.bootstrap5.min.css"
+import "jszip"
+import "pdfmake"
+import "datatables.net-buttons-bs5/js/buttons.bootstrap5"
+import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css"
+import "datatables.net-buttons-bs5/node_modules/datatables.net-buttons/js/buttons.colVis"
+import "datatables.net-buttons-bs5/node_modules/datatables.net-buttons/js/buttons.flash"
+import "datatables.net-buttons-bs5/node_modules/datatables.net-buttons/js/buttons.html5"
+import "datatables.net-buttons-bs5/node_modules/datatables.net-buttons/js/buttons.print"
+
+import "datatables.net-buttons-bs5/node_modules/datatables.net-buttons/js/dataTables.buttons"
+
 
 
 /** SCROLL SPY */

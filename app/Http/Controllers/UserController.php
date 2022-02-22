@@ -8,18 +8,18 @@ use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
-    
-    private $pagination_no = 10;
-    
+
+    private $pagination_no = 20;
+
     public function index()
     {
-        $users = User::paginate($this->pagination_no);
+        $users = User::all();
 
         return UserResource::collection($users);
     }
 
     public function show($id)
-    { 
+    {
         return new UserResource(User::findOrFail($id));
     }
 
@@ -78,12 +78,12 @@ class UserController extends Controller
         //$this->validation($request);
 
         $user = User::findOrFail($id);
- 
+
         $user->update($request->all());
 
         return new UserResource($user);
     }
-    
+
     public function destroy($id)
     {
         $user = User::findOrFail($id);

@@ -28,10 +28,10 @@ import users from './components/system/users/Users.vue'
 import clients from './components/system/clients/Clients.vue'
 
 const routes = [
-    {
+/*     {
         path:'*',
         component:NotFound
-    },
+    }, */
     {
         path:'/client/dashboard',
         component:clientdashboardlayout,
@@ -85,7 +85,7 @@ const routes = [
                 component:requests
             },
             {
-                path:'/system/users',
+                path:'/system/user',
                 component:users
             },
             {

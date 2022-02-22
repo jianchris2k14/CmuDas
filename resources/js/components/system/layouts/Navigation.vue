@@ -95,7 +95,7 @@ export default {
                     itemText:'Users',
                     itemIcon:'fa fa-users',
                     itemIconColor:'text-white',
-                    itemPath:'/system/users'
+                    itemPath:'/system/user'
                 }
             ]
         }
