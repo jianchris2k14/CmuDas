@@ -71,6 +71,7 @@
     <script src="{{asset('landingpage/js/plugins/bootstrap-datepicker.min.js')}}"></script>
     {{-- <script src="{{asset('landingpage/js/argon-design-system.js')}}" type="text/javascript"></script> --}}
     <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+    </body>
 
 
     </html>
