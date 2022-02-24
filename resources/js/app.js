@@ -23,7 +23,7 @@ import store from './store/index'
 
 
 /**DATA TABLES */
-
+import vuetify from '../plugins/vuetify'
 
 
 
@@ -55,6 +55,8 @@ Vue.component('app-component', require('./components/App.vue').default);
 
 const app = new Vue({
     el: '#app',
+    vuetify,
+    store,
     router,
     mounted() {
         AOS.init({

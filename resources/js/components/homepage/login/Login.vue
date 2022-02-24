@@ -6,7 +6,7 @@
         <div class="col-md-6">
           <div class="card bg-secondary shadow border-0">
             <div class="card-body px-lg-5 py-lg-5">
-                <h5 class="display-4 text-center text-uppercase">Get in touch</h5>
+                <h5 class="display-1 text-center text-uppercase">Get in touch</h5>
               <form role="form">
                 <div class="form-group mb-3">
                   <div class="input-group input-group-alternative">

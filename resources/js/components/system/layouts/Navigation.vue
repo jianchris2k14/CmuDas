@@ -41,11 +41,11 @@
         </div>
 
         <!-- Navigation -->
-        <ul class="navbar-nav">
+        <ul class="navbar-nav ml-n11">
           <li class="nav-item"
-          v-for="items in navigation">
-            <router-link class="nav-link" :to="items.itemPath">
-              <i :class="[items.itemIcon,items.itemIconColor]"></i> <span class="link">{{items.itemText}}</span>
+          v-for="(item,i) in navigation" :key="i">
+            <router-link class="nav-link" :to="item.itemPath">
+              <i :class="[item.itemIcon,item.itemIconColor]"></i> <span class="link">{{item.itemText}}</span>
             </router-link>
           </li>
         </ul>
@@ -105,6 +105,9 @@ export default {
 <style scoped>
 .link {
     color:#fff;
+}
+.nav-item {
+  width:100%
 }
 .nav-item:hover {
     background:#fcf825;
