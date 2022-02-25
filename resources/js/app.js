@@ -13,6 +13,12 @@ import router from './router'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
+import VueLodash from 'vue-lodash'
+import lodash from 'lodash'
+ 
+// name is optional
+Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
+
 
 /** ANIMATE CSS */
 import 'animate.css'

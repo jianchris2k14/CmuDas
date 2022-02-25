@@ -9,6 +9,13 @@
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
+
+      <!-- Alert Message -->
+      <div v-if="msgStatus">
+        <alert-component />
+      </div>
+
+      <!-- User Table -->
       <v-data-table
         :headers="headers"
         :items="fetchUser"
@@ -21,6 +28,10 @@
             <v-toolbar-title>List of Users</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
+
+
+            <!-- User Management Modal -->
+
             <v-dialog v-model="dialog" max-width="960px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -30,7 +41,8 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  New Item
+                  <v-icon dark> mdi-plus-circle </v-icon>
+                  New User
                 </v-btn>
               </template>
               <v-card>
@@ -41,88 +53,118 @@
                 <v-card-text>
                   <v-container>
                     <v-form
-                    ref="form"
-                    @submit.prevent="validate"
-                    v-model="rules.isValid"
-                    lazy-validation>
-                        <v-row>
+                      ref="form"
+                      @submit.prevent="save"
+                      v-model="rules.isValid"
+                      lazy-validation
+                    >
+                      <v-row>
                         <v-col cols="12">
-                            <v-text-field
+                          <v-text-field
                             v-model="form.name"
                             label="Name"
                             outlined
                             dense
                             :rules="rules.name"
                             required
-                            ></v-text-field>
+                          ></v-text-field>
                         </v-col>
 
                         <v-col cols="12">
-                            <v-text-field
+                          <v-text-field
                             v-model="form.email"
                             label="Email"
                             outlined
                             dense
-                            ></v-text-field>
+                            :rules="rules.email"
+                            required
+                          ></v-text-field>
                         </v-col>
 
                         <v-col cols="12" sm="8" md="6">
-                            <v-text-field
+                          <v-text-field
                             v-model="form.address"
                             label="Address"
                             outlined
                             dense
-                            ></v-text-field>
+                            :rules="rules.address"
+                            required
+                          ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="8" md="6">
-                            <v-text-field
+                          <v-text-field
                             v-model="form.phone_no"
                             label="Contact No."
                             outlined
                             dense
-                            ></v-text-field>
+                            :rules="rules.phone_no"
+                            required
+                          ></v-text-field>
                         </v-col>
-                            <v-col cols="12" v-if="formTitle === 'New User'">
-                                <v-text-field
-                                label="Password"
-                                v-model="form.password"
-                                outlined
-                                type="password"
-                                dense>
-
-                                </v-text-field>
-                            </v-col>
-                            <v-col cols="12" v-if="formTitle === 'New User'">
-                                <v-text-field
-                                label="Password"
-                                v-model="form.password_confirmation"
-                                outlined
-                                type="password"
-                                dense>
-
-                                </v-text-field>
-                            </v-col>
-                        <v-col cols="12">
-                            <v-text-field
-                            v-model="form.user_type"
-                            label="User Type"
+                        <v-col cols="12" v-if="formTitle === 'New User'">
+                          <v-text-field
+                            label="Password"
+                            v-model="form.password"
                             outlined
                             dense
-                            ></v-text-field>
+                            :append-icon="showpass ? 'mdi-eye' : 'mdi-eye-off'"
+                            :type="showpass ? 'text' : 'password'"
+                            @click:append="showpass = !showpass"
+                            :rules="rules.password"
+                            required
+                          >
+                          </v-text-field>
                         </v-col>
-                        </v-row>
+                        <v-col cols="12" v-if="formTitle === 'New User'">
+                          <v-text-field
+                            label="Password"
+                            v-model="form.password_confirmation"
+                            outlined
+                            dense
+                            :append-icon="
+                              showconfirmpass ? 'mdi-eye' : 'mdi-eye-off'
+                            "
+                            :type="showconfirmpass ? 'text' : 'password'"
+                            @click:append="showconfirmpass = !showconfirmpass"
+                            :rules="rules.password_confirmation"
+                            required
+                          >
+                          </v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-select
+                            :items="usertype"
+                            label="User Type"
+                            v-model="form.user_type"
+                            :rules="rules.user_type"
+                            required
+                            dense
+                            outlined
+                          ></v-select>
+                        </v-col>
+                      </v-row>
                     </v-form>
                   </v-container>
                 </v-card-text>
 
+                <!-- Form Buttons -->
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="error" dark @click="close"> Cancel </v-btn>
-                  <v-btn type="submit" :disabled="!rules.isValid" color="success" dark @click="save"> Save </v-btn>
+                  <v-btn
+                    type="submit"
+                    :disabled="!rules.isValid"
+                    color="success"
+                    dark
+                    @click="save"
+                  >
+                    Save
+                  </v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
 
+            <!-- Delete Confirmation Modal -->
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card>
                 <v-card-title class="text-h5"
@@ -143,6 +185,7 @@
           </v-toolbar>
         </template>
 
+        <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
           <v-icon color="primary" small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -151,17 +194,30 @@
             mdi-delete
           </v-icon>
         </template>
+
       </v-data-table>
     </v-card>
   </div>
 </template>
 <script>
+import AlertComponent from "./../../AlertComponent.vue";
 export default {
+  components: { AlertComponent },
   data: () => ({
     search: "",
+    //Dialog Property
     dialog: false,
     dialogDelete: false,
-    showpassForm:false,
+    //Password Property
+    showpassForm: false,
+    showpass: false,
+    showconfirmpass: false,
+
+    //Error Handlings Property
+    error: "",
+    msgStatus: false,
+
+    //Table Headers
     headers: [
       {
         text: "ID",
@@ -182,43 +238,66 @@ export default {
         class: "info text-black",
       },
     ],
+    //Users Property
     users: [],
     editedIndex: -1,
+    usertype: ["Admin", "Staff", "Client"],
+
+    //Form Properties
     form: {
-        name:'',
-        email:'',
-        address:'',
-        phone_no:'',
-        password:'',
-        password_confirmation:'',
-        user_type:''
+      name: "",
+      email: "",
+      address: "",
+      phone_no: "",
+      password: "",
+      password_confirmation: "",
+      user_type: "",
     },
-    rules:{
-        isValid:true,
-        name: [v => !!v || "Name is required"],
+
+    //Rules Validation Property
+    rules: {
+      isValid: true,
+      name: [(v) => !!v || "Name is required"],
+      email: [
+        (v) => !!v || "E-mail is required",
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      ],
+      address: [(v) => !!v || "Address is required"],
+      phone_no: [(v) => !!v || "Phone No. is required"],
+      user_type: [(v) => !!v || "User type is required"],
+      password: [
+        (v) => !!v || "Password is required",
+        (v) => (v && v.length >= 5) || "Passowrd must atleast 10 characters",
+        //(v) => (v && /\d/.test(v)) || "Password must have atleast one number",
+        //(v) => (v && /[A-Z]{1}/.test(v) || "Password must have atleast one capital letter"),
+        //(v) => (v && /[^A-Za-z0-9]/.test(v) || "Password must have atleast one special character")
+      ],
+      password_confirmation: [
+        (v) => !!v || "Password confirmation is required",
+      ],
     },
     defaultItem: {
-        name:'',
-        email:'',
-        address:'',
-        phone_no:'',
-        user_type:''
+      name: "",
+      email: "",
+      address: "",
+      phone_no: "",
+      user_type: "",
     },
   }),
-
   computed: {
-      //FETCH USER FROM STATE MANANGEMENT
+    //FETCH USER FROM STATE MANANGEMENT
     fetchUser() {
-      return this.$store.state.users.fetchusers;
+      const users = this.$store.state.users.users;
+      return this._.orderBy(users, ["created_at"], ["desc"]);
     },
-    //FORM TITLE 
+    //FORM TITLE
     formTitle() {
       return this.editedIndex === -1 ? "New User" : "Update User";
     },
   },
 
   watch: {
-      //CLOSE MODAL
+    //CLOSE MODAL
     dialog(val) {
       val || this.close();
     },
@@ -229,7 +308,7 @@ export default {
   },
 
   methods: {
-      //EDIT USER DATA
+    //EDIT USER DATA
     editItem(item) {
       this.editedIndex = this.fetchUser.indexOf(item);
       this.form = Object.assign({}, item);
@@ -252,10 +331,6 @@ export default {
     //MODAL CLOSE
     close() {
       this.dialog = false;
-      this.$nextTick(() => {
-        this.form = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
     },
 
     //CLOSE DELETE CONFIRMATION
@@ -269,30 +344,38 @@ export default {
 
     //SAVE FORM
     updateUser() {
-        console.log(this.form)
+      console.log(this.form);
     },
-    addUser() {
-        this.$store.dispatch("addUser",this.form)
-    },
-    validate() {
-        this.$refs.form.validate()
+
+    async addUser() {
+      try {
+        await this.$store.dispatch("addUser", this.form);
+      } catch (error) {
+        this.error = error;
+      }
     },
     save() {
+      this.msgStatus = true;
+
+      //Check if actions update or add
+
       if (this.editedIndex > -1) {
         //Object.assign(this.users[this.editedIndex], this.editedItem);
         //this.validate()
         //this.updateUser()
       } else {
-          this.validate()
-          this.addUser()
-        //this.users.push(this.editedItem);
+        this.$refs.form.validate();
+        this.addUser();
+        console.log(this.$store.state.users.message.status)
+        this.close();
+        
       }
+
     },
   },
   mounted() {
-      //DISPATCH DATA USER
+    //DISPATCH DATA USER
     this.$store.dispatch("getUserList");
-
   },
 };
 </script>
