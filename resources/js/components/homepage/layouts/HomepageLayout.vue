@@ -15,9 +15,8 @@
                         <contact/>
                     </section>
                     <section>
-                        <login/>
+                        <account/>
                     </section>
-
                 </div>
         <footer-layout/>
     </div>
@@ -29,7 +28,7 @@ import About from '../about/About.vue'
 import Contact from '../contact/Contact.vue'
 import Search from '../search/Search.vue'
 import Home from '../home/Home.vue'
-import Login from '../login/Login.vue'
+import Account from '../account/AccountManagement.vue'
 export default {
     components:{
         Navigation,
@@ -38,7 +37,7 @@ export default {
         About,
         Contact,
         Search,
-        Login
+        Account
 
     },
     data() {

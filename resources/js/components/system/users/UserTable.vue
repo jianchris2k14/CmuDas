@@ -52,6 +52,7 @@
                 <v-card-title> </v-card-title>
                 <v-card-text>
                   <v-container>
+                    {{isLoading}}
                     <v-form
                       ref="form"
                       @submit.prevent="save"
@@ -152,11 +153,11 @@
                   <v-spacer></v-spacer>
                   <v-btn color="error" dark @click="close"> Cancel </v-btn>
                   <v-btn
-                    type="submit"
                     :disabled="!rules.isValid"
                     color="success"
                     dark
                     @click="save"
+                    :loading="isLoading"
                   >
                     Save
                   </v-btn>
@@ -274,6 +275,7 @@ export default {
       ],
       password_confirmation: [
         (v) => !!v || "Password confirmation is required",
+        v => v === this.form.password || "Password must be match"
       ],
     },
     defaultItem: {
@@ -289,6 +291,9 @@ export default {
     fetchUser() {
       const users = this.$store.state.users.users;
       return this._.orderBy(users, ["created_at"], ["desc"]);
+    },
+    isLoading() {
+      return this.$store.state.base.isLoading
     },
     //FORM TITLE
     formTitle() {
@@ -343,15 +348,15 @@ export default {
     },
 
     //SAVE FORM
-    updateUser() {
-      console.log(this.form);
+    async updateUser() {
     },
 
     async addUser() {
       try {
         await this.$store.dispatch("addUser", this.form);
+        console.log(this.form)
       } catch (error) {
-        this.error = error;
+        console.log(error)
       }
     },
     save() {
@@ -360,15 +365,13 @@ export default {
       //Check if actions update or add
 
       if (this.editedIndex > -1) {
-        //Object.assign(this.users[this.editedIndex], this.editedItem);
+        
         //this.validate()
-        //this.updateUser()
+        this.updateUser()
       } else {
         this.$refs.form.validate();
         this.addUser();
-        console.log(this.$store.state.users.message.status)
         this.close();
-        
       }
 
     },
