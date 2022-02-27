@@ -26,9 +26,23 @@ const mutations = {
     }
 }
 const actions = { 
-    login({commit}) {
-
+    getUser({commit,rootState}) {
+        axios.get('/api/user').then((response) => {
+            commit('SET_USER',response.data)
+            commit('SET_AUTHENTICATED',true)
+            rootState.base.status = "Success"
+            rootState.base.showMsg = true
+        }).catch((err) => {
+            commit('SET_USER',{})
+            commit('SET_AUTHENTICATED',false)
+        });
+    },
+    userLogout({commit}) {
+        localStorage.removeItem('token')
+        commit('SET_USER',{})
+        commit('SET_AUTHENTICATED',false)
     }
+    
 }
 
 export default {

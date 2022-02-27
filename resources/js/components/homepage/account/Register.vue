@@ -125,9 +125,9 @@
 import AlertComponent from "./../../AlertComponent.vue";
 export default {
   components: { AlertComponent },
-  data: () => ({
-
-    //Password Property
+  data() {
+    return {
+          //Password Property
     showpassForm: false,
     showpass: false,
     showconfirmpass: false,
@@ -166,9 +166,11 @@ export default {
       ],
       password_confirmation: [
         (v) => !!v || "Password confirmation is required",
+        v => v ===  this.form.password || "The password must be match",
       ],
     },
-  }),
+    }
+  },
   computed: {
     isLoading() {
       return this.$store.state.base.isLoading

@@ -19,8 +19,8 @@ export default new Vuetify({
           light: {
             warning: '#FF9800',
             info: '#1E88E5',
-            error: '#F44336',
-            success: '#4CAF50'
+            error: '#EF5350',
+            success: '#388E3C'
           },
         },
     },

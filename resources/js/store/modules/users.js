@@ -39,6 +39,7 @@ const actions = {
             console.log(err.response.data)
         });
     },
+    
     addUser({commit,rootState},payload) {
         rootState.base.isLoading = true
         axios.post('/api/register',payload).then((response) => {

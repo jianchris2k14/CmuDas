@@ -7,6 +7,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\FileLocationController;
+use Illuminate\Routing\Router;
 
 // Public Routes
 // Route::resource('files', FileController::class);
@@ -31,6 +32,7 @@ Route::post('/filelocations/search', [FileLocationController::class, 'search']);
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/user', [AuthController::class,'user']);
     Route::post('/files', [FileController::class, 'store']);
     Route::put('/files/{id}', [FileController::class, 'update']);
     Route::delete('/files/{id}', [FileController::class, 'destroy']);
@@ -48,6 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/filelocations/{id}', [FileLocationController::class, 'destroy']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
+    
 });
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

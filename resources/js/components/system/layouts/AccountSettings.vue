@@ -5,12 +5,31 @@
                 <span>Settings</span>
               </a>
               <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
+              <a @click="logout" class="dropdown-item">
                 <i class="fa fa-sign-out-alt"></i>
                 <span>Logout</span>
               </a>
     </div>
 </template>
+<script>
+export default {
+  data() {
+    return {
+
+    }
+  },
+  methods:{
+    async logout() {
+      await axios.post('/api/logout').then((response) => {
+        this.$store.dispatch("userLogout")
+        this.$router.push('/')
+      }).catch((err) => {
+        console.log(err.response.data)
+      });
+    }
+  }
+}
+</script>
 <style scoped>
 
 </style>

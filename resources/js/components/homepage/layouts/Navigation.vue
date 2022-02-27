@@ -64,7 +64,7 @@ export default {
             logo:logo,
             scrollPosition:null,
             scrolled:false,
-            isLogin:true,
+            isLogin:this.$store.state.auth.authenticated,
             navLink:[
                 'Home',
                 'About',

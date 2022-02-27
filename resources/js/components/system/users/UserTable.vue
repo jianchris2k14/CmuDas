@@ -20,7 +20,6 @@
         :headers="headers"
         :items="fetchUser"
         :search="search"
-        sort-by="calories"
         class="elevation-1 table-striped"
       >
         <template v-slot:top>
@@ -52,7 +51,6 @@
                 <v-card-title> </v-card-title>
                 <v-card-text>
                   <v-container>
-                    {{isLoading}}
                     <v-form
                       ref="form"
                       @submit.prevent="save"
@@ -118,7 +116,7 @@
                         </v-col>
                         <v-col cols="12" v-if="formTitle === 'New User'">
                           <v-text-field
-                            label="Password"
+                            label="Confirm Password"
                             v-model="form.password_confirmation"
                             outlined
                             dense
@@ -204,8 +202,9 @@
 import AlertComponent from "./../../AlertComponent.vue";
 export default {
   components: { AlertComponent },
-  data: () => ({
-    search: "",
+  data() {
+    return {
+      search: "",
     //Dialog Property
     dialog: false,
     dialogDelete: false,
@@ -251,32 +250,32 @@ export default {
       address: "",
       phone_no: "",
       password: "",
-      password_confirmation: "",
+      password_confirmation:"",
       user_type: "",
     },
 
     //Rules Validation Property
     rules: {
       isValid: true,
-      name: [(v) => !!v || "Name is required"],
+      name: [v => !!v || "Name is required"],
       email: [
-        (v) => !!v || "E-mail is required",
-        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+        v => !!v || "E-mail is required",
+        v => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ],
-      address: [(v) => !!v || "Address is required"],
-      phone_no: [(v) => !!v || "Phone No. is required"],
-      user_type: [(v) => !!v || "User type is required"],
+      address: [v => !!v || "Address is required"],
+      phone_no: [v => !!v || "Phone No. is required"],
+      user_type: [v => !!v || "User type is required"],
       password: [
-        (v) => !!v || "Password is required",
-        (v) => (v && v.length >= 5) || "Passowrd must atleast 10 characters",
+        v => !!v || "Password is required",
+        v => (v && v.length >= 5) || "Passowrd must atleast 10 characters",
         //(v) => (v && /\d/.test(v)) || "Password must have atleast one number",
         //(v) => (v && /[A-Z]{1}/.test(v) || "Password must have atleast one capital letter"),
         //(v) => (v && /[^A-Za-z0-9]/.test(v) || "Password must have atleast one special character")
       ],
       password_confirmation: [
-        (v) => !!v || "Password confirmation is required",
-        v => v === this.form.password || "Password must be match"
-      ],
+        v => !!v || "Password confirmation is required",
+        v => v ===  this.form.password || "The password must be match",
+      ]
     },
     defaultItem: {
       name: "",
@@ -285,7 +284,8 @@ export default {
       phone_no: "",
       user_type: "",
     },
-  }),
+    }
+  },
   computed: {
     //FETCH USER FROM STATE MANANGEMENT
     fetchUser() {
@@ -354,7 +354,6 @@ export default {
     async addUser() {
       try {
         await this.$store.dispatch("addUser", this.form);
-        console.log(this.form)
       } catch (error) {
         console.log(error)
       }

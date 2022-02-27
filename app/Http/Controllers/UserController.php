@@ -82,7 +82,6 @@ class UserController extends Controller
 
         return new UserResource($user);
     }
-
     public function destroy($id)
     {
         $user = User::findOrFail($id);

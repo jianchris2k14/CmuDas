@@ -11,7 +11,7 @@
               <div class="media align-items-center">
 
                 <div class="media-body ml-2 d-none d-lg-block">
-                  <span class="mb-0 text-sm  font-weight-bold">Admin </span>
+                  <span class="mb-0 text-sm  font-weight-bold"> {{$store.state.auth.user.email}}</span>
                 </div>
                 <span class="avatar avatar-sm rounded-circle">
                   <img alt="Image placeholder" :src="userlogo">
@@ -38,9 +38,9 @@ export default {
   components: { AccountSettings },
     data() {
         return {
-            userlogo:user
+            userlogo:user,
         }
-    }
+    },
 }
 </script>
 <style scoped>
