@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from './store/index'
 
 Vue.use(VueRouter)
 
@@ -10,7 +11,7 @@ import HomepageLayout from './components/homepage/layouts/HomepageLayout.vue'
 
 /* CLIENT COMPONENTS */
 
-import clientdashboardlayout from './components/homepage/client/layouts/ClientDashboardLayout.vue'
+import clientdashboardlayout from './components/homepage/client/layouts/DashboardLayout'
 import clientdashboard from './components/homepage/client/dashboard/Dashboard.vue'
 import clientrequests from './components/homepage/client/clientrequests/ClientRequest.vue'
 import clientsearch from './components/homepage/client/clientsearch/ClientSearch.vue'
@@ -35,18 +36,35 @@ const routes = [
     {
         path:'/client/dashboard',
         component:clientdashboardlayout,
+        meta:{
+            middleware:true,
+            user:true,
+            title:"portal"
+        },
         children:[
             {
                 path:'/client/dashboard',
                 component:clientdashboard,
+                meta:{
+                    user:true,
+                    title:"Client Dashboard"
+                }
             },
             {
                 path:'/client/requests',
-                component:clientrequests
+                component:clientrequests,
+                meta:{
+                    user:true,
+                    title:"Client Request"
+                }
             },
             {
                 path:'/client/clientsearch',
-                component:clientsearch
+                component:clientsearch,
+                meta:{
+                    user:true,
+                    title:"Client Search File"
+                }
             }
 
         ]
@@ -55,10 +73,18 @@ const routes = [
     {
         path:'/',
         component:HomepageLayout,
+        meta:{
+            guest: true,
+            title:"portal"
+        },
         children:[
             {
                 path:'/',
                 component:homepage,
+                meta:{
+                    guest: true,
+                    title:"Landing Page"
+                }
             },
 
         ]
@@ -67,30 +93,52 @@ const routes = [
     {
         path:'/system/dashboard',
         component:DashboardLayout,
+        meta:{
+            middleware:true,
+            user:true,
+            title:"system"
+        },
         children:[
             {
                 path:'/system/dashboard',
-                component:dashboard
-            },
-            {
-                path:'/system/requests',
-                component:requests
+                component:dashboard,
+                meta:{
+                    user:true,
+                    title:"System Dashboard"
+                }
             },
             {
                 path:'/system/files',
-                component:files
+                component:files,
+                meta:{
+                    user:true,
+                    title:"System Files"
+                }
+                
             },
             {
                 path:'/system/requests',
-                component:requests
+                component:requests,
+                meta:{
+                    user:true,
+                    title:"System Client Requests"
+                }
             },
             {
                 path:'/system/user',
-                component:users
+                component:users,
+                meta:{
+                    user:true,
+                    title:"System Users"
+                }
             },
             {
                 path:'/system/clients',
-                component:clients
+                component:clients,
+                meta:{
+                    user:true,
+                    title:"System Clients"
+                }
             }
 
         ]
@@ -101,9 +149,11 @@ const routes = [
 
 export default new VueRouter({
     routes,
+    mode:'history',
+    routes:routes,
     linkActiveClass: 'active',
-    mode: 'history',
-    scrollBehavior(to, from, savedPosition) {
-        return { x: 0, y: 0 };
+    scrollBehavior(to,from,savedPosition) {
+        return {x:0,y:0}
     }
-});
+})
+

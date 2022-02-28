@@ -28,24 +28,24 @@
         v-scroll-spy-active="{class:'active'}" v-scroll-spy-link>
           <li class="nav-item"
           :key="items"
-          v-for="items in navLink">
+          v-for="items in navFiltered">
             <a class="nav-link" role="button">
               <i class="ni ni-collection d-lg-none"></i>
               <span class="nav-link-inner--text">{{items}}</span>
             </a>
           </li>
         </ul>
-        <ul class="navbar-nav align-items-lg-center ml-lg-auto" v-if="isLogin">
+        <ul class="navbar-nav align-items-lg-center ml-lg-auto" v-if="auth.authenticated">
           <li class="nav-item dropdown">
                 <a class="nav-link nav-link-icon dropdown-toggle" href="javascript:;" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fa fa-user"></i>
-                  Geiizanityy@gmail.com
+                  {{auth.user.email}}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">
                   <router-link to="/client/dashboard" class="dropdown-item">
                       <i class="fa fa-tachometer-alt"></i> Dashboard
                     </router-link>
-                  <a class="dropdown-item" href="javascript:;">
+                  <a class="dropdown-item" @click="logout">
                       <i class="fa fa-sign-out-alt"></i> Logout</a>
                   <div class="dropdown-divider"></div>
                 </div>
@@ -84,14 +84,39 @@ export default {
     },
     //Filter Navigation if isLoggedIn
     filterNav() {
-        if(this.isLogin) {
+        if(!this.isLogin) {
             this.navLink.splice(this.navLink.indexOf("Signin"))
         }
+    },
+    async logout() {
+      await axios.post('/api/logout').then((response) => {
+        this.$store.dispatch("userLogout")
+        console.log(response.data)
+        this.$router.push('/').catch(error => {
+          if (error.name != "NavigationDuplicated") {
+            throw error;
+          }
+        });
+      }).catch((err) => {
+        console.log(err.response.data)
+      });
+    }
+  },
+  computed:{
+    auth() {
+      return this.$store.state.auth
+    },
+    navFiltered() {
+      if(!this.auth.authenticated) {
+        return this.navLink
+      }else {
+        return this.navLink.slice(0, this.navLink.length -1)
+      }
     }
   },
     mounted() {
     window.addEventListener('scroll',this.updateScroll)
-    this.filterNav()
+    //this.filterNav()
   }
 }
 </script>

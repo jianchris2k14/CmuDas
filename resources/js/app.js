@@ -40,6 +40,47 @@ Vue.use(scrollSpy, {
   easing: Easing.Cubic.In
 });
 
+/* FRONT END ROUTER RESTRICTION */
+function loggedIn() {
+    return localStorage.getItem('token');
+}
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.middleware)) {
+      // this route requires auth, check if logged in
+      // if not, redirect to login page.
+      if (!loggedIn() && !store.state.auth.authenticated) {
+        next({
+          path: '/',
+          query: {redirect: to.fullPath }
+        })
+      } else {
+        next()
+      }
+    }
+    else if(to.matched.some(record => record.meta.user)) {
+        if (loggedIn()) {
+          if(store.state.auth.user.user_type === 'Admin')
+                next({
+                    path: '/system/dashboard',
+                    query: { redirect: to.fullPath }
+                  })
+          }else if(store.state.auth.user.user_type === 'Staff') {
+            next({
+              path:'/system/dashboard',
+              query:{
+                redirect: to.fullPath
+              }
+            })
+          }
+    }
+
+    else {
+      next() // make sure to always call next()!
+    }
+  })
+
+
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

@@ -107,7 +107,12 @@ export default {
         .post("/api/login", this.form)
         .then((response) => {
           localStorage.setItem("token", response.data.token);
-          this.$router.push("/system/dashboard");
+          var user_type = response.data.user.user_type;
+          if (user_type === "Admin" || user_type === "Staff") {
+            this.$router.push("/system/dashboard");
+          } else {
+            this.$router.push("client/dashboard");
+          }
         })
         .catch((err) => {
           var error = Object.assign({

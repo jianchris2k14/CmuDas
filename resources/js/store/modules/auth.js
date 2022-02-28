@@ -37,10 +37,14 @@ const actions = {
             commit('SET_AUTHENTICATED',false)
         });
     },
-    userLogout({commit}) {
+    userLogout({commit,rootState}) {
         localStorage.removeItem('token')
         commit('SET_USER',{})
         commit('SET_AUTHENTICATED',false)
+        rootState.base.showMsg = false
+        rootState.base.message = []
+        rootState.base.status = ""
+
     }
     
 }

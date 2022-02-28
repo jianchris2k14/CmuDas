@@ -18,7 +18,7 @@ export default {
             this.$store.dispatch("getUser")
         }
     },
-    created() {
+    mounted() {
         this.getUserData();
     },
 } 
