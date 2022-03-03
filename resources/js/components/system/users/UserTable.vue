@@ -349,6 +349,7 @@ export default {
 
     //SAVE FORM
     async updateUser() {
+      this.$store.dispatch("updateUser",this.form)
     },
 
     async addUser() {

@@ -18,6 +18,10 @@ const mutations = {
     ADD_USER:(state,payload) => {   
         state.users.push(payload)
     },
+    UPDATE_USER:(state,payload) => {
+        const index = state.users.findIndex(item => item.user_id === payload.user_id)
+        state.users.splice(index,1,payload)
+    }
 
 }
 const actions = {
@@ -33,9 +37,29 @@ const actions = {
         });
     },
     updateUser({commit,rootState},payload) {
-         axios.put('/api/users/'+payload.user_id).then((response) => {
-            console.log(response.data)
+         axios.put('/api/users/'+payload.user_id,payload).then((response) => {
+            if(response.status === 200) {
+                commit('UPDATE_USER',payload)
+                rootState.base.isLoading = false
+                rootState.base.message = [{sucess:"Successfully Updated"}]
+                rootState.base.status = "Success"
+                rootState.base.showMsg = true
+            }else if(response.status === 500) {
+                rootState.base.isLoading = false
+                rootState.base.message = ({error:"Ops! The email already taken"})
+                rootState.base.status = "Error"
+                rootState.base.showMsg = true
+            }else {
+                rootState.base.isLoading = false
+                rootState.base.message = ({error:"Ops! The email already taken"})
+                rootState.base.status = "Error"
+                rootState.base.showMsg = true
+            }
         }).catch((err) => {
+            rootState.base.isLoading = false
+            rootState.base.message = ({error:"Ops! The email already taken"})
+            rootState.base.status = "Error"
+            rootState.base.showMsg = true
             console.log(err.response.data)
         });
     },

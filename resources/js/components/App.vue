@@ -4,23 +4,18 @@
 </v-app>
 </template>
 <script>
-
 export default {
-    data() {
+  data() {
         return {
-            currentUser: {},
             token: localStorage.getItem('token')
         }
     },
-    methods:{
-        getUserData() {
-            window.axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-            this.$store.dispatch("getUser")
-        }
-    },
     mounted() {
-        this.getUserData();
-    },
-} 
+        window.axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+        if(this.token) {
+            return this.$store.dispatch("getUser")
+        }
+    }
+};
 </script>
 

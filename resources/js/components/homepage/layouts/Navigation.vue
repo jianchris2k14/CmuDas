@@ -42,7 +42,7 @@
                   {{auth.user.email}}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-default_dropdown_1">
-                  <router-link to="/client/dashboard" class="dropdown-item">
+                  <router-link :to="redirect" class="dropdown-item">
                       <i class="fa fa-tachometer-alt"></i> Dashboard
                     </router-link>
                   <a class="dropdown-item" @click="logout">
@@ -111,6 +111,18 @@ export default {
         return this.navLink
       }else {
         return this.navLink.slice(0, this.navLink.length -1)
+      }
+    },
+    redirect() {
+      let user_type = this.auth.user.user_type
+      if(user_type == 'Admin' || user_type == 'Staff') {
+        return {
+          name:'systemdashboard'
+        }
+      }else {
+        return {
+          client:'clientdashboard'
+        }
       }
     }
   },

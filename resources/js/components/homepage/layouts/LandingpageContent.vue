@@ -5,6 +5,11 @@
 </transition>
 </div>
 </template>
+<script>
+export default {
+  
+}
+</script>
 <style>
 .fade-enter-active,
 .fade-leave-active {

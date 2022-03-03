@@ -1,6 +1,6 @@
 <template>
     <div>
-    <section class="section section-shaped">
+    <section class="section section-shaped" v-show="!auth.authenticated">
     <div class="container pt-lg-7 pb-lg-7">
       <div class="row">
         <div class="col-md-6">
@@ -19,6 +19,11 @@
 import Register from './Register.vue'
 import Login from './Login.vue'
 export default {
-  components:{Register,Login}
+  components:{Register,Login},
+  computed:{
+    auth() {
+      return this.$store.state.auth
+    }
+  }
 }
 </script>

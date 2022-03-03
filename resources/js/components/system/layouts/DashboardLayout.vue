@@ -1,12 +1,12 @@
 <template>
-    <div id="app">
+    <v-app id="app">
         <navigation/>
         <div class="main-content">
             <dashboard-header/>
             <dashboard-content/>
         </div>
 
-    </div>
+    </v-app>
 </template>
 
 <script>
@@ -21,6 +21,7 @@ export default {
         DashboardContent,
         DashboardHeader,
     }
+    
 }
 </script>
 

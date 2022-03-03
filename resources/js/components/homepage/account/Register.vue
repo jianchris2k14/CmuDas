@@ -193,9 +193,5 @@ export default {
         this.$refs.form.reset();
     },
   },
-  mounted() {
-    //DISPATCH DATA USER
-    this.$store.dispatch("getUserList");
-  },
 };
 </script>

@@ -41,9 +41,18 @@
         </div>
 
         <!-- Navigation -->
-        <ul class="navbar-nav ml-n11">
+        
+        <ul class="navbar-nav ml-n11" v-if="auth.user.user_type === 'Admin' || auth.user.user_type === 'Staff'">
           <li class="nav-item"
-          v-for="(item,i) in navigation" :key="i">
+          v-for="(item,i) in navigation.adminNavigation" :key="i">
+            <router-link class="nav-link" :to="item.itemPath">
+              <i :class="[item.itemIcon,item.itemIconColor]"></i> <span class="link">{{item.itemText}}</span>
+            </router-link>
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-n11" v-if="auth.user.user_type === 'Client'">
+          <li class="nav-item"
+          v-for="(item,i) in navigation.clientNavigation" :key="i">
             <router-link class="nav-link" :to="item.itemPath">
               <i :class="[item.itemIcon,item.itemIconColor]"></i> <span class="link">{{item.itemText}}</span>
             </router-link>
@@ -66,7 +75,62 @@ export default {
         return {
             logo:logo,
             userlogo:userlogo,
-            navigation:[
+            navigation:{
+              adminNavigation:[
+                 {
+                    itemText:'Dashboard',
+                    itemIcon:'fa fa-tachometer-alt',
+                    itemIconColor:'text-warning',
+                    itemPath:'/system/dashboard'
+                },
+                {
+                    itemText:'Files',
+                    itemIcon:'fa fa-archive',
+                    itemIconColor:'text-green',
+                    itemPath:'/system/files'
+                },
+                {
+                    itemText:'Requests',
+                    itemIcon:'fa fa-chalkboard-teacher',
+                    itemIconColor:'text-red',
+                    itemPath:'/system/requests'
+                },
+                {
+                    itemText:'Clients',
+                    itemIcon:'fa fa-user-tie',
+                    itemIconColor:'text-primary',
+                    itemPath:'/system/clients'
+                },
+                {
+                    itemText:'Users',
+                    itemIcon:'fa fa-users',
+                    itemIconColor:'text-white',
+                    itemPath:'/system/user'
+                }
+              ],
+              clientNavigation:[
+                 {
+                    itemText:'Dashboard',
+                    itemIcon:'fa fa-tachometer-alt',
+                    itemIconColor:'text-warning',
+                    itemPath:'/system/client/dashboard'
+                },
+                {
+                    itemText:'Requests',
+                    itemIcon:'fa fa-chalkboard-teacher',
+                    itemIconColor:'text-red',
+                    itemPath:'/system/client/requests'
+                },
+                {
+                    itemText:'Search',
+                    itemIcon:'fa fa-search',
+                    itemIconColor:'text-primary',
+                    itemPath:'/system/client/clientsearch'
+                },
+
+              ]
+            },
+            /* navigation:[
                 {
                     itemText:'Dashboard',
                     itemIcon:'fa fa-tachometer-alt',
@@ -97,9 +161,14 @@ export default {
                     itemIconColor:'text-white',
                     itemPath:'/system/user'
                 }
-            ]
+            ] */
         }
-    }
+    },
+    computed: {
+      auth() {
+        return this.$store.state.auth
+      }
+    },
 }
 </script>
 <style scoped>

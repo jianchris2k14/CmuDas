@@ -106,13 +106,15 @@ export default {
       await axios
         .post("/api/login", this.form)
         .then((response) => {
-          localStorage.setItem("token", response.data.token);
-          var user_type = response.data.user.user_type;
-          if (user_type === "Admin" || user_type === "Staff") {
-            this.$router.push("/system/dashboard");
-          } else {
-            this.$router.push("client/dashboard");
-          }
+            localStorage.setItem("token", response.data.token);
+            /* localStorage.setItem("user_type",response.data.user.user_type) */
+            localStorage.setItem("user_type", response.data.user.user_type);
+            var user_type = response.data.user.user_type;
+            if (user_type === "Admin" || user_type === "Staff") {
+              this.$router.push({name:'systemdashboard'});
+            } else {
+              this.$router.push({name:'clientdashboard'});
+            }
         })
         .catch((err) => {
           var error = Object.assign({

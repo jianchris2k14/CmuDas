@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <v-app id="app">
         <navigation/>
                 <div v-scroll-spy="{time:100,steps:30}">
                     <section>
@@ -19,7 +19,7 @@
                     </section>
                 </div>
         <footer-layout/>
-    </div>
+    </v-app>
 </template>
 <script>
 import Navigation from './Navigation.vue'
@@ -42,6 +42,7 @@ export default {
     },
     data() {
         return {
+            token: localStorage.getItem('token'),
             options:{
                 afterLoad:this.afterLoad
             },
@@ -54,6 +55,13 @@ export default {
         afterLoad() {
             console.log("Emitted 'after load' event")
         }
+    },
+    mounted() {
+        window.axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+        if(this.token) {
+            return this.$store.dispatch("getUser")
+        }
+
     }
 }
 </script>

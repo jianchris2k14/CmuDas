@@ -10,7 +10,7 @@ import DashboardHeader from "./DashboardHeader.vue";
 export default {
   components: {
     DashboardHeader,
-  },
+  }
 };
 </script>
 <style>
