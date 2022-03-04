@@ -1,11 +1,11 @@
 <template>
-<div>
+<div v-show="!isLoading">
   <div v-show="message.status === 'Error'">
     <v-alert dense outlined prominent type="error" icon="mdi-alert-circle">
       <v-row align="center">
         <v-col class="grow">
           <h3 class="text-warning text-uppercase">{{ message.status }}</h3>
-      <strong><h6 class="text-warning text-uppercase">{{ message.message.message }}</h6></strong>
+      <strong><h6 class="text-warning text-uppercase">{{ message.message.message}}</h6></strong>
       <div v-for="(item, index) in message.message.errors" :key="index.errors">
         <ul v-for="error in item" :key="error.name">
           {{
@@ -46,10 +46,12 @@ export default {
   },
   computed: {
     message() {
-      const status = this.$store.state.base.status;
-      const message = this.$store.state.base.message;
-      return { status, message };
+      return this.$store.state.base.global
+
     },
+    isLoading() {
+      return this.$store.state.base.isLoading
+    }
   },
 };
 </script>

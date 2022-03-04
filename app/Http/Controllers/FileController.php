@@ -50,7 +50,6 @@ class FileController extends Controller
             'user_id' 		     =>     'required|numeric',
         ]);
     }
-
     public function store(Request $request)
     {
         $this->validation($request);
@@ -59,7 +58,6 @@ class FileController extends Controller
 
         return new FileResource($file);
     }
-
     public function update(Request $request, $id)
     {
         $this->validation($request);

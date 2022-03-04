@@ -41,7 +41,7 @@
                   v-on="on"
                 >
                   <v-icon dark> mdi-plus-circle </v-icon>
-                  New User
+                  New Client
                 </v-btn>
               </template>
               <v-card>
@@ -166,15 +166,20 @@
             <!-- Delete Confirmation Modal -->
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card>
+                <v-toolbar color="error" dark>
+                      <v-toolbar-title class="text-h6">
+                          Confirmation
+                      </v-toolbar-title>
+                  </v-toolbar>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item?</v-card-title
                 >
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeDelete"
+                  <v-btn color="info" dark @click="closeDelete"
                     >Cancel</v-btn
                   >
-                  <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                  <v-btn color="error" dark :loading="isLoading" @click="deleteItemConfirm"
                     >OK</v-btn
                   >
                   <v-spacer></v-spacer>
@@ -204,20 +209,24 @@ export default {
   components: { AlertComponent },
   data() {
     return {
+      //TABLE SEARCH PROPERTY
       search: "",
+
     //Dialog Property
     dialog: false,
     dialogDelete: false,
+
     //Password Property
     showpassForm: false,
     showpass: false,
     showconfirmpass: false,
 
-    //Error Handlings Property
+    //NOTIFY PROPERTIES
     error: "",
     msgStatus: false,
+    load:false,
 
-    //Table Headers
+    //TABLE HEADERS PROPERTIES
     headers: [
       {
         text: "ID",
@@ -238,12 +247,14 @@ export default {
         class: "info text-black",
       },
     ],
-    //Users Property
+
+    //USERS PROPERTIES
     users: [],
+    selectedUser:null,
     editedIndex: -1,
     usertype: ["Admin", "Staff", "Client"],
 
-    //Form Properties
+    //FORM PROPERTIES
     form: {
       name: "",
       email: "",
@@ -254,7 +265,7 @@ export default {
       user_type: "",
     },
 
-    //Rules Validation Property
+    //RULES VALIDATION PROPERTIES
     rules: {
       isValid: true,
       name: [v => !!v || "Name is required"],
@@ -268,15 +279,14 @@ export default {
       password: [
         v => !!v || "Password is required",
         v => (v && v.length >= 5) || "Passowrd must atleast 10 characters",
-        //(v) => (v && /\d/.test(v)) || "Password must have atleast one number",
-        //(v) => (v && /[A-Z]{1}/.test(v) || "Password must have atleast one capital letter"),
-        //(v) => (v && /[^A-Za-z0-9]/.test(v) || "Password must have atleast one special character")
       ],
       password_confirmation: [
         v => !!v || "Password confirmation is required",
         v => v ===  this.form.password || "The password must be match",
       ]
     },
+
+    //DEFAULT FORM DATA
     defaultItem: {
       name: "",
       email: "",
@@ -287,18 +297,26 @@ export default {
     }
   },
   computed: {
-    //FETCH USER FROM STATE MANANGEMENT
+    //FETCH USER FROM STATE MANANGEMENT COMPUTED
     fetchUser() {
-      const users = this.$store.state.users.users;
+      const users = this.$store.getters.getUsers
       return this._.orderBy(users, ["created_at"], ["desc"]);
     },
-    isLoading() {
-      return this.$store.state.base.isLoading
-    },
-    //FORM TITLE
+
+    //FORM TITLE COMPUTED
     formTitle() {
       return this.editedIndex === -1 ? "New User" : "Update User";
     },
+
+    //ISLOADING COMPUTED
+    isLoading: {
+      get:function(){ 
+        return this.$store.state.base.isLoading
+      },
+      set:function(newVal) {
+        return newVal
+      }
+    }
   },
 
   watch: {
@@ -310,9 +328,14 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+    // LOADING
+    isLoading(val) {
+      val || this.close()
+    }
   },
 
   methods: {
+
     //EDIT USER DATA
     editItem(item) {
       this.editedIndex = this.fetchUser.indexOf(item);
@@ -322,21 +345,27 @@ export default {
 
     //DELETE USER DATA
     deleteItem(item) {
-      this.editedIndex = this.fetchUser.indexOf(item);
-      this.form = Object.assign({}, item);
+      this.selectedUser = item
       this.dialogDelete = true;
     },
 
     //CONFIRM DELETE USER
-    deleteItemConfirm() {
-      this.fetchUser.splice(this.editedIndex, 1);
+    async deleteItemConfirm() {
+      this.msgStatus = true
+      await this.$store.dispatch("deleteUser",this.selectedUser)
       this.closeDelete();
     },
+
 
     //MODAL CLOSE
     close() {
       this.dialog = false;
+      this.$nextTick(() => {
+        this.$refs.form.reset()
+        this.editedIndex = -1;
+      });
     },
+
 
     //CLOSE DELETE CONFIRMATION
     closeDelete() {
@@ -347,38 +376,31 @@ export default {
       });
     },
 
-    //SAVE FORM
+  
+    //CALL STORE MANANGEMENT DISPATCH FOR UPDATING DATA TO STATE MANANGEMENT
     async updateUser() {
-      this.$store.dispatch("updateUser",this.form)
+        this.$store.dispatch("updateUser",this.form)
     },
 
+    //CALL STORE MANANGEMENT DISPATCH FOR ADDING DATA TO STATES
     async addUser() {
-      try {
-        await this.$store.dispatch("addUser", this.form);
-      } catch (error) {
-        console.log(error)
-      }
+      await this.$store.dispatch("addUser", this.form);
     },
+
+    //SAVE BUTTON ( SEND FORM DATA TO DATABASE)
     save() {
       this.msgStatus = true;
-
+      
       //Check if actions update or add
-
       if (this.editedIndex > -1) {
-        
-        //this.validate()
         this.updateUser()
       } else {
         this.$refs.form.validate();
         this.addUser();
-        this.close();
       }
 
     },
   },
-  mounted() {
-    //DISPATCH DATA USER
-    this.$store.dispatch("getUserList");
-  },
+
 };
 </script>

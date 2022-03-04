@@ -103,6 +103,10 @@ const routes = [
                     middleware:true,
                     title:"System Dashboard"
                 },
+                /* beforeEnter:(to,from,next) => {
+                    store.dispatch("getUserList")
+                    next()
+                }, */
 
                 
             },
@@ -137,14 +141,6 @@ const routes = [
                     middleware:true,
                     title:"System Users"
                 },
-                beforeEnter:(to,from,next) => {
-                        let user_type = localStorage.getItem("user_type")
-                        if(user_type === 'Staff') {
-                            next(false)
-                        }else {
-                           next()
-                        }
-                }
             },
             {
                 path:'/system/clients',
@@ -176,7 +172,7 @@ const router = new VueRouter({
 function loggedIn() {
     return localStorage.getItem('token');
 }
-router.beforeResolve((to, from, next) => {
+router.beforeEach((to, from, next) => {
       if (to.matched.some(record => record.meta.middleware)) {
         if (!loggedIn() && !store.state.auth.authenticated) {
           next({
@@ -191,6 +187,8 @@ router.beforeResolve((to, from, next) => {
                         name:'clientdashboard'
                     })
                 }else {
+                    store.dispatch("getUserList")
+                    store.dispatch("getFileList")
                     next()
                 }
             }else {
