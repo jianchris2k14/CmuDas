@@ -16,7 +16,6 @@ class CreateFileLocationsTable extends Migration
         Schema::create('file_locations', function (Blueprint $table) {
             $table->id('file_location_id');
             $table->text('file_location');
-            $table->dateTime('retention_date');
             $table->timestamps();
         });
 

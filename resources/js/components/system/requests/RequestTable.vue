@@ -121,16 +121,15 @@ export default {
     //TABLE HEADERS PROPERTIES
     headers: [
       {
-        text: "File ID",
+        text: "Request ID",
         align: "start",
         sortable: true,
         value: "file_id",
         class: "info text-black",
       },
-      { text: "File Name", value: "filename", class: "info text-black" },
-      { text: "Description", value: "description", class: "info text-black" },
-      { text: "Location.", value: "file_location", class: "info text-black" },
-      { text: "Retention Date", value: "retention_date", class: "info text-black" },
+      { text: "Description", value: "filename", class: "info text-black" },
+      { text: "Status", value: "description", class: "info text-black" },
+      { text: "Request Date", value: "retention_date", class: "info text-black" },
       { text: "Code", value: "code", class: "info text-black" },
       {
         text: "Actions",

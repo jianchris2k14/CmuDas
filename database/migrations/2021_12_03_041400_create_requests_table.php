@@ -18,6 +18,7 @@ class CreateRequestsTable extends Migration
             $table->text('description');
             $table->dateTime('request_date');
             $table->string('status');
+            $table->dateTime('retention_date');
             $table->timestamps();
         });
 

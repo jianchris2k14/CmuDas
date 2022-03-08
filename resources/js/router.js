@@ -10,11 +10,15 @@ import HomepageLayout from './components/homepage/layouts/HomepageLayout.vue'
 
 
 /* CLIENT COMPONENTS */
-
 import clientdashboardlayout from './components/homepage/client/layouts/DashboardLayout'
+import clientdashboard from './components/homepage/client/dashboard/Dashboard.vue'
+import clientrequests from './components/homepage/client/clientrequests/ClientRequest.vue'
+import clientsearch from './components/homepage/client/clientsearch/ClientSearch.vue'
+
+/* import clientdashboardlayout from './components/homepage/client/layouts/DashboardLayout'
 import clientdashboard from './components/system/client/clientdashboard/ClientDashboard.vue'
 import clientrequests from './components/system/client/clientrequests/ClientRequests.vue'
-import clientsearch from './components/system/client/clientsearch/ClientSearch.vue'
+import clientsearch from './components/system/client/clientsearch/ClientSearch.vue' */
 
 /* ERROR 404 PAGE NOT FOUND COMPONENT */
 import NotFound from './components/404.vue'
@@ -30,9 +34,14 @@ import clients from './components/system/clients/Clients.vue'
 
 
 const routes = [
-{
+    {
         path:'*',
         component:NotFound
+    },
+    {
+        path:'/404',
+        component:NotFound,
+        name:"404"
     },
     {
         path:'/',
@@ -56,15 +65,15 @@ const routes = [
 
     },
     {
-        path:'/system/',
-        component:DashboardLayout,dashboard,
+        path:'/client/dashboard',
+        component:clientdashboardlayout,
         meta:{
             middleware:true,
             title:"system",
         },  
         children:[
             {
-                path:'/system/client/dashboard',
+                path:'/client/dashboard',
                 component:clientdashboard,
                 name:'clientdashboard',
                 meta:{
@@ -74,7 +83,7 @@ const routes = [
                 },
             },
             {
-                path:'/system/client/requests',
+                path:'/client/requests',
                 component:clientrequests,
                 name:'clientrequests',
                 meta:{
@@ -84,7 +93,7 @@ const routes = [
                 },
             },
             {
-                path:'/system/client/clientsearch',
+                path:'/client/clientsearch',
                 component:clientsearch,
                 name:'clientsearch',
                 meta:{
@@ -94,6 +103,17 @@ const routes = [
                 },
 
             },
+
+        ]
+    },
+    {
+        path:'/system/',
+        component:DashboardLayout,
+        meta:{
+            middleware:true,
+            title:"system",
+        },  
+        children:[
             {
                 path:'/system/dashboard',
                 component:dashboard,
@@ -141,6 +161,13 @@ const routes = [
                     middleware:true,
                     title:"System Users"
                 },
+                beforeEnter:(to,from,next) => {
+                    if(store.state.auth.user.user_type === 'Staff') {
+                        next(false)
+                    }else {
+                        next()
+                    }
+                }
             },
             {
                 path:'/system/clients',
@@ -150,7 +177,7 @@ const routes = [
                     isAdmin:true,
                     middleware:true,
                     title:"System Clients"
-                }
+                },
             }
 
         ]
@@ -184,11 +211,12 @@ router.beforeEach((to, from, next) => {
             if(to.matched.some(record => record.meta.isAdmin)) {
                 if(user_type === 'Client') {
                     next({
-                        name:'clientdashboard'
+                        name:'404'
                     })
                 }else {
                     store.dispatch("getUserList")
                     store.dispatch("getFileList")
+                    store.dispatch("getFileLocations")
                     next()
                 }
             }else {
@@ -196,7 +224,7 @@ router.beforeEach((to, from, next) => {
                     next()
                 }else {
                     next({
-                        name:'systemdashboard'
+                        name:'404'
                     })
                 }
             }

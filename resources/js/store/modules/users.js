@@ -15,7 +15,7 @@ const getters = {
 
     /* FILTER USER STATE BY USER TYPE */
     getUsers(state) {
-        return state.users.filter(item => item.user_type === 'Admin' || item.user_type === 'Staff')
+        return state.users.filter(item => item.user_type === 'Chief' || item.user_type === 'Staff')
     },
     getClients(state) {
         return state.users.filter(item => item.user_type === 'Client')
@@ -82,9 +82,8 @@ const actions = {
                     showMsg:true
                 }
             }).finally(function(){
-                setTimeout(()=> {
                     rootState.base.isLoading = false
-                },500)
+
             });
         }catch(e) {
             console.log(e)
@@ -109,9 +108,8 @@ const actions = {
                     showMsg:true
                 }
             }).finally(function(){
-                setTimeout(()=> {
                     rootState.base.isLoading = false
-                },500)
+
             });
         }catch(e) {
             console.log(e)
@@ -143,9 +141,7 @@ const actions = {
                     showMsg:true
                 }
             }).finally(function(){
-                setTimeout(()=> {
                     rootState.base.isLoading = false
-                },500)
             });
         }catch(e) {
             console.log(e)

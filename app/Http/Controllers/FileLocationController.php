@@ -14,7 +14,9 @@ class FileLocationController extends Controller
     public function index()
     {
         $files = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')
-                ->paginate($this->pagination_no);
+/*         ->join('users','users.user_id', '=', 'files.user_id')
+        ->select('users.name as name','files.*') */
+        ->paginate($this->pagination_no);
 
         return FileLocationResource::collection($files);
     }
@@ -41,19 +43,28 @@ class FileLocationController extends Controller
     private function validation(Request $request)
     {
         $request->validate([
-            'file_location'         => 	'required|string',
-            'retention_date' 		=>  'required|date',
+            'file_location'         => 	'required|mimes:png,jpg,jpeg,csv,txt,xlx,xls,pdf|max:2048',
             'file_id' 		        =>  'required|numeric',
         ]);
     }
 
     public function store(Request $request)
     {
-        $this->validation($request);
+        //$this->validation($request);
+        //$file = FileLocation::create($request->all());
 
-        $file = FileLocation::create($request->all());
+        if($request->hasFile('file_location')) {
+            $filelocation = $request->file('file_location');
+            $filename = $filelocation->getClientOriginalName();
+            $filelocation->storePubliclyAs('public',$filename);
 
-        return new FileLocationResource($file);
+            $file = FileLocation::create([
+                'file_id' => $request->file_id,
+                'file_location' => $filename
+            ]);
+            return new FileLocationResource($file);
+
+        }
     }
 
     public function update(Request $request, $id)

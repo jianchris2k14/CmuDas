@@ -35,7 +35,7 @@
             </a>
           </li>
         </ul>
-        <ul class="navbar-nav align-items-lg-center ml-lg-auto" v-if="auth.authenticated">
+        <ul class="navbar-nav align-items-lg-center ml-lg-auto" v-show="auth.authenticated">
           <li class="nav-item dropdown">
                 <a class="nav-link nav-link-icon dropdown-toggle" href="javascript:;" id="navbar-default_dropdown_1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fa fa-user"></i>
@@ -115,7 +115,7 @@ export default {
     },
     redirect() {
       let user_type = this.auth.user.user_type
-      if(user_type == 'Admin' || user_type == 'Staff') {
+      if(user_type == 'Chief' || user_type == 'Staff') {
         return {
           name:'systemdashboard'
         }

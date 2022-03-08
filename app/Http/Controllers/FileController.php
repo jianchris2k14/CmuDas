@@ -13,8 +13,9 @@ class FileController extends Controller
     
     public function index()
     {
-        $files = File::leftJoin('users', 'requests.user_id', '=', 'users.user_id')
-                ->paginate($this->pagination_no);
+        $files = File::join('users', 'files.user_id', '=', 'users.user_id')
+        ->select('users.name as name','files.*')
+        ->get();
 
         return FileResource::collection($files);
     }

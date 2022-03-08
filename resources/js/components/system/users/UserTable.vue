@@ -252,7 +252,7 @@ export default {
     users: [],
     selectedUser:null,
     editedIndex: -1,
-    usertype: ["Admin", "Staff", "Client"],
+    usertype: ["Chief", "Staff"],
 
     //FORM PROPERTIES
     form: {
