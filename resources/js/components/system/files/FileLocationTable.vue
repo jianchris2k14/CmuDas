@@ -1,7 +1,6 @@
 <template>
 
   <div class="container">
-    {{editedIndex}}
     <v-card>
       <v-card-title>
         <v-spacer></v-spacer>
@@ -44,6 +43,15 @@
                     <v-form
                     ref="form"
                     @submit.prevent="save">
+                    <v-text-field
+                      v-model="form.filename"
+                      disabled
+                      prepend-icon="mdi-information-outline"
+                      label="File Name"
+                      dense
+                      outlined
+                      required>
+                      </v-text-field>
                      <v-text-field
                       v-model="form.file_id"
                       disabled
@@ -159,7 +167,6 @@ export default {
       { text: "Slug", value: "slug", class: "info text-black" },
       { text: "Code", value: "code", class: "info text-black" },
       { text: "Uploaded", value: "created_at", class: "info text-black" },
-       { text: "Updated", value: "updated_at", class: "info text-black" },
       {
         text: "Actions",
         value: "actions",
@@ -173,6 +180,7 @@ export default {
 
     //FORM PROPERTIES
     form: {
+      filename:"",
       file_location: null,
       file_id:null
     },
@@ -187,6 +195,7 @@ export default {
 
     //DEFAULT FORM DATA
     defaultItem: {
+      filename:"",
       file_location: null,
       file_id:null
     },
@@ -262,6 +271,7 @@ export default {
 
       this.editedIndex = this.fetchFileLocations.indexOf(item);
       this.form.file_id = item.file_id
+      this.form.filename = item.file_location
       this.dialog = true;
 
     },
@@ -318,6 +328,7 @@ export default {
 
       fd.append("file_id",this.form.file_id)
       fd.append("file_location",this.form.file_location)
+      fd.append("filename",this.form.filename)
       fd.append("_method", "put")
       if(this.form.file_location !== null) {
         await this.$store.dispatch("updateFileLocation",fd)

@@ -54,6 +54,8 @@ class FileLocationController extends Controller
         //$file = FileLocation::create($request->all());
 
         if($request->hasFile('file_location')) {
+
+
             $filelocation = $request->file('file_location');
             $filename = $filelocation->getClientOriginalName();
             $filelocation->storePubliclyAs('public',$filename);
@@ -76,13 +78,21 @@ class FileLocationController extends Controller
  
         //$file->update($request->all());
         if($request->hasFile('file_location')) {
+            
+            unlink(storage_path('app/public/'.$request->filename));
+
             $filelocation = $request->file('file_location');
+
             $filename = $filelocation->getClientOriginalName();
+
             $filelocation->storePubliclyAs('public',$filename);
 
             $file->file_id = $request->file_id;
+
             $file->file_location = $filename;
+
             $file->save();
+
             return new FileLocationResource($file);
 
         }
@@ -93,7 +103,7 @@ class FileLocationController extends Controller
     public function destroy($id)
     {
         $file = FileLocation::findOrFail($id);
-
+        unlink(storage_path('app/public/'.$file->file_location));
         if($file->delete())
             return new FileLocationResource($file);
     }
