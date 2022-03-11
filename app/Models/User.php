@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -46,4 +47,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public $timestamps = false;
+    protected $append = ['createdAt'];
+
+    public function getCreatedAtAttribute() {
+        return Carbon::createFromTimestamp(strtotime($this->attributes['created_at']))->format('m-d-Y');
+    }
 }

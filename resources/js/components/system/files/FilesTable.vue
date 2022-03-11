@@ -106,7 +106,7 @@
                       outlined
                       required>
                       </v-text-field>
-                      <input type="file" ref="file" v-on:change="onChangeFile">
+                      <input type="file" :rules="rules.file_location" ref="file" v-on:change="onChangeFile" required>
                      <!--  <v-file-input
                         v-show="formTitle === 'File Location'"
                         v-model="form.file_location"
@@ -188,6 +188,7 @@ export default {
       //TABLE SEARCH PROPERTY
       search: "",
       file_id:null,
+      selectedFile:null,
 
 
 
@@ -260,15 +261,21 @@ export default {
   computed: {
     //FETCH FILES FROM STATE MANANGEMENT COMPUTED
     getUserId() {
+
       return this.$store.state.auth.user.user_id
+
     },
     fetchFiles() {
+
         const files = this.$store.state.files.files  
+
         return this._.orderBy(files, ["created_at"], ["desc"]);
+
     },
 
     //FORM TITLE COMPUTED
     formTitle() {
+
       if(this.editedIndex === -1) {
         return "New File"
       }else if(this.editedIndex === 0) {
@@ -276,18 +283,22 @@ export default {
       }else {
         return "File Location"
       }
+
       //return this.editedIndex === -1 ? "New File" : "Update File";
     },
 
     //ISLOADING COMPUTED
     isLoading: {
+
       get:function(){ 
         return this.$store.state.base.isLoading
       },
+
       set:function(newVal) {
         return newVal
       }
     }
+
   },
 
   watch: {
@@ -296,10 +307,12 @@ export default {
     dialog(val) {
       val || this.close();
     },
+
     // DELETE MODAL
     dialogDelete(val) {
       val || this.closeDelete();
     },
+
     // LOADING
     isLoading(val) {
       val || this.close()
@@ -310,42 +323,58 @@ export default {
 
 
     //EDIT FILE DATA
-    getUserID() {
+    getUserID(event) {
+      
       this.form.user_id = event.target.value
+
     },
     editItem(item) {
+
       this.editedIndex = this.fetchFiles.indexOf(item);
+
       this.form = Object.assign({}, item);
+
       this.dialog = true;
+      this.editedIndex = -1
+
     },
     editFileLocation(item) {
+
       this.dialog = true;
+
       this.form.file_id = item.file_id
       this.editedIndex = 1
+
     },
 
     //GENERATE FILE CODE
     generateFileCode(event) {
       if(event) {
         let filename = this.form.filename
+
         let generatedcode = filename.toUpperCase().slice(0,3) + Math.floor(Math.random() * 100000000000)
+
         if(filename === "") {
           this.form.code = ""
         }else {
           this.form.code = generatedcode
         }
+
         
       }
     },
 
     //DELETE FILE DATA
     deleteItem(item) {
+      this.selectedFile = item
       this.dialogDelete = true;
+
     },
 
     //CONFIRM DELETE FILE
     async deleteItemConfirm() {
       this.msgStatus = true
+      await this.$store.dispatch("deleteFile",this.selectedFile)
       this.closeDelete();
     },
 
@@ -353,40 +382,53 @@ export default {
     //MODAL CLOSE
     close() {
       this.dialog = false;
+
       this.$nextTick(() => {
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+
     },
 
 
     //CLOSE DELETE CONFIRMATION
     closeDelete() {
       this.dialogDelete = false;
+
       this.$nextTick(() => {
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+
     },
 
   
     //CALL STORE MANANGEMENT DISPATCH FOR UPDATING DATA TO STATE MANANGEMENT
     async updateFile() {
+
         await this.$store.dispatch("updateFile",this.form)
+        
     },
 
     //CALL STORE MANANGEMENT DISPATCH FOR ADDING DATA TO STATES
     async addFile() {
+
       await this.$store.dispatch("addFile",this.form)
+
     },
     async addFileLocation() {
       let fd = new FormData()
-      fd.append("user_id",this.form.user_id)
+
+      fd.append("file_id",this.form.file_id)
+
       fd.append("file_location",this.form.file_location)
-      _.each(this.form,(value,key) => {
-        fd.append(key,value)
-      })
-      await this.$store.dispatch("addFileLocation",fd)
+      if(this.form.file_location !== null) {
+        await this.$store.dispatch("addFileLocation",fd)
+      }else {
+        alert("Please select file")
+      }
+
+      
       
     },
     onChangeFile() {

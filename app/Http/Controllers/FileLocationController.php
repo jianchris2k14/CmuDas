@@ -50,7 +50,7 @@ class FileLocationController extends Controller
 
     public function store(Request $request)
     {
-        //$this->validation($request);
+        $this->validation($request);
         //$file = FileLocation::create($request->all());
 
         if($request->hasFile('file_location')) {
@@ -72,10 +72,22 @@ class FileLocationController extends Controller
         $this->validation($request);
 
         $file = FileLocation::findOrFail($id);
- 
-        $file->update($request->all());
 
-        return new FileLocationResource($file);
+ 
+        //$file->update($request->all());
+        if($request->hasFile('file_location')) {
+            $filelocation = $request->file('file_location');
+            $filename = $filelocation->getClientOriginalName();
+            $filelocation->storePubliclyAs('public',$filename);
+
+            $file->file_id = $request->file_id;
+            $file->file_location = $filename;
+            $file->save();
+            return new FileLocationResource($file);
+
+        }
+
+        
     }
     
     public function destroy($id)
