@@ -124,13 +124,16 @@ export default {
         text: "Request ID",
         align: "start",
         sortable: true,
-        value: "file_id",
+        value: "request_id",
         class: "info text-black",
       },
-      { text: "Description", value: "filename", class: "info text-black" },
-      { text: "Status", value: "description", class: "info text-black" },
-      { text: "Request Date", value: "retention_date", class: "info text-black" },
-      { text: "Code", value: "code", class: "info text-black" },
+      { text: "Client Name", value: "name", class: "info text-black" },
+      { text: "Client Email", value: "email", class: "info text-black" },
+      { text: "File Name", value: "filename", class: "info text-black" },
+       { text: "Code", value: "code", class: "info text-black" },
+      { text: "Status", value: "status", class: "info text-black" },
+      { text: "Request Date", value: "request_date", class: "info text-black" },
+      { text: "Retention Date", value: "retention_date", class: "info text-black" },
       {
         text: "Actions",
         value: "actions",
@@ -171,7 +174,7 @@ export default {
   computed: {
     //FETCH FILE REQUESTS FROM STATE MANANGEMENT COMPUTED
     fetchFiles() {
-      const files = this.$store.state.files.files
+      const files = this.$store.state.requests.requests
       return this._.orderBy(files, ["created_at"], ["desc"]);
     },
 

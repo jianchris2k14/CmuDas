@@ -46,16 +46,25 @@ const mutations = {
         state.files.push(file)
     },
 
+
+    /* GET FILE LOCATIONS FROM STORE STATES */
+
     GET_FILE_LOCATIONS: (state, file) => {
         state.file_location = file
     },
+
+    /* ADD FILE LOCATION FROM STORE STATES */
     ADD_FILE_LOCATIONS: (state, file) => {
         state.file_location.push(file)
     },
-    UPDATE_FILE_LOCATION:(state,file) => {
+
+    /* UPDATE FILE LOCATION FROM STORE STATES */
+    UPDATE_FILE_LOCATION: (state, file) => {
         const index = state.file_location.findIndex(item => item.file_location_id === file.file_location_id)
-        state.file_location.splice(index,1,file)
+        state.file_location.splice(index, 1, file)
     },
+
+    /* DELETE FILE LOCATION FROM STORE STATES */
     DELETE_FILE_LOCATION: (state, file) => {
         const index = state.file_location.findIndex(item => item.file_id === file.file_location_id)
         state.file_location.splice(index, 1)
@@ -76,8 +85,6 @@ const actions = {
                 console.log(err.response.data)
 
             });
-
-
 
         } catch (e) {
 
@@ -230,9 +237,9 @@ const actions = {
                 }).then((response) => {
                     const file_location_id = response.data.data.file_location_id
                     const file_location = response.data.data.file_location
-                    const file = Object.assign(file_data, file_id,{file_location_id},{file_location} )
+                    const file = Object.assign(file_data, file_id, { file_location_id }, { file_location })
                     commit("ADD_FILE_LOCATIONS", file)
-                    
+
                     //notifacation
                     rootState.base.global = Object.assign({
                         message: [{ success: "File successfulyy uploaded" }],
@@ -269,15 +276,23 @@ const actions = {
         }
 
     },
-    async updateFileLocation({commit,state,rootState},data) {
+    async updateFileLocation({ commit, state, rootState }, data) {
+
         rootState.base.isLoading = true
+
         const file_location = data.get('file_location')
+
         const filename = data.get('filename')
+
         const file_id = parseInt(data.get('file_id'))
+
         const file_location_data = state.file_location.find(item => item.file_id === file_id)
+
         const file_data = state.files.find(item => item.file_id === file_id)
-        const file = Object.assign({file_id:file_id,file_location:file_location})
-        axios.post('/api/filelocations/'+file_location_data.file_location_id, data, {
+
+        const file = Object.assign({ file_id: file_id, file_location: file_location })
+
+        axios.post('/api/filelocations/' + file_location_data.file_location_id, data, {
             headers: {
                 'Content-Type': "multipart/form-data"
             }
@@ -285,9 +300,8 @@ const actions = {
             const file_location_id = response.data.data.file_location_id
             const file_location = response.data.data.file_location
             const updated_at = response.data.data.updated_at
-            const file = Object.assign(file_data, file_id,{updated_at},{file_location_id},{file_location})
+            const file = Object.assign(file_data, file_id, { updated_at }, { file_location_id }, { file_location })
             commit("UPDATE_FILE_LOCATION", file)
-
 
             //notifacation
             rootState.base.global = Object.assign({
@@ -311,19 +325,23 @@ const actions = {
     },
 
 
-    async deleteFileLocation({ commit, state, rootState },filelocation) {
+    async deleteFileLocation({ commit, state, rootState }, filelocation) {
         rootState.base.isLoading = true
         try {
             await axios.delete('/api/filelocations/' + filelocation.file_location_id).then((response) => {
+
                 //notifacation
                 commit('DELETE_FILE_LOCATION', response.data)
+
                 rootState.base.global = Object.assign({
                     message: [{ success: "File Location successfulyy deleted" }],
                     status: 'Success',
                     showMsg: true,
                 })
-                console.log(response.data)
+
+
             }).catch((err) => {
+
                 //Notification
                 rootState.base.global = Object.assign({
                     message: err.response.data,

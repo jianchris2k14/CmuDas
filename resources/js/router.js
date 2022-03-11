@@ -217,10 +217,14 @@ router.beforeEach((to, from, next) => {
                     store.dispatch("getUserList")
                     store.dispatch("getFileList")
                     store.dispatch("getFileLocations")
+                    store.dispatch("getRequests")
                     next()
                 }
             }else {
                 if(user_type === 'Client') {
+                    store.dispatch("getFileList")
+                    store.dispatch("getFileLocations")
+                    store.dispatch("getRequests")
                     next()
                 }else {
                     next({
