@@ -14,8 +14,8 @@ class RequestController extends Controller
     public function index()
     {
         $reqs = Req::leftJoin('files', 'requests.file_id', '=', 'files.file_id')
-                    ->leftJoin('users', 'requests.user_id', '=', 'users.user_id')
-                    ->paginate($this->pagination_no);
+                    ->leftJoin('users', 'requests.user_id', '=', 'users.user_id')->get();
+                    /* ->paginate($this->pagination_no); */
 
         return RequestResource::collection($reqs);
     }
@@ -64,11 +64,13 @@ class RequestController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validation($request);
+        //$this->validation($request);
 
         $req = Req::findOrFail($id);
- 
-        $req->update($request->all());
+
+        $req->status = $request->status;
+        $req->retention_date = $request->retention_date;
+        $req->save();
 
         return new RequestResource($req);
     }

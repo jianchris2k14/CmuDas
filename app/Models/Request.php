@@ -19,11 +19,5 @@ class Request extends Model
         'user_id',
         'file_id'
     ];
-    public $timestamps = false;
-    protected $append = ['createdAt'];
-
-    public function getCreatedAtAttribute() {
-        return Carbon::createFromTimestamp(strtotime($this->attributes['created_at']))->format('m-d-Y');
-    }
 
 }

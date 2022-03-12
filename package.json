@@ -34,6 +34,7 @@
         "datatables.net-buttons-bs5": "^2.2.2",
         "jquery": "^3.6.0",
         "jszip": "^3.7.1",
+        "jw-vue-pagination": "^1.0.3",
         "pdfmake": "^0.2.4",
         "save": "^2.4.0",
         "vue-lodash": "^2.1.2",

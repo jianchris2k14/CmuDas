@@ -18,10 +18,18 @@
       <!-- REQUESTS TABLE -->
       <v-data-table
         :headers="headers"
-        :items="fetchFiles"
+        :items="fetchRequests"
         :search="search"
         class="elevation-1 table-striped"
       >
+      <template v-slot:item.request_date="{ item }">
+           <span>{{
+             new Date(item.request_date).toLocaleDateString()}}</span>
+         </template>
+         <template v-slot:item.retention_date="{ item }">
+           <span>{{
+             new Date(item.retention_date).toLocaleDateString()}}</span>
+         </template>
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>List of File Requests</v-toolbar-title>
@@ -39,7 +47,36 @@
                 <v-card-title> </v-card-title>
                 <v-card-text>
                   <v-container>
-                    <h6>Form</h6>
+                    <v-form
+                      ref="form"
+                      @submit.prevent="save"
+                      v-model="rules.isValid"
+                      lazy-validation
+                    >
+                      <v-row>
+                        <v-col cols="12">
+                          <v-text-field
+                            v-model="form.request_id"
+                            label="Name"
+                            outlined
+                            disabled
+                            dense
+                            required
+                          ></v-text-field>
+                        </v-col>
+
+                        <v-col cols="12">
+                          <v-select
+                            :items="item"
+                            label="Status"
+                            v-model="form.status"
+                            required
+                            dense
+                            outlined
+                          ></v-select>
+                        </v-col>
+                      </v-row>
+                    </v-form>
                   </v-container>
                 </v-card-text>
 
@@ -142,16 +179,19 @@ export default {
       },
     ],
 
-    //FILE PROPERTIES
+    //REQUEST PROPERTIES
     editedIndex: -1,
+    item:[
+      'Pending',
+      'Approved',
+      'Expired'
+    ],
 
     //FORM PROPERTIES
     form: {
-      filename: "",
-      description: "",
-      file_location: "",
-      retention_date: "",
-      code: "",
+      request_id:null,
+      status:"",
+      retention_date:null
     },
 
     //RULES VALIDATION PROPERTIES
@@ -165,16 +205,15 @@ export default {
 
     //DEFAULT FORM DATA
     defaultItem: {
-      filename: "",
-      description: "",
-      file_location: "",
+      request_id: null,
+      status: "",
     },
     }
   },
   computed: {
     //FETCH FILE REQUESTS FROM STATE MANANGEMENT COMPUTED
-    fetchFiles() {
-      const files = this.$store.state.requests.requests
+    fetchRequests() {
+      const files = this.$store.getters.getPendingRequests
       return this._.orderBy(files, ["created_at"], ["desc"]);
     },
 
@@ -213,8 +252,9 @@ export default {
 
     //EDIT FILE REQUESTS DATA
     editItem(item) {
-      this.editedIndex = this.fetchFiles.indexOf(item);
+      this.editedIndex = this.fetchRequests.indexOf(item);
       this.form = Object.assign({}, item);
+      console.log(this.form.retention_date)
       this.dialog = true;
     },
 
@@ -248,30 +288,35 @@ export default {
         this.editedIndex = -1;
       });
     },
+    calculateRetentionDate() {
+      const retention_date = new Date(this.form.retention_date);
+      retention_date.setDate(retention_date.getDate() + 3).toString().toString()
+      var converted_timestamp = new Date(retention_date),
+        mnth = ("0" + (converted_timestamp.getMonth()+1)).slice(-2),
+        day  = ("0" + converted_timestamp.getDate()).slice(-2),
+        hours  = ("0" + converted_timestamp.getHours()).slice(-2),
+        minutes = ("0" + converted_timestamp.getMinutes()).slice(-2),
+        seconds = ("0"+ converted_timestamp.getSeconds()).slice(-2); 
+      this.form.retention_date = converted_timestamp.getFullYear()+"-"+mnth+"-"+day+" "+hours+":"+minutes+":"+seconds
+    },
 
   
     //CALL STORE MANANGEMENT DISPATCH FOR UPDATING DATA TO STATE MANANGEMENT
-    async updateFile() {
-        
+    async updateRequest() {
+        try {
+          this.calculateRetentionDate()
+          await this.$store.dispatch('updateRequest',this.form)
+        }catch(error) {
+          console.log(error)
+        }
     },
 
-    //CALL STORE MANANGEMENT DISPATCH FOR ADDING DATA TO STATES
-    async addFile() {
-
-
-    },
 
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)
     save() {
       this.msgStatus = true;
-      
-      //Check if actions update or add
-      if (this.editedIndex > -1) {
-
-      } else {
-        /* this.$refs.form.validate(); */
-
-      }
+      this.$refs.form.validate()
+      this.updateRequest()
 
     },
   },

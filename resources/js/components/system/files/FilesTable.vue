@@ -22,6 +22,12 @@
         :search="search"
         class="elevation-1 table-striped"
       >
+
+      <!-- CHANGE DATE FORMAT FROM DATABASE -->
+      <template v-slot:item.created_at="{ item }">
+           <span>{{
+             new Date(item.created_at).toLocaleDateString()}}</span>
+         </template>
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>List of Files</v-toolbar-title>

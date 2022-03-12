@@ -14,7 +14,12 @@ const state = getDefaultSate()
 
 /* STORE GETTERS */
 const getters = {
-
+    getPendingRequests(state) {
+        return state.requests.filter(item => item.status === 'Pending')
+    },
+    getRequestsLog(state) {
+        return state.requests.filter(item => item.status === 'Approved' || item.status === 'Expired')
+    }
 }
 
 /* STORE MUTATIONS */
@@ -26,8 +31,9 @@ const mutations = {
 
 
     /* UPDATE REQUESTS DATA FROM STORE STATES */
-    UPDATE_REQUEST:(state) => {
-        
+    UPDATE_REQUEST:(state,data) => {
+        const index = state.requests.findIndex(item => item.request_id === data.request_id)
+        state.requests.splice(index,1,data)
     },
 
 
@@ -53,7 +59,6 @@ const actions = {
             
             await axios.get('/api/requests').then((response) => {
                 commit('GET_REQUESTS',response.data.data)
-                console.log(response.data.data)
             }).catch((err) => {
                 console.log(err.response.data)
             });
@@ -67,10 +72,26 @@ const actions = {
 
 
     /* UPDATE REQUESTS DATA FROM DATABASE */
-    async updateRequest({commit}) {
-
+    async updateRequest({commit,state,rootState},payload) {
+        rootState.base.isLoading = true
         try {
-            
+            axios.put('/api/requests/'+payload.request_id,payload).then((response) => {
+                const data = Object.assign(response.data.data,payload)
+                commit('UPDATE_REQUEST',data)
+                rootState.base.global = Object.assign({
+                    message:[{sucess:"Request successfully updated"}],
+                    status: "Success",
+                    showMsg:true
+                })
+            }).catch((err) => {
+                rootState.base.global = Object.assign({
+                    message:err.response.data,
+                    status: "Success",
+                    showMsg:true
+                })
+            }).finally(function(){
+                rootState.base.isLoading = false
+            })
         } catch (error) {
             
         }

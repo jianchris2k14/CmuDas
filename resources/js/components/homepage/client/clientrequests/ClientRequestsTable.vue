@@ -22,6 +22,14 @@
         :search="search"
         class="elevation-1 table-striped"
       >
+      <template v-slot:item.request_date="{ item }">
+           <span>{{
+             new Date(item.request_date).toLocaleDateString()}}</span>
+         </template>
+         <template v-slot:item.retention_date="{ item }">
+           <span>{{
+             new Date(item.retention_date).toLocaleDateString()}}</span>
+         </template>
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>List of File Requests</v-toolbar-title>

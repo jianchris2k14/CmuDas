@@ -47,10 +47,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public $timestamps = false;
-    protected $append = ['createdAt'];
-
-    public function getCreatedAtAttribute() {
-        return Carbon::createFromTimestamp(strtotime($this->attributes['created_at']))->format('m-d-Y');
-    }
 }

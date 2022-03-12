@@ -19,15 +19,4 @@ class FileLocation extends Model
         'retention_date',
         'file_id',
     ];
-    public $timestamps = false;
-    protected $create = ['createdAt'];
-
-    public function getCreatedAtAttribute() {
-        return Carbon::createFromTimestamp(strtotime($this->attributes['created_at']))->format('m-d-Y');
-    }
-    protected $update = ['updatedAt'];
-    public function getUpdatedAtAttribute() {
-        return Carbon::createFromTimestamp(strtotime($this->attributes['updated_at']))->format('m-d-Y');
-    }
-
 }

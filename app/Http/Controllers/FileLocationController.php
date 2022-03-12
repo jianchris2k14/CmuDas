@@ -13,10 +13,10 @@ class FileLocationController extends Controller
     
     public function index()
     {
-        $files = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')
+        $files = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get();
 /*         ->join('users','users.user_id', '=', 'files.user_id')
         ->select('users.name as name','files.*') */
-        ->paginate($this->pagination_no);
+/*         ->paginate($this->pagination_no); */
 
         return FileLocationResource::collection($files);
     }
