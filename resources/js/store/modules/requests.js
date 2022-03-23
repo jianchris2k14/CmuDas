@@ -73,8 +73,10 @@ const mutations = {
 
     /* DELETE REQUESTS DATA FROM STORE STATES */
     DELETE_REQUEST:(state,data) => {
-        const index = state.requests.findIndex(item => item.request_id === data.request_id)
-        state.requests.splice(index,1)
+        for(let i = 0;i<data.length;i++) {
+            const index = state.requests.findIndex(item => item.request_id === data[i])
+            state.requests.splice(index,1)
+        }
     },
 
 
@@ -88,6 +90,7 @@ const mutations = {
     SET_REQUEST_DOCUMENT:(state,data) => {
         state.request_document = data
     },
+
 }
 
 /* STORE ACTIONS */
@@ -188,14 +191,44 @@ const actions = {
         }
     },
 
-
-    showRequestForm({commit,rootState},req) {
+    async deleteMultipleRequest({commit,rootState},records) {
+        rootState.base.isLoading = true
         try {
-            axios.get('/api/requests/'+req.request_id).then((response) => {
+            await axios.post('/api/destroyrecords',records).then((response) => {
+
+                commit('DELETE_REQUEST',records)
+                 //Notifaction
+                rootState.base.global = Object.assign({
+                    message:[{sucess:"Request successfully deleted"}],
+                    status: "Success",
+                    showMsg:true
+                })
+            }).catch((err) => {
+                 //Notification
+                 rootState.base.global = Object.assign({
+                    message:err.response.data,
+                    status: "Error",
+                    showMsg:true
+                })
+            }).finally(function() {
+                rootState.base.isLoading = false
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
+
+    async showRequestForm({commit,rootState},req) {
+        rootState.base.isLoading = true
+        try {
+            await axios.get('/api/requests/'+req.request_id).then((response) => {
                 console.log(response.data)
                 commit('SET_REQUEST_FORM',response.data)
             }).catch((err) => {
                 console.log(err.response.data)
+            }).finally(function(){
+                rootState.base.isLoading = false
             });  
         } catch (error) {
             console.log(error)

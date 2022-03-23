@@ -17,6 +17,7 @@ export default new Vuetify({
     theme: {
         themes: {
           light: {
+            primary:'#1E88E5',
             warning: '#FF9800',
             info: '#1E88E5',
             error: '#EF5350',

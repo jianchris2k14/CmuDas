@@ -20,8 +20,13 @@
         :headers="headers"
         :items="fetchRequests"
         :search="search"
+        :single-select="singleSelect"
+        show-select
+        :loading="getLoading"
         class="elevation-1 table-striped"
       >
+
+
         <template v-slot:item.request_date="{ item }">
           <span>{{ new Date(item.request_date).toLocaleDateString() }}</span>
         </template>
@@ -33,7 +38,13 @@
             {{ item.status }}
           </v-chip>
         </template>
+        
         <template v-slot:top>
+          <v-switch
+        v-model="singleSelect"
+        label="Single select"
+        class="pa-3"
+      ></v-switch>
           <v-toolbar flat>
             <v-toolbar-title>List of File Requests</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
@@ -209,35 +220,36 @@ export default {
       msgStatus: false,
       load: false,
 
+      singleSelect: false,
+
       //TABLE HEADERS PROPERTIES
       headers: [
+        
         {
           text: "Request ID",
           align: "start",
           sortable: true,
           value: "request_id",
-          class: "info text-black",
+
         },
-        { text: "Client Name", value: "name", class: "info text-black" },
-        { text: "Client Email", value: "email", class: "info text-black" },
-        { text: "File Name", value: "filename", class: "info text-black" },
-        { text: "Code", value: "code", class: "info text-black" },
-        { text: "Status", value: "status", class: "info text-black" },
+        
+        { text: "Client Name", value: "name"},
+        { text: "Client Email", value: "email" },
+        { text: "File Name", value: "filename" },
+        { text: "Code", value: "code"},
+        { text: "Status", value: "status"},
         {
           text: "Request Date",
-          value: "request_date",
-          class: "info text-black",
+          value: "request_date"
         },
         {
           text: "Expiration Date",
-          value: "expiration_date",
-          class: "info text-black",
+          value: "expiration_date"
         },
         {
           text: "Actions",
           value: "actions",
-          sortable: false,
-          class: "info text-black",
+          sortable: false
         },
       ],
 
@@ -295,6 +307,9 @@ export default {
     },
     getRequestForm() {
       return this.$store.state.requests.request_form;
+    },
+    getLoading() {
+      return this.$store.state.base.isLoading
     },
 
     //FORM TITLE COMPUTED
@@ -439,3 +454,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+::v-deep .v-data-table-header {
+  background-color: #1E88E5;
+}
+</style>
+

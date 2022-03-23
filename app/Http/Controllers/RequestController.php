@@ -118,5 +118,15 @@ class RequestController extends Controller
         if($req->delete())
             return new RequestResource($req);
     }
+
+
+    public function destroyRecords(Request $request)
+    {
+        $ids = $request;
+        $req = Req::whereIn('request_id',$ids)->delete();
+        
+        return response($req);
+
+    }
     
 }

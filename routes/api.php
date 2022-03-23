@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/requests', [RequestController::class, 'store']);
     Route::put('/requests/{id}', [RequestController::class, 'update']);
     Route::delete('/requests/{id}', [RequestController::class, 'destroy']);
+    Route::post('/destroyrecords', [RequestController::class, 'destroyRecords']);
 
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
