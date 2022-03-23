@@ -1,5 +1,4 @@
 <template>
-
   <div class="container">
     <v-card>
       <v-card-title>
@@ -23,19 +22,55 @@
         :search="search"
         class="elevation-1 table-striped"
       >
-      <!-- CHANGE DATE FORMAT FROM DATABASE -->
-      <template v-slot:item.created_at="{ item }">
-           <span>{{
-             new Date(item.created_at).toLocaleDateString()}}</span>
-         </template>
+        <!-- CHANGE DATE FORMAT FROM DATABASE -->
+        <template v-slot:item.created_at="{ item }">
+          <span>{{ new Date(item.created_at).toLocaleDateString() }}</span>
+        </template>
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>File Locations</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
 
-
             <!-- FILES MANAGEMENT MODALS -->
+            <v-row justify="center">
+              <v-dialog
+                v-model="viewdialog"
+                fullscreen
+                hide-overlay
+                transition="dialog-bottom-transition"
+              >
+                <v-card>
+                  <v-toolbar dark color="primary">
+                    <v-btn icon dark @click="viewdialog = false">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </v-toolbar>
+                  <!--- GET FILE CONENTS -->
+
+                      <div v-if="getFile" class="text-center">
+                        <img
+                          :src="getFile.filecontent"
+                          v-show="
+                            getFile.filetype === 'png' ||
+                            getFile.filetype === 'jpg' ||
+                            getFile.filetype === 'jpeg'||
+                            getFile.filetype === 'PNG' ||
+                            getFile.filetype === 'JPG' ||
+                            getFile.filetype === 'JPEG'
+                          "
+                        />
+                        <embed
+                          :src="getFile.filecontent"
+                          v-show="getFile.filetype === 'pdf' || 
+                          getFile.filetype === 'PDF'"
+                          width="100%"
+                          height="900"
+                        />
+                      </div>
+                </v-card>
+              </v-dialog>
+            </v-row>
 
             <v-dialog v-model="dialog" max-width="960px">
               <v-card>
@@ -45,36 +80,26 @@
                 <v-card-title> </v-card-title>
                 <v-card-text>
                   <v-container>
-                    <v-form
-                    ref="form"
-                    @submit.prevent="save">
-                    <v-text-field
-                      v-model="form.filename"
-                      disabled
-                      prepend-icon="mdi-information-outline"
-                      label="File Name"
-                      dense
-                      outlined
-                      required>
-                      </v-text-field>
-                     <v-text-field
-                      v-model="form.file_id"
-                      disabled
-                      prepend-icon="mdi-information-outline"
-                      label="File ID"
-                      dense
-                      outlined
-                      required>
-                      </v-text-field>
-                      <input type="file" ref="file" v-on:change="onChangeFile">
-                     <!--  <v-file-input
-                        v-show="formTitle === 'File Location'"
-                        v-model="form.file_location"
-                        ref="file"
-                        label="Select File"
-                        outlined
+                    <v-form ref="form" @submit.prevent="save">
+                      <v-text-field
+                        v-show="formTitle === 'Update File'"
+                        v-model="form.file_id"
+                        prepend-icon="mdi-information-outline"
+                        label="File ID"
+                        disabled
                         dense
-                      ></v-file-input> -->
+                        outlined
+                        required
+                      >
+                      </v-text-field>
+                      <input
+                        type="file"
+                        v-show="formTitle === 'Update File'"
+                        :rules="rules.file_location"
+                        ref="file"
+                        v-on:change="onChangeFile"
+                        required
+                      />
                     </v-form>
                   </v-container>
                 </v-card-text>
@@ -100,19 +125,21 @@
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card>
                 <v-toolbar color="error" dark>
-                      <v-toolbar-title class="text-h6">
-                          Confirmation
-                      </v-toolbar-title>
-                  </v-toolbar>
+                  <v-toolbar-title class="text-h6">
+                    Confirmation
+                  </v-toolbar-title>
+                </v-toolbar>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item?</v-card-title
                 >
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="info" dark @click="closeDelete"
-                    >Cancel</v-btn
-                  >
-                  <v-btn color="error" dark :loading="isLoading" @click="deleteItemConfirm"
+                  <v-btn color="info" dark @click="closeDelete">Cancel</v-btn>
+                  <v-btn
+                    color="error"
+                    dark
+                    :loading="isLoading"
+                    @click="deleteItemConfirm"
                     >OK</v-btn
                   >
                   <v-spacer></v-spacer>
@@ -124,14 +151,27 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
+          <v-icon color="primary" small class="mr-2" @click="showFile(item)">
+            mdi-information
+          </v-icon>
+          <v-icon
+            color="primary"
+            small
+            class="mr-2"
+            @click="editItem(item)"
+            v-show="auth.user_type === 'Staff'"
+          >
             mdi-pencil
           </v-icon>
-          <v-icon color="error" small @click="deleteItem(item)">
+          <v-icon
+            color="error"
+            small
+            @click="deleteItem(item)"
+            v-show="auth.user_type === 'Staff'"
+          >
             mdi-delete
           </v-icon>
         </template>
-
       </v-data-table>
     </v-card>
   </div>
@@ -142,90 +182,94 @@ export default {
   components: { AlertComponent },
   data() {
     return {
+      file_path: "",
       //TABLE SEARCH PROPERTY
       search: "",
-      file_id:null,
-      selectedFile:null,
+      file_id: null,
+      selectedFile: null,
 
+      //Dialog Property
+      dialog: false,
+      dialogDelete: false,
+      viewdialog: false,
 
+      //NOTIFY PROPERTIES
+      error: "",
+      msgStatus: false,
+      load: false,
 
-    //Dialog Property
-    dialog: false,
-    dialogDelete: false,
+      //TABLE HEADERS PROPERTIES
+      headers: [
+        {
+          text: "File ID",
+          align: "start",
+          sortable: true,
+          value: "file_id",
+          class: "info text-black",
+        },
+        { text: "File Name", value: "filename", class: "info text-black" },
+        {
+          text: "File Location",
+          value: "file_location",
+          class: "info text-black",
+        },
+        { text: "Slug", value: "slug", class: "info text-black" },
+        { text: "Code", value: "code", class: "info text-black" },
+        { text: "Uploaded", value: "created_at", class: "info text-black" },
+        {
+          text: "Actions",
+          value: "actions",
+          sortable: false,
+          class: "info text-black",
+        },
+      ],
 
-    //NOTIFY PROPERTIES
-    error: "",
-    msgStatus: false,
-    load:false,
+      //FILES PROPERTIES
+      editedIndex: -1,
 
-    //TABLE HEADERS PROPERTIES
-    headers: [
-      {
-        text: "File ID",
-        align: "start",
-        sortable: true,
-        value: "file_id",
-        class: "info text-black",
+      //FORM PROPERTIES
+      form: {
+        filename: "",
+        file_location: null,
+        file_id: null,
       },
-      { text: "File Name", value: "filename", class: "info text-black" },
-      { text: "File Location", value: "file_location", class: "info text-black" },
-      { text: "Slug", value: "slug", class: "info text-black" },
-      { text: "Code", value: "code", class: "info text-black" },
-      { text: "Uploaded", value: "created_at", class: "info text-black" },
-      {
-        text: "Actions",
-        value: "actions",
-        sortable: false,
-        class: "info text-black",
+
+      //RULES VALIDATION PROPERTIES
+      rules: {
+        isValid: true,
+        file_location: [(v) => !!v || "Select is File"],
       },
-    ],
 
-    //FILES PROPERTIES
-    editedIndex: -1,
-
-    //FORM PROPERTIES
-    form: {
-      filename:"",
-      file_location: null,
-      file_id:null
-    },
-
-
-    //RULES VALIDATION PROPERTIES
-    rules: {
-      isValid: true,
-      file_location: [v => !!v || "Select is File"],
-
-    },
-
-    //DEFAULT FORM DATA
-    defaultItem: {
-      filename:"",
-      file_location: null,
-      file_id:null
-    },
-    }
+      //DEFAULT FORM DATA
+      defaultItem: {
+        filename: "",
+        file_location: null,
+        file_id: null,
+      },
+    };
   },
   computed: {
     //FETCH FILES FROM STATE MANANGEMENT COMPUTED
     getUserId() {
+      return this.$store.state.auth.user.user_id;
+    },
+    getFile() {
+      return this.$store.state.files.show_file;
+    },
 
-      return this.$store.state.auth.user.user_id
-
+    auth() {
+      return this.$store.getters.user;
     },
     fetchFileLocations() {
+      const file_location = this.$store.state.files.file_location;
 
-        const file_location = this.$store.state.files.file_location  
-
-        return this._.orderBy(file_location, ["created_at"], ["desc"]);
-
+      return this._.orderBy(file_location, ["created_at"], ["desc"]);
     },
 
     //FORM TITLE COMPUTED
     formTitle() {
-
-      if(this.editedIndex === 0) {
-        return "Update File"
+      if (this.editedIndex === 0) {
+        return "Update File";
       }
 
       //return this.editedIndex === -1 ? "New File" : "Update File";
@@ -233,20 +277,17 @@ export default {
 
     //ISLOADING COMPUTED
     isLoading: {
-
-      get:function(){ 
-        return this.$store.state.base.isLoading
+      get: function () {
+        return this.$store.state.base.isLoading;
       },
 
-      set:function(newVal) {
-        return newVal
-      }
-    }
-
+      set: function (newVal) {
+        return newVal;
+      },
+    },
   },
 
   watch: {
-
     //CLOSE MODAL
     dialog(val) {
       val || this.close();
@@ -259,51 +300,40 @@ export default {
 
     // LOADING
     isLoading(val) {
-      val || this.close()
-    }
+      val || this.close();
+    },
   },
 
   methods: {
-
-
     //EDIT FILE DATA
     getUserID() {
-      
-      this.form.user_id = event.target.value
-
+      this.form.user_id = event.target.value;
     },
     editItem(item) {
-
       this.editedIndex = this.fetchFileLocations.indexOf(item);
-      this.form.file_id = item.file_id
-      this.form.filename = item.file_location
+      this.form.file_id = item.file_id;
+      this.form.filename = item.file_location;
       this.dialog = true;
-
+      this.editedIndex = 0;
     },
-    editFileLocation(item) {
-
-      this.dialog = true;
-
-      this.form.file_id = item.file_id
-
-      this.editedIndex = 1
-
-    },
-
 
     //DELETE FILE DATA
     deleteItem(item) {
-      this.selectedFile = item
+      this.selectedFile = item;
       this.dialogDelete = true;
+    },
+
+    async showFile(item) {
+      this.viewdialog = true;
+      await this.$store.dispatch("showFile", item);
     },
 
     //CONFIRM DELETE FILE
     async deleteItemConfirm() {
-      this.msgStatus = true
-      await this.$store.dispatch("deleteFileLocation",this.selectedFile)
+      this.msgStatus = true;
+      await this.$store.dispatch("deleteFileLocation", this.selectedFile);
       this.closeDelete();
     },
-
 
     //MODAL CLOSE
     close() {
@@ -313,9 +343,7 @@ export default {
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
-
     },
-
 
     //CLOSE DELETE CONFIRMATION
     closeDelete() {
@@ -325,38 +353,32 @@ export default {
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
-
     },
 
     async updateFileLocation() {
-      let fd = new FormData()
+      let fd = new FormData();
 
-      fd.append("file_id",this.form.file_id)
-      fd.append("file_location",this.form.file_location)
-      fd.append("filename",this.form.filename)
-      fd.append("_method", "put")
-      if(this.form.file_location !== null) {
-        await this.$store.dispatch("updateFileLocation",fd)
-      }else {
-        alert("Please select file")
+      fd.append("file_id", this.form.file_id);
+      fd.append("file_location", this.form.file_location);
+      fd.append("filename", this.form.filename);
+      fd.append("_method", "put");
+      if (this.form.file_location !== null) {
+        await this.$store.dispatch("updateFileLocation", fd);
+      } else {
+        alert("Please select file");
       }
-
-      
-      
     },
     onChangeFile() {
-      this.form.file_location = this.$refs.file.files[0]
+      this.form.file_location = this.$refs.file.files[0];
     },
 
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)
     save() {
       this.msgStatus = true;
       //Check if actions update or add
-        this.$refs.form.validate()
-        this.updateFileLocation()
-
+      this.$refs.form.validate();
+      this.updateFileLocation();
     },
   },
-
 };
 </script>

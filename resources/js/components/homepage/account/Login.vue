@@ -6,6 +6,7 @@
       <div v-if="msgStatus">
         <alert-component />
       </div>
+      
       <v-card>
         <v-card-text>
           <v-container>

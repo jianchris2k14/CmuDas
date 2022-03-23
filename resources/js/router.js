@@ -15,6 +15,8 @@ import clientdashboard from './components/homepage/client/dashboard/Dashboard.vu
 import clientrequests from './components/homepage/client/clientrequests/ClientRequest.vue'
 import clientsearch from './components/homepage/client/clientsearch/ClientSearch.vue'
 
+import viewrequest from './components/homepage/client/clientrequests/ViewRequest.vue'
+
 /* import clientdashboardlayout from './components/homepage/client/layouts/DashboardLayout'
 import clientdashboard from './components/system/client/clientdashboard/ClientDashboard.vue'
 import clientrequests from './components/system/client/clientrequests/ClientRequests.vue'
@@ -31,13 +33,13 @@ import requests from './components/system/requests/Requests.vue'
 import files from './components/system/files/Files.vue'
 import users from './components/system/users/Users.vue'
 import clients from './components/system/clients/Clients.vue'
+import reports from './components/system/reports/Reports.vue'
+import archive from './components/system/archive/Archive.vue'
+
 
 
 const routes = [
-    {
-        path:'*',
-        component:NotFound
-    },
+
     {
         path:'/404',
         component:NotFound,
@@ -83,6 +85,18 @@ const routes = [
                 },
             },
             {
+                path:'/client/viewrequest/:file_id',
+                component:viewrequest,
+                props:true,
+                name:'clientviewrequest',
+                meta:{
+                    middleware:true,
+                    isAdmin:false,
+                    title:"Client View Request"
+                },
+                
+            },
+            {
                 path:'/client/requests',
                 component:clientrequests,
                 name:'clientrequests',
@@ -121,6 +135,7 @@ const routes = [
                 meta:{
                     isAdmin:true,
                     middleware:true,
+                    isStaff:false,
                     title:"System Dashboard"
                 },
                 /* beforeEnter:(to,from,next) => {
@@ -137,9 +152,32 @@ const routes = [
                 meta:{
                     isAdmin:true,
                     middleware:true,
+                    isStaff:true,
                     title:"System Files"
                 },
+            },
+            {
+                path:'/system/reports',
+                component:reports,
+                name:'systemreports',
+                meta:{
+                    isAdmin:true,
+                    middleware:true,
+                    isStaff:true,
+                    title:"System Reports"
                 },
+            },
+            {
+                path:'/system/archive',
+                component:archive,
+                name:'systemarchive',
+                meta:{
+                    isAdmin:true,
+                    middleware:true,
+                    isStaff:true,
+                    title:"System Archive"
+                },
+            },
                 
             {
                 path:'/system/requests',
@@ -148,6 +186,7 @@ const routes = [
                 meta:{
                     isAdmin:true,
                     middleware:true,
+                    isStaff:true,
                     title:"System Client Requests"
                 },
 
@@ -159,11 +198,14 @@ const routes = [
                 meta:{
                     isAdmin:true,
                     middleware:true,
+                    isStaff:false,
                     title:"System Users"
                 },
                 beforeEnter:(to,from,next) => {
                     if(store.state.auth.user.user_type === 'Staff') {
-                        next(false)
+                        next({
+                            name:'404'
+                        })
                     }else {
                         next()
                     }
@@ -175,9 +217,19 @@ const routes = [
                 name:'systemclients',
                 meta:{
                     isAdmin:true,
+                    isStaff:false,
                     middleware:true,
                     title:"System Clients"
                 },
+                beforeEnter:(to,from,next) => {
+                    if(store.state.auth.user.user_type === 'Staff') {
+                        next({
+                            name:'404'
+                        })
+                    }else {
+                        next()
+                    }
+                }
             }
 
         ]
@@ -214,17 +266,10 @@ router.beforeEach((to, from, next) => {
                         name:'404'
                     })
                 }else {
-                    store.dispatch("getUserList")
-                    store.dispatch("getFileList")
-                    store.dispatch("getFileLocations")
-                    store.dispatch("getRequests")
-                    next()
+                        next()
                 }
             }else {
                 if(user_type === 'Client') {
-                    store.dispatch("getFileList")
-                    store.dispatch("getFileLocations")
-                    store.dispatch("getRequests")
                     next()
                 }else {
                     next({

@@ -19,6 +19,10 @@ class CreateFilesTable extends Migration
             $table->string('filename');
             $table->string('slug');
             $table->text('description');
+            $table->text('archive');
+            $table->text('file_status');
+            $table->text('document_type');
+            $table->dateTime('retention_date');
             $table->timestamps();
         });
 

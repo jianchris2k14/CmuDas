@@ -26,9 +26,16 @@
            <span>{{
              new Date(item.request_date).toLocaleDateString()}}</span>
          </template>
-         <template v-slot:item.retention_date="{ item }">
+         <template v-slot:item.expiration_date="{ item }">
            <span>{{
-             new Date(item.retention_date).toLocaleDateString()}}</span>
+             new Date(item.expiration_date).toLocaleDateString()}}</span>
+         </template>
+         <template v-slot:item.status={item}>
+           <v-chip
+           :color="getColor(item.status)"
+           dark>
+           {{item.status}}
+           </v-chip>
          </template>
         <template v-slot:top>
           <v-toolbar flat>
@@ -125,9 +132,6 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
           <v-icon color="error" small @click="deleteItem(item)">
             mdi-delete
           </v-icon>
@@ -169,7 +173,7 @@ export default {
        { text: "Code", value: "code", class: "info text-black" },
       { text: "Status", value: "status", class: "info text-black" },
       { text: "Request Date", value: "request_date", class: "info text-black" },
-      { text: "Retention Date", value: "retention_date", class: "info text-black" },
+      { text: "Expiration Date", value: "expiration_date", class: "info text-black" },
       {
         text: "Actions",
         value: "actions",
@@ -180,6 +184,7 @@ export default {
 
     //REQUEST PROPERTIES
     editedIndex: -1,
+    selectedItem:null,
     item:[
       'Pending',
       'Approved',
@@ -233,6 +238,7 @@ export default {
   },
 
   watch: {
+    
     //CLOSE MODAL
     dialog(val) {
       val || this.close();
@@ -248,7 +254,11 @@ export default {
   },
 
   methods: {
-
+    getColor(status) {
+      if(status === 'Approved') return 'green'
+      else if(status === 'Denied') return 'red'
+      else return 'orange'
+    },
     //EDIT FILE REQUESTS DATA
     editItem(item) {
       this.editedIndex = this.fetchRequests.indexOf(item);
@@ -258,12 +268,14 @@ export default {
 
     //DELETE REQUESTS DATA
     deleteItem(item) {
+      this.selectedItem = item
       this.dialogDelete = true;
     },
 
     //CONFIRM DELETE FILE REQUEST
     async deleteItemConfirm() {
       this.msgStatus = true
+      await this.$store.dispatch('deleteRequest',this.selectedItem.request_id)
       this.closeDelete();
     },
 
@@ -304,7 +316,6 @@ export default {
         }
         return Object.assign(container) */
       })
-      console.log(data)
       /* console.log(approvedRequest) */
       /* const request = approvedRequest.map(item => {
         const container = {}

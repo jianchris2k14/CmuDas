@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Request as Req;
 use App\Http\Resources\RequestResource;
+use Illuminate\Support\Facades\Storage;
 
 class RequestController extends Controller
 {
@@ -21,8 +22,17 @@ class RequestController extends Controller
     }
 
     public function show($id)
-    { 
-        return new RequestResource(Req::findOrFail($id));
+    {
+        
+        $file = Req::findOrFail($id);
+        $filename = $file->request_form;
+        $contents = Storage::url('request/'.$filename);
+        $extension = pathinfo(storage_path('request/'.$filename), PATHINFO_EXTENSION);
+        $data = array('request_id' => $id, 'filecontent' => $contents, 'filetype' => $extension);
+
+        return response($data);
+
+        //return new RequestResource(Req::findOrFail($id));
     }
 
     public function search(Request $request)
@@ -47,6 +57,8 @@ class RequestController extends Controller
         $request->validate([
             'description' 		 =>     'required|string',
             'request_date' 		 =>     'required|date',
+            'request_form'       => 	'required|mimes:pdf|max:2048',
+            'expiration_date'    =>     'required|date',
             'status' 		     => 	'required|alpha_num',
             'file_id' 		     =>     'required|numeric',
             'user_id' 		     =>     'numeric',
@@ -57,9 +69,33 @@ class RequestController extends Controller
     {
         $this->validation($request);
 
-        $req = Req::create($request->all());
+        if($request->hasFile('request_form')) {
 
-        return new RequestResource($req);
+
+            $request_form = $request->file('request_form');
+            $request_name = $request_form->getClientOriginalName();
+            $request_form->storePubliclyAs('public/request',$request_name);
+
+            $req = Req::create([
+                'file_id' => $request->file_id,
+                'request_form' => $request_name,
+                'request_date' => $request->request_date,
+                'description' => $request->description,
+                'status' => $request->status,
+                'expiration_date' => $request->expiration_date,
+                'user_id' => $request->user_id,
+            ]);
+            return new RequestResource($req);
+
+        }
+
+
+
+
+
+        /* $req = Req::create($request->all());
+
+        return new RequestResource($req); */
     }
 
     public function update(Request $request, $id)
@@ -69,7 +105,7 @@ class RequestController extends Controller
         $req = Req::findOrFail($id);
 
         $req->status = $request->status;
-        $req->retention_date = $request->retention_date;
+        $req->expiration_date = $request->expiration_date;
         $req->save();
 
         return new RequestResource($req);

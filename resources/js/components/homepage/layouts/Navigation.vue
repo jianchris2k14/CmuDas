@@ -115,13 +115,13 @@ export default {
     },
     redirect() {
       let user_type = this.auth.user.user_type
-      if(user_type == 'Chief' || user_type == 'Staff') {
+      if(user_type === 'Chief' || user_type === 'Staff') {
         return {
           name:'systemdashboard'
         }
       }else {
         return {
-          client:'clientdashboard'
+          name:'clientdashboard'
         }
       }
     }

@@ -11,7 +11,7 @@
               <v-tabs v-model="tabs">
                 <v-tabs-slider></v-tabs-slider>
                 <v-tab href="#mobile-tabs-5-1" class="primary--text">
-                  <v-icon>mdi-folder </v-icon> Files
+                  <v-icon>mdi-folder </v-icon> Documents
                 </v-tab>
 
                 <v-tab href="#mobile-tabs-5-2" class="primary--text">
@@ -48,6 +48,10 @@ export default {
       return {
           tabs:null,
       }
+  },
+  created() {
+    this.$store.dispatch("getFileList")
+    this.$store.dispatch("getFileLocations")
   }
 };
 </script>

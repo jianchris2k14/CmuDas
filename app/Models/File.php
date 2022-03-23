@@ -17,7 +17,11 @@ class File extends Model
         'filename',
         'slug',
         'description',
-        'user_id'
+        'user_id',
+        'retention_date',
+        'file_status',
+        'document_type',
+        'archive'
     ];
 
 }

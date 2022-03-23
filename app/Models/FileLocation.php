@@ -16,7 +16,6 @@ class FileLocation extends Model
 
     protected $fillable = [
         'file_location',
-        'retention_date',
         'file_id',
     ];
 }

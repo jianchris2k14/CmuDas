@@ -12,6 +12,9 @@
 <script>
 import UserTable from './UserTable.vue'
 export default {
-    components:{UserTable}
+    components:{UserTable},
+    created() {
+        this.$store.dispatch("getUserList")
+    }
 }
 </script>

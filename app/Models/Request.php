@@ -17,7 +17,9 @@ class Request extends Model
         'request_date',
         'status',
         'user_id',
-        'file_id'
+        'file_id',
+        'request_form',
+        'expiration_date'
     ];
 
 }

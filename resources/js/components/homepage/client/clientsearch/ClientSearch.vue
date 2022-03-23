@@ -14,7 +14,11 @@
 <script>
 import FileList from './FileList.vue'
 export default {
-    components:{FileList}
+    components:{FileList},
+    created() {
+        this.$store.dispatch("getFileList")
+        this.$store.dispatch("getFileLocations")
+    }
 }
 </script>
 <style scoped>

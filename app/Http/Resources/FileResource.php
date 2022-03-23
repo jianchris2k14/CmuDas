@@ -22,6 +22,10 @@ class FileResource extends JsonResource
             'slug'          => $this->slug,
             'description'   => $this->description,
             'created_at'    => $this->created_at,
+            'retention_date'=> $this->retention_date,
+            'archive'       => $this->archive,
+            'file_status'   => $this->file_status,
+            'document_type' => $this->document_type,
             'user_id'       => $this->user_id,
         ];
     }

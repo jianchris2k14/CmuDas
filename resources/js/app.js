@@ -22,6 +22,7 @@ import lodash from 'lodash'
 Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 
 
+
 /** ANIMATE CSS */
 import 'animate.css'
 
@@ -46,6 +47,13 @@ Vue.use(scrollSpy, {
 // register jw pagination component globally
 import JwPagination from 'jw-vue-pagination';
 Vue.component('jw-pagination', JwPagination);
+
+
+//VUETIFY DATE TIME PICKER
+import DatetimePicker from 'vuetify-datetime-picker'
+// (Optional) import 'vuetify-datetime-picker/src/stylus/main.styl'
+ 
+Vue.use(DatetimePicker)
 
 
 

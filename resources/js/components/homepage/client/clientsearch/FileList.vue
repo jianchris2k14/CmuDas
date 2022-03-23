@@ -1,107 +1,171 @@
 <template>
   <div class="container">
-    <v-row justify="center">
-      <v-col
-        cols="12"
-        v-for="(items, index) in pageOfItems"
-        :key="index.file_id"
-        class="mb-5"
+    <v-row>
+      <v-col cols="12" md="4" sm="4"> </v-col>
+      <v-col cols="12" sm="6" md="8">
+        <v-row>
+          <v-alert text dense color="teal" icon="mdi-information" border="left">
+            Note: Enter the exact filename
+          </v-alert>
+          <v-text-field
+            v-model="search"
+            label="Search File Name"
+            prepend-inner-icon="mdi-magnify"
+            outlined
+            dense
+          ></v-text-field>
+        </v-row>
+      </v-col>
+    </v-row>
+
+    <!-- SEARCH NOTIFACTION -->
+    <v-alert v-show="showMsg" outlined type="warning" prominent border="left">
+      Filename {{ this.search }} {{ this.msg }}
+    </v-alert>
+    <!-- Alert Message -->
+      <div v-if="msgStatus">
+        <alert-component />
+      </div>
+
+
+    <!-- DOCUMENTS LIST -->
+    <v-card
+      class="mx-auto mb-10"
+      max-width="100%"
+      v-for="(items, index) in pageOfItems"
+      :key="index.file_id"
+    >
+      <v-img class="white--text align-end" height="720px" :src="folderSvg">
+        <v-card-title class="text-black text-h2">{{
+          items.filename
+        }}</v-card-title>
+      </v-img>
+
+      <v-card-subtitle class="pb-0">
+        {{ items.code }}
+      </v-card-subtitle>
+
+      <v-card-text class="text--primary">
+        <div>{{ items.slug }}</div>
+
+        <div>{{ items.description }}</div>
+      </v-card-text>
+      <v-card-subtitle
+        >Uploaded:
+        {{ new Date(items.created_at).toLocaleDateString() }}</v-card-subtitle
       >
-        <v-card color="#385F73" dark>
-          <v-card-title class="text-h5">
-            <h1 class="text-white">{{ items.filename }}</h1>
-          </v-card-title>
-          <v-card-subtitle>Code: {{ items.code }}</v-card-subtitle>
-          <v-card-subtitle>Slug: {{ items.slug }}</v-card-subtitle>
+      <v-card-actions>
 
-          <v-card-subtitle
-            >Description: {{ items.description }}</v-card-subtitle
+
+        <v-col cols="auto">
+
+          <!-- REQUEST FORM MODAL -->
+          <v-dialog
+            transition="dialog-top-transition"
+            max-width="600"
+            v-model="formDialog"
+            :retain-focus="false"
           >
-          <v-card-subtitle
-            >Uploaded:
-            {{
-              new Date(items.created_at).toLocaleDateString()
-            }}</v-card-subtitle
-          >
-          <v-card-actions>
-
-
-            <v-dialog v-model="dialog" persistent max-width="600px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark v-bind="attrs" v-on="on" @click="editItem(items)">
-                  Request File
-                </v-btn>
-              </template>
+            <template v-slot:activator="{ on, attrs}">
+              <v-btn color="primary" v-bind="attrs" v-on="on" @click="getItem(items)"
+                >Request Document</v-btn
+              >
+            </template>
+            <template>
               <v-card>
-                <v-card-title>
-                  <span class="text-h5">Request File</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-form
-                    ref="form"
-                    @submit.prevent="save">
-                      <v-text-field
+                <v-toolbar color="primary" dark>Request File</v-toolbar>
+                <v-container>
+
+
+                  <!-- REQUEST FORM -->
+                  <v-form ref="form" @submit.prevent="save">
+                    <v-text-field
                       v-model="form.file_id"
                       prepend-icon="mdi-file"
                       label="File ID"
                       dense
                       disabled
                       outlined
-                      required>
-                      </v-text-field>
-                      <v-textarea
+                      required
+                    >
+                    </v-text-field>
+                    <v-textarea
                       v-model="form.description"
                       :rules="rules.description"
                       prepend-icon="mdi-text"
                       filled
                       name="input-7-4"
                       label="Request Description"
-                      >
+                    >
+                    </v-textarea>
+                    <v-alert text dense color="warning" icon="mdi-information" border="left">
+                      Note: Request Form must be .pdf format
+                    </v-alert>
+                    <input
+                        type="file"
+                        name="request_file_form"
+                        @change="onChangeFile"
+                        required
+                      />
+                  </v-form>
 
-                      </v-textarea>
-                    </v-form>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
+
+                </v-container>
+
+               <!--  FORM BUTTONS -->
+                <v-card-actions class="justify-end">
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="dialog = false">
+                  <v-btn color="blue darken-1" text @click="close">
                     Close
                   </v-btn>
-                  <v-btn color="blue darken-1" text @click="dialog = false">
-                    Save
+                  <v-btn color="blue darken-1" text @click="save(getUserId)">
+                    Send Request
                   </v-btn>
                 </v-card-actions>
+
+
               </v-card>
-            </v-dialog>
+            </template>
+          </v-dialog>
+        </v-col>
+      </v-card-actions>
+    </v-card>
 
-
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-
+    <!-- PAGINATION -->
     <jw-pagination
       :labels="customLabels"
       :items="fetchFiles"
       @changePage="onChangePage"
     ></jw-pagination>
+
+
   </div>
 </template>
 <script>
+import folderSvg from "./../../../../../../public/assets/img/folder2.jpg";
+import AlertComponent from './../../../AlertComponent.vue'
 export default {
+  components:{AlertComponent},
   data() {
     return {
+      folderSvg: folderSvg,
+
+      /* PAGINATION LABLES PROPERTY */
       customLabels: {
         first: "<<",
         last: ">>",
         previous: "<",
         next: ">",
       },
+
+      /* FILE REQUEST PROPERTIES */
       pageOfItems: [],
+      search: null,
+      msg: "",
+      showMsg: false,
 
       //Dialog Property
-      dialog: false,
+      formDialog: false,
       dialogDelete: false,
 
       //NOTIFY PROPERTIES
@@ -114,34 +178,64 @@ export default {
 
       //FORM PROPERTIES
       form: {
-        user_id:this.getUserId,
+        user_id: null,
         file_id: null,
-        description:"",
+        description: "",
+        status: "Pending",
+        expiration_date: null,
+        request_date: null,
+        request_form:null
       },
 
       //RULES VALIDATION PROPERTIES
       rules: {
         isValid: true,
-        file_location: [(v) => !!v || "Select is File"],
       },
+      count: null,
 
       //DEFAULT FORM DATA
       defaultItem: {
-        user_id:this.getUserId,
+        user_id: null,
         file_id: null,
-        description:"",
+        description: "",
+        status: "Pending",
+        retention_date: null,
+        request_date: null,
+        request_form:null
       },
     };
   },
   computed: {
+    /* FETCH DOCUMENTS RECORDS FROM STORE STATES */
     fetchFiles() {
-      const files = this.$store.state.files.file_location;
+      let files = this.$store.getters.getDocuments
+      if (this.search) {
+        let result = files.filter((item) => {
+          return this.search
+            .toLowerCase()
+            .split(" ")
+            .every((v) => item.filename.toLowerCase().includes(v));
+        });
+        var count = Object.keys(result).length;
+        if (count === 0) {
+          this.showMsg = true;
+          this.msg = "no match in our records. Please enter the exact filename";
+          return result;
+        } else {
+          this.showMsg = false;
+          return result;
+        }
+      } else {
+        this.showMsg = false;
+        return this._.orderBy(files, ["created_at"], ["desc"]);
+      }
+    },
 
-      return this._.orderBy(files, ["created_at"], ["desc"]);
-    },
+    /* GET CURRENT USER ID */
     getUserId() {
-      return this.$store.state.auth.user.user_id
+      return this.$store.state.auth.user.user_id;
     },
+
     //ISLOADING COMPUTED
     isLoading: {
       get: function () {
@@ -152,10 +246,13 @@ export default {
         return newVal;
       },
     },
+
   },
   watch: {
+    fetchFiles(val) {},
     //CLOSE MODAL
-    dialog(val) {
+    
+    formDialog(val) {
       val || this.close();
     },
 
@@ -169,74 +266,68 @@ export default {
       val || this.close();
     },
   },
+
+
   methods: {
+    /* PAGINATION ITEMS */
     onChangePage(pageOfItems) {
       // update page of items
       this.pageOfItems = pageOfItems;
     },
 
     //EDIT FILE DATA
-    getUserID() {
-      this.form.user_id = event.target.value;
-    },
-
-    editItem(item) {
-      this.editedIndex = this.fetchFiles.indexOf(item);
-      this.form.file_id = item.file_id
-      this.dialog = true;
-    },
-    editFileLocation(item) {
-      this.dialog = true;
-
+    getItem(item) {
       this.form.file_id = item.file_id;
-
-      this.editedIndex = 1;
     },
-
 
     //MODAL CLOSE
     close() {
-      this.dialog = false;
-
+      this.formDialog = false;
       this.$nextTick(() => {
-        this.form = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+        this.form = Object.assign({}, this.defaultItem)
       });
     },
 
-    //CLOSE DELETE CONFIRMATION
-    closeDelete() {
-      this.dialogDelete = false;
-
-      this.$nextTick(() => {
-        this.form = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
+    /* CALCULATE DATE FOR EXPIRATION DATE */
+    calculateDate() {
+      const now = new Date();
+      now.setDate(now.getDate()).toString();
+      var converted_timestamp = new Date(now),
+        mnth = ("0" + (converted_timestamp.getMonth() + 1)).slice(-2),
+        day = ("0" + converted_timestamp.getDate()).slice(-2),
+        hours = ("0" + converted_timestamp.getHours()).slice(-2),
+        minutes = ("0" + converted_timestamp.getMinutes()).slice(-2),
+        seconds = ("0" + converted_timestamp.getSeconds()).slice(-2);
+        this.form.expiration_date =
+        converted_timestamp.getFullYear() +"-" +mnth +"-" +day +" " +hours +":" +minutes +":" +seconds;
+        this.form.request_date =converted_timestamp.getFullYear() +"-" +mnth +"-" +day +" " +hours +":" +minutes +":" +seconds;
+        
     },
 
-    async updateFileLocation() {
-      let fd = new FormData();
-
-      fd.append("file_id", this.form.file_id);
-      fd.append("file_location", this.form.file_location);
-      fd.append("filename", this.form.filename);
-      fd.append("_method", "put");
-      if (this.form.file_location !== null) {
-        await this.$store.dispatch("updateFileLocation", fd);
-      } else {
-        alert("Please select file");
-      }
-    },
-    onChangeFile() {
-      this.form.file_location = this.$refs.file.files[0];
+    /* ADD FILE REQUEST TO DATABASE */
+    async addRequest(getUserId) {
+      this.calculateDate();
+      this.form.user_id = getUserId;
+      let fd = new FormData()
+      fd.append("description",this.form.description)
+      fd.append("request_date",this.form.request_date)
+      fd.append("status","Pending")
+      fd.append("expiration_date",this.form.expiration_date)
+      fd.append("request_form",this.form.request_form)
+      fd.append("user_id",this.form.user_id)
+      fd.append("file_id",this.form.file_id)
+      await this.$store.dispatch("addRequest", fd);
     },
 
-    //SAVE BUTTON ( SEND FORM DATA TO DATABASE)
-    save() {
+    /* ON CHANGE FILE FOR FILE INPUT */
+    onChangeFile(e) {
+      this.form.request_form = e.target.files[0]
+    },
+
+    /* SAVE BUTTON ( SEND FORM DATA TO DATABASE) */
+    save(getUserId) {
       this.msgStatus = true;
-      //Check if actions update or add
-      this.$refs.form.validate();
-      this.updateFileLocation();
+      this.addRequest(getUserId);
     },
   },
 };

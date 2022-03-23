@@ -7,7 +7,7 @@
           <div class="row">
             <div
               class="col-6 col-md-6 p-2"
-              v-for="(items, i) in dashboard"
+              v-for="(items, i) in totalDashboard"
               :key="i"
             >
               <div class="card card-stats mb-3 mb-xl-0" :class="items.bgColor">
@@ -57,34 +57,100 @@
 export default {
   data() {
     return {
-      dashboard: [
-        {
-          title: "Files",
-          subtitle: "2000",
-          bgColor: "bg-primary",
-          icon: "fa fa-folder",
-        },
-        {
-          title: "Requests",
-          subtitle: "1995",
-          bgColor: "bg-success",
-          icon: "fa fa-chalkboard-teacher",
-        },
-        {
-          title: "Clients",
-          subtitle: "2500",
-          bgColor: "bg-danger",
-          icon: "fa fa-user-tie",
-        },
-        {
-          title: "Users",
-          subtitle: "1001",
-          bgColor: "bg-info",
-          icon: "fa fa-users",
-        },
-      ],
+      dashboard:null,
+      user_type:localStorage.getItem("user_type"),
+      totalDocs:null,
+
     };
   },
+  computed:{
+    auth() {
+      return this.$store.state.auth.user
+    },
+    totalDashboard() {
+      let data = []
+      if(this.auth.user_type === 'Chief') {
+        return data = [
+          {
+            title: "Documents",
+            subtitle: this.$store.getters.totalDocuments,
+            bgColor: "bg-primary",
+            icon: "fa fa-folder",
+          },
+          {
+            title: "Clients",
+            subtitle:this.$store.getters.totalClients,
+            bgColor: "bg-danger",
+            icon: "fa fa-user-tie",
+          },
+          {
+            title: "Staff",
+            subtitle: this.$store.getters.totalStaff,
+            bgColor: "bg-info",
+            icon: "fa fa-users",
+          },
+          {
+            title: "Archive",
+            subtitle: "50",
+            bgColor: "bg-warning",
+            icon: "fa fa-archive",
+          }
+        ]
+      }else {
+        return data = [
+          {
+            title: "Archive",
+            subtitle: this.$store.getters.totalArchiveDocuments,
+            bgColor: "bg-warning",
+            icon: "fa fa-archive",
+          },
+          {
+            title: "Documents",
+            subtitle: this.$store.getters.totalDocuments,
+            bgColor: "bg-success",
+            icon: "fa fa-folder",
+          },
+          {
+             title: "Pending Requests",
+            subtitle: this.$store.getters.totalPendingApprovedRequest,
+            bgColor: "bg-info",
+            icon: "fa fa-table",
+          },
+          {
+            title: "Approved Requests",
+            subtitle: this.$store.getters.totalApprovedRequest,
+            bgColor: "bg-primary",
+            icon: "fa fa-thumbs-up",
+          },
+          {
+            title: "Denied Requests",
+            subtitle: this.$store.getters.totalApprovedRequest,
+            bgColor: "bg-primary",
+            icon: "fa fa-thumbs-down",
+          },
+          {
+            title: "Expired Requests",
+            subtitle: this.$store.getters.totalExpiredRequest,
+            bgColor: "bg-default",
+            icon: "fa fa-hourglass-end",
+          }
+
+
+        ]
+      }
+    },
+    fetchRequests() {
+      const files = this.$store.getters.getPendingRequests
+      return this._.orderBy(files, ["created_at"], ["desc"]);
+    },
+  },
+  watch:{
+    totalDashboard:function() {
+      
+    }
+  },
+   
+  
 };
 </script>
 <style scoped>

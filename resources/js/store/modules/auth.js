@@ -5,7 +5,7 @@ const getDefaultSate = () => {
     return {
         authenticated:false,
         permission:null,
-        user:{},
+        user:{}
     }
 }
 const state = getDefaultSate()
@@ -33,25 +33,38 @@ const mutations = {
     },
 }
 const actions = { 
-    getUser({commit,rootState}) {
-        axios.get('/api/user').then((response) => {
-            commit('SET_USER',response.data)
-            commit('SET_AUTHENTICATED',true)
-            commit('SET_PERMISSION',response.data.user_type)
-            rootState.base.status = "Success"
-            rootState.base.showMsg = true
-        }).catch((err) => {
-            commit('SET_USER',{})
-            commit('SET_AUTHENTICATED',false)
-        });
+    async getUser({commit,rootState}) {
+        try {
+            await axios.get('/api/user').then((response) => {
+                commit('SET_USER',response.data)
+                commit('SET_AUTHENTICATED',true)
+                commit('SET_PERMISSION',response.data.user_type)
+            }).catch((err) => {
+
+                 //Notification
+                 rootState.base.global = Object.assign({
+                    message: err.response.data,
+                    status: 'Error',
+                    showMsg: true,
+                })
+
+                commit('SET_USER',{})
+                commit('SET_AUTHENTICATED',false)
+            });
+        } catch (error) {
+            console.log(error)
+        }
+        
     },
-    userLogout({commit,rootState}) {
+    async userLogout({commit,rootState}) {
         localStorage.removeItem('token')
         localStorage.removeItem('user_type')
         commit('SET_USER',{})
         commit('SET_AUTHENTICATED',false)
         commit('SET_PERMISSION',null)
-        rootState.base.showMsg = false
+        rootState.base.global.showMsg = false
+        rootState.base.global.status = "Success"
+        rootState.base.global.message = []
         rootState.base.message = []
         rootState.base.status = ""
 

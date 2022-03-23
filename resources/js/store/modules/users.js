@@ -19,6 +19,22 @@ const getters = {
     },
     getClients(state) {
         return state.users.filter(item => item.user_type === 'Client')
+    },
+    totalStaff(state) {
+        let total = 0
+        let staff = state.users.filter(item => item.user_type === 'Chief' || item.user_type === 'Staff')
+        for(const obj of staff) {
+            total++
+        }
+        return total
+    },
+    totalClients(state) {
+        let total = 0;
+        let clients = state.users.filter(item => item.user_type === 'Client')
+        for(const obj of clients) {
+            total++
+        }
+        return total
     }
 }
 

@@ -9,6 +9,7 @@
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
+      
 
       <!-- Alert Message -->
       <div v-if="msgStatus">
@@ -22,22 +23,49 @@
         :search="search"
         class="elevation-1 table-striped"
       >
-      <template v-slot:item.request_date="{ item }">
-           <span>{{
-             new Date(item.request_date).toLocaleDateString()}}</span>
-         </template>
-         <template v-slot:item.retention_date="{ item }">
-           <span>{{
-             new Date(item.retention_date).toLocaleDateString()}}</span>
-         </template>
+        <template v-slot:item.request_date="{ item }">
+          <span>{{ new Date(item.request_date).toLocaleDateString() }}</span>
+        </template>
+        <template v-slot:item.expiration_date="{ item }">
+          <span v-show="item.status === 'Approved'">{{
+            new Date(item.expiration_date).toLocaleDateString()
+          }}</span>
+        </template>
+        <template v-slot:item.status="{ item }">
+          <v-chip :color="getColor(item.status)" dark>
+            {{ item.status }}
+          </v-chip>
+        </template>
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>List of File Requests</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
 
-
             <!-- REQUEST FILE MANANGEMENT MODAL -->
+            <!-- FILES MANAGEMENT MODALS -->
+            <v-row justify="center">
+              <v-dialog
+                v-model="viewdialog"
+                fullscreen
+                hide-overlay
+                transition="dialog-bottom-transition"
+                persistent
+              >
+                <v-card>
+                  <v-toolbar dark color="primary">
+                    <v-btn icon dark @click="reloadPage()">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </v-toolbar>
+                  <!--- GET FILE CONENTS -->
+                  <div v-if="getDocumentRequest" class="text-center">
+                    <web-viewer v-if="getDocumentRequest" :docs.sync="getDocumentRequest"/>
+
+                  </div>
+                </v-card>
+              </v-dialog>
+            </v-row>
 
             <v-dialog v-model="dialog" max-width="960px">
               <v-card>
@@ -72,19 +100,21 @@
             <v-dialog v-model="dialogDelete" max-width="500px">
               <v-card>
                 <v-toolbar color="error" dark>
-                      <v-toolbar-title class="text-h6">
-                          Confirmation
-                      </v-toolbar-title>
-                  </v-toolbar>
+                  <v-toolbar-title class="text-h6">
+                    Confirmation
+                  </v-toolbar-title>
+                </v-toolbar>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item?</v-card-title
                 >
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="info" dark @click="closeDelete"
-                    >Cancel</v-btn
-                  >
-                  <v-btn color="error" dark :loading="isLoading" @click="deleteItemConfirm"
+                  <v-btn color="info" dark @click="closeDelete">Cancel</v-btn>
+                  <v-btn
+                    color="error"
+                    dark
+                    :loading="isLoading"
+                    @click="deleteItemConfirm"
                     >OK</v-btn
                   >
                   <v-spacer></v-spacer>
@@ -96,94 +126,114 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon color="error" small @click="deleteItem(item)">
+          <v-icon
+            color="error"
+            small
+            @click="deleteItem(item)"
+            v-show="item.status === 'Pending'"
+          >
             mdi-delete
           </v-icon>
+          <v-icon
+            color="success"
+            small
+            @click="showRequestedDocument(item)"
+            v-show="item.status === 'Approved'"
+          >
+            mdi-file
+          </v-icon>
         </template>
-
       </v-data-table>
     </v-card>
   </div>
 </template>
 <script>
-import AlertComponent from "./../../../AlertComponent.vue"
+import AlertComponent from "./../../../AlertComponent.vue";
+import WebViewer from './WebViewer.vue'
+
 export default {
-  components: { AlertComponent },
+  components: { AlertComponent,WebViewer },
   data() {
     return {
       //TABLE SEARCH PROPERTY
       search: "",
 
-    //Dialog Property
-    dialog: false,
-    dialogDelete: false,
+      //Dialog Property
+      dialog: false,
+      dialogDelete: false,
 
-    //NOTIFY PROPERTIES
-    error: "",
-    msgStatus: false,
-    load:false,
+      //NOTIFY PROPERTIES
+      error: "",
+      msgStatus: false,
+      load: false,
+      viewdialog: false,
+      selectedRequest:null,
 
-    //TABLE HEADERS PROPERTIES
-    headers: [
-      {
-        text: "Request ID",
-        align: "start",
-        sortable: true,
-        value: "request_id",
-        class: "info text-black",
+      //TABLE HEADERS PROPERTIES
+      headers: [
+        {
+          text: "Request ID",
+          align: "start",
+          sortable: true,
+          value: "request_id",
+          class: "info text-black",
+        },
+        { text: "Client Name", value: "name", class: "info text-black" },
+        { text: "Client Email", value: "email", class: "info text-black" },
+        { text: "File Name", value: "filename", class: "info text-black" },
+        { text: "Status", value: "status", class: "info text-black" },
+        {
+          text: "Request Date",
+          value: "request_date",
+          class: "info text-black",
+        },
+        {
+          text: "Expiration Date",
+          value: "expiration_date",
+          class: "info text-black",
+        },
+        {
+          text: "Actions",
+          value: "actions",
+          sortable: false,
+          class: "info text-black",
+        },
+      ],
+
+      //FILE PROPERTIES
+      editedIndex: -1,
+
+      //FORM PROPERTIES
+      form: {
+        request_id: null,
+        status: "",
+        expiration_date: null,
       },
-      { text: "Client Name", value: "name", class: "info text-black" },
-      { text: "Client Email", value: "email", class: "info text-black" },
-      { text: "File Name", value: "filename", class: "info text-black" },
-       { text: "Code", value: "code", class: "info text-black" },
-      { text: "Status", value: "status", class: "info text-black" },
-      { text: "Request Date", value: "request_date", class: "info text-black" },
-      { text: "Retention Date", value: "retention_date", class: "info text-black" },
-      {
-        text: "Actions",
-        value: "actions",
-        sortable: false,
-        class: "info text-black",
+
+      //RULES VALIDATION PROPERTIES
+      rules: {
+        isValid: true,
+        filename: [(v) => !!v || "Filename is required"],
+        description: [(v) => !!v || "Description is required"],
+        file_location: [(v) => !!v || "File Location is required"],
       },
-    ],
 
-    //FILE PROPERTIES
-    editedIndex: -1,
-
-    //FORM PROPERTIES
-    form: {
-      filename: "",
-      description: "",
-      file_location: "",
-      retention_date: "",
-      code: "",
-    },
-
-    //RULES VALIDATION PROPERTIES
-    rules: {
-      isValid: true,
-      filename: [v => !!v || "Filename is required"],
-      description: [v => !!v || "Description is required"],
-      file_location: [v => !!v || "File Location is required"],
-
-    },
-
-    //DEFAULT FORM DATA
-    defaultItem: {
-      filename: "",
-      description: "",
-      file_location: "",
-    },
-    }
+      //DEFAULT FORM DATA
+      defaultItem: {
+        request_id: null,
+        status: "",
+        expiration_date:null
+      },
+    };
   },
   computed: {
     //FETCH FILE REQUESTS FROM STATE MANANGEMENT COMPUTED
     fetchRequests() {
-      const files = this.$store.state.requests.requests
-      return this._.orderBy(files, ["created_at"], ["desc"]);
+      const request = this.$store.getters.getApprovedPendingRequest;
+      return this._.orderBy(request, ["created_at"], ["desc"]);
+    },
+    getDocumentRequest() {
+      return this.$store.state.requests.request_document;
     },
 
     //FORM TITLE COMPUTED
@@ -193,13 +243,13 @@ export default {
 
     //ISLOADING COMPUTED
     isLoading: {
-      get:function(){ 
-        return this.$store.state.base.isLoading
+      get: function () {
+        return this.$store.state.base.isLoading;
       },
-      set:function(newVal) {
-        return newVal
-      }
-    }
+      set: function (newVal) {
+        return newVal;
+      },
+    },
   },
 
   watch: {
@@ -213,30 +263,63 @@ export default {
     },
     // LOADING
     isLoading(val) {
-      val || this.close()
-    }
+      val || this.close();
+    },
   },
 
   methods: {
+    getColor(status) {
+      if (status === "Approved") return "green";
+      else return "default";
+    },
+    reloadPage() {
+      this.viewdialog = false
+      if(!this.viewdialog) {
+        this.$router.go()
+      }
+      
 
-    //EDIT FILE REQUESTS DATA
-    editItem(item) {
-      this.editedIndex = this.fetchFiles.indexOf(item);
-      this.form = Object.assign({}, item);
-      this.dialog = true;
+      /* this.$router.go() */
+      /* window.location.reload() */
+    },
+
+
+    async showRequestedDocument(item) {
+      this.viewdialog = true;
+      this.selectedRequest = item
+      let get_expiration_date = new Date(item.expiration_date)
+      let set_expiration_date = get_expiration_date.getFullYear()+ '-'+(get_expiration_date.getMonth()+1)+'-'+get_expiration_date.getDate()
+      let today = new Date()
+      let current_date = today.getFullYear()+ '-'+(today.getMonth()+1)+'-'+today.getDate()
+      console.log('Expiration date: ' + set_expiration_date)
+      console.log('Current date: ' +current_date)
+      if(set_expiration_date<current_date) {
+        this.viewdialog = false
+        alert("The request was expired")
+        this.form = Object.assign({},item)
+        this.form.status = "Expired"
+        await this.$store.dispatch("updateRequest",this.form)
+      }else {
+        await this.$store.dispatch("showRequestDocument", item);
+      }
+      
     },
 
     //DELETE REQUESTS DATA
     deleteItem(item) {
       this.dialogDelete = true;
+      this.selectedRequest = item;
     },
 
     //CONFIRM DELETE FILE REQUEST
     async deleteItemConfirm() {
-      this.msgStatus = true
+      this.msgStatus = true;
+      await this.$store.dispatch(
+        "deleteRequest",
+        this.selectedRequest.request_id
+      );
       this.closeDelete();
     },
-
 
     //MODAL CLOSE
     close() {
@@ -247,7 +330,6 @@ export default {
       });
     },
 
-
     //CLOSE DELETE CONFIRMATION
     closeDelete() {
       this.dialogDelete = false;
@@ -257,32 +339,30 @@ export default {
       });
     },
 
-  
-    //CALL STORE MANANGEMENT DISPATCH FOR UPDATING DATA TO STATE MANANGEMENT
-    async updateFile() {
-        
-    },
-
-    //CALL STORE MANANGEMENT DISPATCH FOR ADDING DATA TO STATES
-    async addFile() {
-
-
-    },
-
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)
     save() {
       this.msgStatus = true;
-      
-      //Check if actions update or add
-      if (this.editedIndex > -1) {
-
-      } else {
-        /* this.$refs.form.validate(); */
-
-      }
-
     },
   },
-
+  mounted() {
+  },
 };
 </script>
+<style scoped>
+.embed-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+  /* Just for demonstration, remove this part */
+  opacity: 0.25;
+  background-color: red;
+}
+
+.wrapper {
+  position: relative;
+  overflow: hidden;
+}
+</style>

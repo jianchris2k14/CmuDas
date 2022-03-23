@@ -22,6 +22,21 @@
         :search="search"
         class="elevation-1 table-striped"
       >
+      <template v-slot:item.expiration_date="{ item }">
+           <span v-show="item.status === 'Approved' || item.status ==='Expired'">{{
+             new Date(item.expiration_date).toLocaleDateString()}}</span>
+         </template>
+         <template v-slot:item.request_date="{ item }">
+           <span>{{
+             new Date(item.request_date).toLocaleDateString()}}</span>
+         </template>
+      <template v-slot:item.status="{ item }">
+           <v-chip
+           :color="getColor(item.status)"
+           dark>
+           {{item.status}}
+           </v-chip>
+        </template>
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>List of File Requests</v-toolbar-title>
@@ -115,22 +130,15 @@
           </v-toolbar>
         </template>
 
-        <!-- Table Actions Buttons -->
-        <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon color="error" small @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
-        </template>
 
       </v-data-table>
     </v-card>
   </div>
 </template>
 <script>
-import AlertComponent from "../../AlertComponent.vue";
+
+import AlertComponent from './../../../AlertComponent.vue'
+
 export default {
   components: { AlertComponent },
   data() {
@@ -162,13 +170,7 @@ export default {
        { text: "Code", value: "code", class: "info text-black" },
       { text: "Status", value: "status", class: "info text-black" },
       { text: "Request Date", value: "request_date", class: "info text-black" },
-      { text: "Retention Date", value: "retention_date", class: "info text-black" },
-      {
-        text: "Actions",
-        value: "actions",
-        sortable: false,
-        class: "info text-black",
-      },
+      { text: "Expiration Date", value: "expiration_date", class: "info text-black" },
     ],
 
     //REQUEST PROPERTIES
@@ -241,11 +243,11 @@ export default {
 
   methods: {
 
-    //EDIT FILE REQUESTS DATA
-    editItem(item) {
-      this.editedIndex = this.fetchRequests.indexOf(item);
-      this.form = Object.assign({}, item);
-      this.dialog = true;
+    //Get color of vuetify chips
+    getColor(status) {
+      if(status === 'Approved') return 'green'
+      else if(status === 'Denied') return 'red'
+      else return 'orange'
     },
 
     //DELETE REQUESTS DATA
@@ -280,17 +282,6 @@ export default {
     },
 
   
-    //CALL STORE MANANGEMENT DISPATCH FOR UPDATING DATA TO STATE MANANGEMENT
-    async updateFile() {
-        
-    },
-
-    //CALL STORE MANANGEMENT DISPATCH FOR ADDING DATA TO STATES
-    async addFile() {
-
-
-    },
-
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)
     save() {
       this.msgStatus = true;

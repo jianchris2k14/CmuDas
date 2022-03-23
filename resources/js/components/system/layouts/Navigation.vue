@@ -41,8 +41,7 @@
         </div>
 
         <!-- Navigation -->
-        
-        <ul class="navbar-nav ml-n11">
+          <ul class="navbar-nav ml-n11">
           <li class="nav-item"
           v-for="(item,i) in navigation" :key="i">
             <router-link class="nav-link" :to="item.itemPath">
@@ -67,7 +66,24 @@ export default {
         return {
             logo:logo,
             userlogo:userlogo,
-            navigation:[
+            navigation:null,
+            user_type:localStorage.getItem("user_type")
+
+        }
+    },
+    computed: {
+      auth() {
+        return this.$store.state.auth
+      },
+      authUsertype() {
+        this.user_type = this.$store.state.auth.user.user_type
+        return this.$store.state.auth.user.user_type
+      }
+    },
+    methods:{
+      checkUserType() {
+        if(this.user_type ==='Chief') {
+          this.navigation = [
                {
                     itemText:'Dashboard',
                     itemIcon:'fa fa-tachometer-alt',
@@ -75,31 +91,38 @@ export default {
                     itemPath:'/system/dashboard'
                 },
                 {
-                    itemText:'Files',
+                    itemText:'Document List',
                     itemIcon:'fa fa-archive',
                     itemIconColor:'text-green',
                     itemPath:'/system/files'
                 },
                 {
-                    itemText:'Requests',
-                    itemIcon:'fa fa-chalkboard-teacher',
+                    itemText:'Archive',
+                    itemIcon:'fa fa-archive',
                     itemIconColor:'text-red',
-                    itemPath:'/system/requests'
+                    itemPath:'/system/archive'
                 },
                 {
-                    itemText:'Clients',
+                    itemText:'Client Manangement',
                     itemIcon:'fa fa-user-tie',
                     itemIconColor:'text-primary',
                     itemPath:'/system/clients'
                 },
                 {
-                    itemText:'Users',
+                    itemText:'Staff Manangement',
                     itemIcon:'fa fa-users',
                     itemIconColor:'text-white',
                     itemPath:'/system/user'
+                },
+                {
+                    itemText:'Reports',
+                    itemIcon:'fa fa-chart-bar',
+                    itemIconColor:'text-white',
+                    itemPath:'/system/reports'
                 }
-            ],
-            /* navigation:[
+            ]
+        }else {
+          this.navigation = [
                 {
                     itemText:'Dashboard',
                     itemIcon:'fa fa-tachometer-alt',
@@ -107,37 +130,31 @@ export default {
                     itemPath:'/system/dashboard'
                 },
                 {
-                    itemText:'Files',
+                    itemText:'Document Manangement',
                     itemIcon:'fa fa-archive',
                     itemIconColor:'text-green',
                     itemPath:'/system/files'
                 },
                 {
-                    itemText:'Requests',
+                    itemText:'Request Manangement',
                     itemIcon:'fa fa-chalkboard-teacher',
                     itemIconColor:'text-red',
                     itemPath:'/system/requests'
                 },
                 {
-                    itemText:'Clients',
-                    itemIcon:'fa fa-user-tie',
-                    itemIconColor:'text-primary',
-                    itemPath:'/system/clients'
+                    itemText:'Archive',
+                    itemIcon:'fa fa-archive',
+                    itemIconColor:'text-red',
+                    itemPath:'/system/archive'
                 },
-                {
-                    itemText:'Users',
-                    itemIcon:'fa fa-users',
-                    itemIconColor:'text-white',
-                    itemPath:'/system/user'
-                }
-            ] */
+
+            ]
         }
-    },
-    computed: {
-      auth() {
-        return this.$store.state.auth
       }
     },
+    created() {
+      this.checkUserType()
+    }
 }
 </script>
 <style scoped>

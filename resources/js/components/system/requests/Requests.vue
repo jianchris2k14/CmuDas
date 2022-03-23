@@ -44,6 +44,9 @@ export default {
       return {
           tabs:null
       }
+  },
+  created() {
+    this.$store.dispatch("getRequests")
   }
 };
 </script>

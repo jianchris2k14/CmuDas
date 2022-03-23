@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\FileLocation;
 use Illuminate\Http\Request;
 use App\Http\Resources\FileLocationResource;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 
 class FileLocationController extends Controller
 {
@@ -23,7 +26,20 @@ class FileLocationController extends Controller
 
     public function show($id)
     { 
-        return new FileLocationResource(FileLocation::findOrFail($id));
+        $file = FileLocation::findOrFail($id);
+        $filename = $file->file_location;
+        $contents = Storage::url($filename);
+        $extension = pathinfo(storage_path($filename), PATHINFO_EXTENSION);
+        $data = array('filecontent' => $contents, 'filetype' => $extension);
+        return response($data);
+
+       /*  return Response::make(\file_get_contents($path),200,[
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$filename.'"'
+        ]); */
+
+        /* return response()->file($file->file_location); */
+       /*  return new FileLocationResource(FileLocation::findOrFail($id)); */
     }
 
     public function search(Request $request)
@@ -43,7 +59,7 @@ class FileLocationController extends Controller
     private function validation(Request $request)
     {
         $request->validate([
-            'file_location'         => 	'required|mimes:png,jpg,jpeg,csv,txt,xlx,xls,pdf|max:2048',
+            'file_location'         => 	'required|mimes:png,jpg,jpeg,pdf|max:2048',
             'file_id' 		        =>  'required|numeric',
         ]);
     }
@@ -85,6 +101,7 @@ class FileLocationController extends Controller
 
             $filename = $filelocation->getClientOriginalName();
 
+            /* $filelocation->storePubliclyAs('public',$filename); */
             $filelocation->storePubliclyAs('public',$filename);
 
             $file->file_id = $request->file_id;

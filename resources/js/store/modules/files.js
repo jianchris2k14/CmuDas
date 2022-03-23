@@ -6,6 +6,7 @@ const getDefaultSate = () => {
     return {
         files: [],
         file_location: [],
+        show_file:null,
     }
 }
 
@@ -15,7 +16,27 @@ const state = getDefaultSate()
 
 /* STORE GETTERS */
 const getters = {
-
+    totalDocuments(state) {
+        let total = 0;
+        for(const obj of state.file_location) {
+            total++
+        }
+        return total
+    },
+    getDocuments(state) {
+        return state.files.filter(item => item.file_status === 'Approved' && item.archive === 'Archive')
+    },
+    getApprovedDocuments(state) {
+        return state.files.filter(item => item.file_status === 'Approved')
+    },
+    totalArchiveDocuments(state) {
+        let total = 0
+        let archive = state.files.filter(item => item.archive === 'Archive')
+        for(const obj of archive) {
+            total++
+        }
+        return total
+    },
 }
 
 /* STORE MUTATIONS */
@@ -69,6 +90,9 @@ const mutations = {
         const index = state.file_location.findIndex(item => item.file_id === file.file_location_id)
         state.file_location.splice(index, 1)
     },
+    SHOW_FILE:(state,file) => {
+        state.show_file = file
+    }
 
 }
 
@@ -101,6 +125,7 @@ const actions = {
         try {
             await axios.put('/api/files/' + payload.file_id, payload).then((response) => {
                 commit("UPDATE_FILE", payload)
+
                 //Notification
                 rootState.base.global = Object.assign({
                     message: [{ success: "File successfulyy updated" }],
@@ -142,7 +167,7 @@ const actions = {
                 commit("DELETE_FILE", response.data)
                 //Notification
                 rootState.base.global = Object.assign({
-                    message: [{ success: "File successfulyy deleted" }],
+                    message: [{ success: "Document successfulyy deleted" }],
                     status: 'Success',
                     showMsg: true,
                 })
@@ -177,11 +202,21 @@ const actions = {
         try {
             axios.post('/api/files', payload).then((response) => {
                 commit("ADD_FILE", response.data.data)
-                console.log(response.data)
-            }).catch((err) => {
-                console.log(err.response.data)
-            }).finally(function () {
 
+                 //Notification
+                 rootState.base.global = Object.assign({
+                    message: [{ success: "Document successfulyy added" }],
+                    status: 'Success',
+                    showMsg: true,
+                })
+            }).catch((err) => {
+                 //Notification
+                rootState.base.global = Object.assign({
+                    message: err.response.data,
+                    status: 'Error',
+                    showMsg: true,
+                })
+            }).finally(function () {
                 rootState.base.isLoading = false
             })
 
@@ -230,7 +265,7 @@ const actions = {
         try {
             if (index === -1) {
 
-                axios.post('/api/filelocations', data, {
+                axios.post('/api/filelocations', data,{
                     headers: {
                         'Content-Type': "multipart/form-data"
                     }
@@ -324,6 +359,19 @@ const actions = {
         })
     },
 
+    async showFile({commit,state,rootState},filelocation) {
+        try {
+            await axios.get('/api/filelocations/'+filelocation.file_location_id).then((response) => {
+                commit('SHOW_FILE',response.data)
+                console.log(response.data)
+            }).catch((err) => {
+                console.log(err.response.data)
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
 
     async deleteFileLocation({ commit, state, rootState }, filelocation) {
         rootState.base.isLoading = true
@@ -332,7 +380,6 @@ const actions = {
 
                 //notifacation
                 commit('DELETE_FILE_LOCATION', response.data)
-
                 rootState.base.global = Object.assign({
                     message: [{ success: "File Location successfulyy deleted" }],
                     status: 'Success',
