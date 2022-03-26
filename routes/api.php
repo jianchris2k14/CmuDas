@@ -22,6 +22,10 @@ Route::get('/requests', [RequestController::class, 'index']);
 Route::get('/requests/{id}', [RequestController::class, 'show']);
 Route::post('/requests/search', [RequestController::class, 'search']);
 
+Route::get('/requestreportsdaily', [RequestController::class, 'requestReportsDaily']);
+Route::get('/requestreportsweekly', [RequestController::class, 'requestReportsWeekly']);
+
+
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/{id}', [UserController::class, 'show']);
 Route::post('/users/search', [UserController::class, 'search']);
@@ -36,6 +40,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/files', [FileController::class, 'store']);
     Route::put('/files/{id}', [FileController::class, 'update']);
     Route::delete('/files/{id}', [FileController::class, 'destroy']);
+    Route::post('/destroyfilerecords', [FileController::class, 'destroyRecords']);
 
     Route::post('/requests', [RequestController::class, 'store']);
     Route::put('/requests/{id}', [RequestController::class, 'update']);
@@ -49,6 +54,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/filelocations', [FileLocationController::class, 'store']);
     Route::put('/filelocations/{id}', [FileLocationController::class, 'update']);
     Route::delete('/filelocations/{id}', [FileLocationController::class, 'destroy']);
+    Route::post('/destroyfilelocationrecords', [FileLocationController::class, 'destroyRecords']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
     

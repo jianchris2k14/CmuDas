@@ -69,34 +69,6 @@ export default {
     },
     totalDashboard() {
       let data = []
-      if(this.auth.user_type === 'Chief') {
-        return data = [
-          {
-            title: "Documents",
-            subtitle: this.$store.getters.totalDocuments,
-            bgColor: "bg-primary",
-            icon: "fa fa-folder",
-          },
-          {
-            title: "Clients",
-            subtitle:this.$store.getters.totalClients,
-            bgColor: "bg-danger",
-            icon: "fa fa-user-tie",
-          },
-          {
-            title: "Staff",
-            subtitle: this.$store.getters.totalStaff,
-            bgColor: "bg-info",
-            icon: "fa fa-users",
-          },
-          {
-            title: "Archive",
-            subtitle: "50",
-            bgColor: "bg-warning",
-            icon: "fa fa-archive",
-          }
-        ]
-      }else {
         return data = [
           {
             title: "Archive",
@@ -124,7 +96,7 @@ export default {
           },
           {
             title: "Denied Requests",
-            subtitle: this.$store.getters.totalApprovedRequest,
+            subtitle: this.$store.getters.totalDeniedRequest,
             bgColor: "bg-primary",
             icon: "fa fa-thumbs-down",
           },
@@ -137,7 +109,7 @@ export default {
 
 
         ]
-      }
+      
     },
     fetchRequests() {
       const files = this.$store.getters.getPendingRequests

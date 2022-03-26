@@ -63,7 +63,7 @@ const actions = {
         commit('SET_AUTHENTICATED',false)
         commit('SET_PERMISSION',null)
         rootState.base.global.showMsg = false
-        rootState.base.global.status = "Success"
+        rootState.base.global.status = ""
         rootState.base.global.message = []
         rootState.base.message = []
         rootState.base.status = ""

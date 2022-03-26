@@ -77,5 +77,13 @@ class FileController extends Controller
         if($file->delete())
             return new FileResource($file);
     }
+    public function destroyRecords(Request $request)
+    {
+        $ids = $request;
+        $file = File::whereIn('file_id',$ids)->delete();
+        
+        return response($file);
+
+    }
 
 }

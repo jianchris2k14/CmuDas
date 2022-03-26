@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Request as Req;
 use App\Http\Resources\RequestResource;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class RequestController extends Controller
@@ -110,6 +112,67 @@ class RequestController extends Controller
 
         return new RequestResource($req);
     }
+
+    public function requestReportsDaily() {
+        $dailyreports = Req::select(DB::raw('
+            DATE(request_date) as request_date,
+            COUNT(CASE WHEN status = "Approved" THEN 1 ELSE NULL END) as "request_total"'
+        ))->groupBy(DB::raw(
+            'DATE(request_date)'
+        ))->get();
+        
+
+        return response($dailyreports);
+    }
+
+    public function requestReportsWeekly() {
+
+        
+         $weeklyreports = Req::all()->groupBy(function($date) {
+            $request_date = Carbon::parse($date->request_date);
+            $start = $request_date->startOfWeek()->format('d-m-Y');
+            $end = $request_date->endOfWeek()->format('d-m-Y');
+            
+            return "{$start} - {$end}";
+        });
+
+        /* $weeklyreports = Req::select('*')->where('status','Approved')
+        ->get()
+        ->groupBy(function($date) {
+            return Carbon::parse($date->request_date)->format('W');
+        });
+
+
+
+
+          /*  $weeklyreports = Req::select(DB::raw("
+            WEEK(request_date) as request_date,
+            COUNT(CASE WHEN status = 'Approved' THEN 1 ELSE NULL END) as 'request_total'"
+        ))->groupBy(DB::raw(
+            "WEEK(request_date)"
+        ))->get();
+ */
+
+       /*  $weeklyreports = Req::select(DB::raw("
+            DATE_FORMAT(request_date, '%Y-%m') as request_date,
+            COUNT(CASE WHEN status = 'Approved' THEN 1 ELSE NULL END) as 'request_total'"
+        ))->groupBy(DB::raw(
+            "DATE_FORMAT(request_date, '%Y-%m')"
+        ))->get(); */
+        
+        return response($weeklyreports);
+    }
+    public function requestReportsMonthly() {
+        $monthlyreports = Req::select(DB::raw('
+            DATE(request_date) as request_date,
+            COUNT(CASE WHEN status = "Approved" THEN 1 ELSE NULL END) as "request_total"'
+        ))->groupBy(function($date) {
+            return Carbon::parse($date->request_date)->format('D');
+        })->get();
+        
+
+        return response($monthlyreports);
+    }
     
     public function destroy($id)
     {
@@ -118,6 +181,7 @@ class RequestController extends Controller
         if($req->delete())
             return new RequestResource($req);
     }
+    
 
 
     public function destroyRecords(Request $request)
@@ -125,6 +189,7 @@ class RequestController extends Controller
         $ids = $request;
         $req = Req::whereIn('request_id',$ids)->delete();
         
+        /* return response($req); */
         return response($req);
 
     }

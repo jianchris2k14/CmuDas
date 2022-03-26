@@ -7,6 +7,8 @@ const getDefaultSate = () => {
         requests:[],
         request_form:null,
         request_document:null,
+        request_report:[],
+        request_report_weekly:[]
     }
 }
 
@@ -53,6 +55,14 @@ const getters = {
         }
         return total
     },
+    totalDeniedRequest(state) {
+        let total = 0
+        let requests = state.requests.filter(item => item.status === 'Denied')
+        for(const obj in requests) {
+            total++
+        }
+        return total
+    },
 
 }
 
@@ -90,6 +100,13 @@ const mutations = {
     SET_REQUEST_DOCUMENT:(state,data) => {
         state.request_document = data
     },
+    SET_REQUEST_REPORT:(state,data) => {
+        state.request_report = data
+    },
+    SET_REQUEST_REPORT_WEEKLY:(state,data) => {
+        state.request_report_weekly = data
+    }
+
 
 }
 
@@ -272,7 +289,46 @@ const actions = {
             console.log(error)
         }
 
+    },
+    async getRequestReportsDaily({commit}) {
+        try {
+            await axios.get('/api/requestreportsdaily').then((response) => {
+                commit('SET_REQUEST_REPORT',response.data)
+            }).catch((err) => {
+                console.log(err.response.data)
+            });
+        }
+        catch(error) {
+            console.log(error)
+        }
+    },
+    async getRequestReportsWeekly({commit}) {
+        try {
+            await axios.get('/api/requestreportsweekly').then((response) => {
+                console.log(response.data)
+                commit('SET_REQUEST_REPORT_WEEKLY',response.data)
+            }).catch((err) => {
+                console.log(err.response.data)
+            });
+        }
+        catch(error) {
+            console.log(error)
+        }
+    },
+    async getRequestReportsMonthly({commit}) {
+        try {
+            await axios.get('/api/requestreportweekly').then((response) => {
+                console.log(response.data)
+                /* commit('SET_REQUEST_REPORT',response.data) */
+            }).catch((err) => {
+                console.log(err.response.data)
+            });
+        }
+        catch(error) {
+            console.log(error)
+        }
     }
+    
 
 }
 

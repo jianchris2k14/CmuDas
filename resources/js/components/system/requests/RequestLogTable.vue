@@ -23,10 +23,11 @@
         :search="search"
         item-key="request_id"
         :single-select="singleSelect"
+        :loading="isLoading"
         show-select
         class="elevation-1 table-striped"
       >
-        <template v-slot:item.request_date="{ item}">
+        <template v-slot:item.request_date="{ item }">
           <span>{{ new Date(item.request_date).toLocaleDateString() }}</span>
         </template>
         <template v-slot:item.expiration_date="{ item }">
@@ -40,77 +41,35 @@
         <template v-slot:top>
           <v-switch v-model="singleSelect" label="Single Select" class="pa-3">
           </v-switch>
+
           <v-toolbar flat>
-            <v-toolbar-title>List of File Requests</v-toolbar-title>
-            <v-divider class="mx-4" inset vertical></v-divider>
-            <v-spacer></v-spacer>
-            <v-btn color="error"
-            :loading="isLoading"
-             @click="deleteItem()">
-        Delete
-        <v-icon right dark> mdi-delete </v-icon>
-      </v-btn>
+            <v-row>
+              <v-col cols="12" md="11" sm="13">
+                <h4>List of Documents</h4>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+                sm="3"
+                v-show="auth.user_type === 'Staff'"
+              >
+                <v-row>
+                  <v-col cols="12" class="mb-3">
+                    <v-btn-toggle v-model="icon" borderless>
+                      <v-btn
+                        color="error"
+                        :loading="isLoading"
+                        @click="deleteItem"
+                      >
+                        <span class="hidden-sm-and-down">Delete</span>
 
-            <!-- REQUEST FILE MANANGEMENT MODAL -->
-
-            <v-dialog v-model="dialog" max-width="960px">
-              <v-card>
-                <v-toolbar color="primary" dark>
-                  <span class="text-h5">{{ formTitle }}</span>
-                </v-toolbar>
-                <v-card-title> </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-form
-                      ref="form"
-                      @submit.prevent="save"
-                      v-model="rules.isValid"
-                      lazy-validation
-                    >
-                      <v-row>
-                        <v-col cols="12">
-                          <v-text-field
-                            v-model="form.request_id"
-                            label="Name"
-                            outlined
-                            disabled
-                            dense
-                            required
-                          ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12">
-                          <v-select
-                            :items="item"
-                            label="Status"
-                            v-model="form.status"
-                            required
-                            dense
-                            outlined
-                          ></v-select>
-                        </v-col>
-                      </v-row>
-                    </v-form>
-                  </v-container>
-                </v-card-text>
-
-                <!-- Form Buttons -->
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="error" dark @click="close"> Cancel </v-btn>
-                  <v-btn
-                    :disabled="!rules.isValid"
-                    color="success"
-                    dark
-                    @click="save"
-                    :loading="isLoading"
-                  >
-                    Save
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            
+                        <v-icon right class="text-white"> mdi-delete </v-icon>
+                      </v-btn>
+                    </v-btn-toggle>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
 
             <!-- Delete Confirmation Modal -->
             <v-dialog v-model="dialogDelete" max-width="500px">
@@ -139,13 +98,6 @@
             </v-dialog>
           </v-toolbar>
         </template>
-
-        <!-- Table Actions Buttons -->
-        <template v-slot:item.actions="{ item }">
-          <v-icon color="error" small @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
-        </template>
       </v-data-table>
     </v-card>
   </div>
@@ -156,6 +108,7 @@ export default {
   components: { AlertComponent },
   data() {
     return {
+      icon: "justify",
       //TABLE SEARCH PROPERTY
       search: "",
 
@@ -193,12 +146,6 @@ export default {
         {
           text: "Expiration Date",
           value: "expiration_date",
-          class: "info text-black",
-        },
-        {
-          text: "Actions",
-          value: "actions",
-          sortable: false,
           class: "info text-black",
         },
       ],
@@ -241,7 +188,9 @@ export default {
       });
       return request_id;
     },
-
+    auth() {
+      return this.$store.state.auth.user;
+    },
 
     //FORM TITLE COMPUTED
     formTitle() {
@@ -280,28 +229,21 @@ export default {
       else if (status === "Denied") return "red";
       else return "orange";
     },
-    //EDIT FILE REQUESTS DATA
-    editItem(item) {
-      this.editedIndex = this.fetchRequests.indexOf(item);
-      this.form = Object.assign({}, item);
-      this.dialog = true;
-    },
 
     //DELETE REQUESTS DATA
     deleteItem() {
       /* this.selectedItem = item; */
-      if(this.selected.length<= 0) {
-        alert("Select Request to delete")
-      }else {
-        this.dialogDelete = true
+      if (this.selected.length <= 0) {
+        alert("Select Request to delete");
+      } else {
+        this.dialogDelete = true;
       }
-      
     },
 
     //CONFIRM DELETE FILE REQUEST
     async deleteItemConfirm() {
       this.msgStatus = true;
-      await this.$store.dispatch("deleteMultipleRequest",this.selectedRequest)
+      await this.$store.dispatch("deleteMultipleRequest", this.selectedRequest);
       //await this.$store.dispatch("deleteRequest", this.selectedItem.request_id);
       this.closeDelete();
     },
@@ -322,20 +264,6 @@ export default {
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
-    },
-
-    //CALL STORE MANANGEMENT DISPATCH FOR ADDING DATA TO STATES
-    async addFile() {},
-
-    //SAVE BUTTON ( SEND FORM DATA TO DATABASE)
-    save() {
-      this.msgStatus = true;
-
-      //Check if actions update or add
-      if (this.editedIndex > -1) {
-      } else {
-        /* this.$refs.form.validate(); */
-      }
     },
   },
   mounted() {},

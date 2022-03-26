@@ -6,7 +6,7 @@ const getDefaultSate = () => {
     return {
         files: [],
         file_location: [],
-        show_file:null,
+        show_file: null,
     }
 }
 
@@ -18,7 +18,7 @@ const state = getDefaultSate()
 const getters = {
     totalDocuments(state) {
         let total = 0;
-        for(const obj of state.file_location) {
+        for (const obj of state.file_location) {
             total++
         }
         return total
@@ -32,7 +32,7 @@ const getters = {
     totalArchiveDocuments(state) {
         let total = 0
         let archive = state.files.filter(item => item.archive === 'Archive')
-        for(const obj of archive) {
+        for (const obj of archive) {
             total++
         }
         return total
@@ -55,10 +55,13 @@ const mutations = {
 
 
     /* DELETE FILE DATA FROM STORE STATES */
-    DELETE_FILE: (state, file) => {
-        const index = state.files.findIndex(item => item.file_id === file.file_id)
-        state.files.splice(index, 1)
+    DELETE_FILE: (state, data) => {
+        for (let i = 0; i < data.length; i++) {
+            const index = state.files.findIndex(item => item.request_id === data[i])
+            state.files.splice(index, 1)
+        }
     },
+
 
 
     /* ADD FILE DATA FROM STORE STATES */
@@ -87,10 +90,12 @@ const mutations = {
 
     /* DELETE FILE LOCATION FROM STORE STATES */
     DELETE_FILE_LOCATION: (state, file) => {
-        const index = state.file_location.findIndex(item => item.file_id === file.file_location_id)
-        state.file_location.splice(index, 1)
+        for(let i = 0;i<file.length;i++) {
+            const index = state.file_location.findIndex(item => item.file_id === file[i])
+            state.file_location.splice(index,1)
+        }
     },
-    SHOW_FILE:(state,file) => {
+    SHOW_FILE: (state, file) => {
         state.show_file = file
     }
 
@@ -194,6 +199,39 @@ const actions = {
         }
     },
 
+    async deleteMultipleFiles({ commit, rootState }, records) {
+        rootState.base.isLoading = true
+        try {
+            await axios.post('/api/destroyfilerecords', records).then((response) => {
+                commit('DELETE_FILE', records)
+
+                //Notifaction
+                rootState.base.global = Object.assign({
+                    message: [{ sucess: "Request successfully deleted" }],
+                    status: "Success",
+                    showMsg: true
+                })
+
+            }).catch((err) => {
+                if (err.response.status === 500) {
+                    //Notification
+                    rootState.base.global = Object.assign({
+                        message: { message: "Ops! Something went wrong, this file is already in the file location. Delete this file in the file location first." },
+                        status: 'Error',
+                        showMsg: true,
+                    })
+                } else {
+
+                }
+                console.log(err)
+            }).finally(function () {
+                rootState.base.isLoading = false
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
 
 
     /* ADD FILE TO DATABASE */
@@ -203,14 +241,14 @@ const actions = {
             axios.post('/api/files', payload).then((response) => {
                 commit("ADD_FILE", response.data.data)
 
-                 //Notification
-                 rootState.base.global = Object.assign({
+                //Notification
+                rootState.base.global = Object.assign({
                     message: [{ success: "Document successfulyy added" }],
                     status: 'Success',
                     showMsg: true,
                 })
             }).catch((err) => {
-                 //Notification
+                //Notification
                 rootState.base.global = Object.assign({
                     message: err.response.data,
                     status: 'Error',
@@ -265,7 +303,7 @@ const actions = {
         try {
             if (index === -1) {
 
-                axios.post('/api/filelocations', data,{
+                axios.post('/api/filelocations', data, {
                     headers: {
                         'Content-Type': "multipart/form-data"
                     }
@@ -359,10 +397,10 @@ const actions = {
         })
     },
 
-    async showFile({commit,state,rootState},filelocation) {
+    async showFile({ commit, state, rootState }, filelocation) {
         try {
-            await axios.get('/api/filelocations/'+filelocation.file_location_id).then((response) => {
-                commit('SHOW_FILE',response.data)
+            await axios.get('/api/filelocations/' + filelocation.file_location_id).then((response) => {
+                commit('SHOW_FILE', response.data)
                 console.log(response.data)
             }).catch((err) => {
                 console.log(err.response.data)
@@ -376,10 +414,10 @@ const actions = {
     async deleteFileLocation({ commit, state, rootState }, filelocation) {
         rootState.base.isLoading = true
         try {
-            await axios.delete('/api/filelocations/' + filelocation.file_location_id).then((response) => {
-
+            await axios.post('/api/destroyfilelocationrecords', filelocation).then((response) => {
+                commit('DELETE_FILE_LOCATION',filelocation)
+                console.log(response.data)
                 //notifacation
-                commit('DELETE_FILE_LOCATION', response.data)
                 rootState.base.global = Object.assign({
                     message: [{ success: "File Location successfulyy deleted" }],
                     status: 'Success',

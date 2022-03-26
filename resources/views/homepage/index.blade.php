@@ -28,8 +28,10 @@
         <link href="{{asset('landingpage/css/nucleo-svg.css')}}" rel="stylesheet" />
         <link href="{{asset('landingpage/css/nucleo-svg.css')}}" rel="stylesheet" />
         <link href="{{asset('landingpage/css/argon-design-system.css?v=1.2.2')}}" rel="stylesheet" />
+        
         <script src="https://mozilla.github.io/pdf.js/build/pdf.js" crossorigin="anonymous"></script>
         <link href="https://mozilla.github.io/pdf.js/web/viewer.css" rel="stylesheet" type="text/css" />
+
         
         
 
@@ -49,9 +51,8 @@
         <div id="app">
             <app-component></app-component>
         </div>
-
-    <script src="{{mix('js/app.js')}}"></script>
     
+    <script src="{{mix('js/app.js')}}"></script>
     <script src="{{asset('assets/js/plugins/jquery/dist/jquery.min.js')}}"></script>
     <script src="{{asset('assets/js/plugins/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
     <!--   Optional JS   -->

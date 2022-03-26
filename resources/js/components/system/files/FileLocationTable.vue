@@ -20,6 +20,11 @@
         :headers="headers"
         :items="fetchFileLocations"
         :search="search"
+        v-model="selected"
+        item-key="file_location_id"
+        :single-select="singleSelect"
+        show-select
+        :loading="isLoading"
         class="elevation-1 table-striped"
       >
         <!-- CHANGE DATE FORMAT FROM DATABASE -->
@@ -27,13 +32,40 @@
           <span>{{ new Date(item.created_at).toLocaleDateString() }}</span>
         </template>
         <template v-slot:top>
+          <v-switch v-model="singleSelect" class="pa-3" label="Single Select">
+
+          </v-switch>
+
           <v-toolbar flat>
-            <v-toolbar-title>File Locations</v-toolbar-title>
-            <v-divider class="mx-4" inset vertical></v-divider>
-            <v-spacer></v-spacer>
+            <v-row>
+              <v-col cols="12" md="11" sm="13">
+                <h4>List of Documents</h4>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+                sm="3"
+                v-show="auth.user_type === 'Staff'"
+              >
+                <v-row>
+                  <v-col cols="12" class="mb-3">
+                    <v-btn-toggle v-model="icon" borderless>
+                      <v-btn
+                        color="error"
+                        :loading="isLoading"
+                        @click="deleteItem"
+                      >
+                        <span class="hidden-sm-and-down" @click="deleteItem">Delete</span>
+
+                        <v-icon right class="text-white"> mdi-delete </v-icon>
+                      </v-btn>
+                    </v-btn-toggle>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
 
             <!-- FILES MANAGEMENT MODALS -->
-            <v-row justify="center">
               <v-dialog
                 v-model="viewdialog"
                 fullscreen
@@ -48,29 +80,30 @@
                   </v-toolbar>
                   <!--- GET FILE CONENTS -->
 
-                      <div v-if="getFile" class="text-center">
-                        <img
-                          :src="getFile.filecontent"
-                          v-show="
-                            getFile.filetype === 'png' ||
-                            getFile.filetype === 'jpg' ||
-                            getFile.filetype === 'jpeg'||
-                            getFile.filetype === 'PNG' ||
-                            getFile.filetype === 'JPG' ||
-                            getFile.filetype === 'JPEG'
-                          "
-                        />
-                        <embed
-                          :src="getFile.filecontent"
-                          v-show="getFile.filetype === 'pdf' || 
-                          getFile.filetype === 'PDF'"
-                          width="100%"
-                          height="900"
-                        />
-                      </div>
+                  <div v-if="getFile" class="text-center">
+                    <img
+                      :src="getFile.filecontent"
+                      v-show="
+                        getFile.filetype === 'png' ||
+                        getFile.filetype === 'jpg' ||
+                        getFile.filetype === 'jpeg' ||
+                        getFile.filetype === 'PNG' ||
+                        getFile.filetype === 'JPG' ||
+                        getFile.filetype === 'JPEG'
+                      "
+                    />
+                    <embed
+                      :src="getFile.filecontent"
+                      v-show="
+                        getFile.filetype === 'pdf' || getFile.filetype === 'PDF'
+                      "
+                      width="100%"
+                      height="900"
+                    />
+                  </div>
                 </v-card>
               </v-dialog>
-            </v-row>
+
 
             <v-dialog v-model="dialog" max-width="960px">
               <v-card>
@@ -130,7 +163,7 @@
                   </v-toolbar-title>
                 </v-toolbar>
                 <v-card-title class="text-h5"
-                  >Are you sure you want to delete this item?</v-card-title
+                  >Are you sure you want to delete this item(s)?</v-card-title
                 >
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -151,9 +184,6 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="showFile(item)">
-            mdi-information
-          </v-icon>
           <v-icon
             color="primary"
             small
@@ -163,13 +193,8 @@
           >
             mdi-pencil
           </v-icon>
-          <v-icon
-            color="error"
-            small
-            @click="deleteItem(item)"
-            v-show="auth.user_type === 'Staff'"
-          >
-            mdi-delete
+          <v-icon color="success" small class="mr-2" @click="showFile(item)">
+            mdi-information
           </v-icon>
         </template>
       </v-data-table>
@@ -182,7 +207,9 @@ export default {
   components: { AlertComponent },
   data() {
     return {
-      file_path: "",
+      singleSelect: false,
+      selected: [],
+      icon: "justify",
       //TABLE SEARCH PROPERTY
       search: "",
       file_id: null,
@@ -194,9 +221,7 @@ export default {
       viewdialog: false,
 
       //NOTIFY PROPERTIES
-      error: "",
       msgStatus: false,
-      load: false,
 
       //TABLE HEADERS PROPERTIES
       headers: [
@@ -253,13 +278,26 @@ export default {
     getUserId() {
       return this.$store.state.auth.user.user_id;
     },
+
+    //FETCH SINGLE FILE FROM STATE MANANGEMENT COMPUTED
     getFile() {
       return this.$store.state.files.show_file;
     },
 
+    getSelectedFileLocation() {
+      let file_location_id = this.selected.map((item) => {
+        return item.file_location_id
+      })
+      return file_location_id
+    },
+
+
+    //GET CURRENT USER LOGGED IN
     auth() {
       return this.$store.getters.user;
     },
+
+    //FETCH FILE LOCATIONS FROM STATE MANANGEMENT COMPUTED
     fetchFileLocations() {
       const file_location = this.$store.state.files.file_location;
 
@@ -318,9 +356,13 @@ export default {
     },
 
     //DELETE FILE DATA
-    deleteItem(item) {
-      this.selectedFile = item;
-      this.dialogDelete = true;
+    deleteItem() {
+      if(this.getSelectedFileLocation.length>0) {
+        this.dialogDelete = true;
+      }else {
+        alert("Please select Item")
+        return false
+      }
     },
 
     async showFile(item) {
@@ -331,7 +373,7 @@ export default {
     //CONFIRM DELETE FILE
     async deleteItemConfirm() {
       this.msgStatus = true;
-      await this.$store.dispatch("deleteFileLocation", this.selectedFile);
+      await this.$store.dispatch("deleteFileLocation", this.getSelectedFileLocation);
       this.closeDelete();
     },
 
@@ -382,3 +424,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+::v-deep .v-data-table-header {
+  background-color: #1e88e5;
+}
+</style>

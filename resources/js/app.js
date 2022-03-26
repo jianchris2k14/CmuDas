@@ -22,6 +22,10 @@ import lodash from 'lodash'
 Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 
 
+import VueCharts from 'vue-chartjs'
+import 'chart.js'
+Vue.use(VueCharts)
+
 
 /** ANIMATE CSS */
 import 'animate.css'
@@ -51,6 +55,7 @@ Vue.component('jw-pagination', JwPagination);
 
 //VUETIFY DATE TIME PICKER
 import DatetimePicker from 'vuetify-datetime-picker'
+
 // (Optional) import 'vuetify-datetime-picker/src/stylus/main.styl'
  
 Vue.use(DatetimePicker)

@@ -120,9 +120,17 @@ class FileLocationController extends Controller
     public function destroy($id)
     {
         $file = FileLocation::findOrFail($id);
-        unlink(storage_path('app/public/'.$file->file_location));
         if($file->delete())
+        unlink(storage_path('app/public/'.$file->file_location));
             return new FileLocationResource($file);
     }
 
+    public function destroyRecords(Request $request)
+    {
+        $ids = $request;
+        $req = FileLocation::whereIn('file_location_id',$ids)->delete();
+        
+        return response($req);
+
+    }
 }

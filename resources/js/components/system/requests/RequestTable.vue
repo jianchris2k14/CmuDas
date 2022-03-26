@@ -20,9 +20,7 @@
         :headers="headers"
         :items="fetchRequests"
         :search="search"
-        :single-select="singleSelect"
-        show-select
-        :loading="getLoading"
+        :loading="isLoading"
         class="elevation-1 table-striped"
       >
 
@@ -40,11 +38,6 @@
         </template>
         
         <template v-slot:top>
-          <v-switch
-        v-model="singleSelect"
-        label="Single select"
-        class="pa-3"
-      ></v-switch>
           <v-toolbar flat>
             <v-toolbar-title>List of File Requests</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
