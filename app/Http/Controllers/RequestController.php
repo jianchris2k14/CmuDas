@@ -11,25 +11,25 @@ use Illuminate\Support\Facades\Storage;
 
 class RequestController extends Controller
 {
-    
+
     private $pagination_no = 10;
-    
+
     public function index()
     {
         $reqs = Req::leftJoin('files', 'requests.file_id', '=', 'files.file_id')
-                    ->leftJoin('users', 'requests.user_id', '=', 'users.user_id')->get();
-                    /* ->paginate($this->pagination_no); */
+            ->leftJoin('users', 'requests.user_id', '=', 'users.user_id')->get();
+        /* ->paginate($this->pagination_no); */
 
         return RequestResource::collection($reqs);
     }
 
     public function show($id)
     {
-        
+
         $file = Req::findOrFail($id);
         $filename = $file->request_form;
-        $contents = Storage::url('request/'.$filename);
-        $extension = pathinfo(storage_path('request/'.$filename), PATHINFO_EXTENSION);
+        $contents = Storage::url('request/' . $filename);
+        $extension = pathinfo(storage_path('request/' . $filename), PATHINFO_EXTENSION);
         $data = array('request_id' => $id, 'filecontent' => $contents, 'filetype' => $extension);
 
         return response($data);
@@ -40,16 +40,16 @@ class RequestController extends Controller
     public function search(Request $request)
     {
         $request->validate([
-            'keyword' 		         => 	'required|string|min:2',
+            'keyword'                  =>     'required|string|min:2',
         ]);
 
         $reqs = Req::where('requests.description', 'like', '%' . $request->keyword . '%')
-                ->orWhere('filename', 'like', '%' . $request->keyword . '%')
-                ->orWhere('code', 'like', '%' . $request->keyword . '%')
-                ->orWhere('name', 'like', '%' . $request->keyword . '%')
-                ->leftJoin('files', 'requests.file_id', '=', 'files.file_id')
-                ->leftJoin('users', 'requests.user_id', '=', 'users.user_id')
-                ->paginate($this->pagination_no);
+            ->orWhere('filename', 'like', '%' . $request->keyword . '%')
+            ->orWhere('code', 'like', '%' . $request->keyword . '%')
+            ->orWhere('name', 'like', '%' . $request->keyword . '%')
+            ->leftJoin('files', 'requests.file_id', '=', 'files.file_id')
+            ->leftJoin('users', 'requests.user_id', '=', 'users.user_id')
+            ->paginate($this->pagination_no);
 
         return RequestResource::collection($reqs);
     }
@@ -57,13 +57,13 @@ class RequestController extends Controller
     private function validation(Request $request)
     {
         $request->validate([
-            'description' 		 =>     'required|string',
-            'request_date' 		 =>     'required|date',
-            'request_form'       => 	'required|mimes:pdf|max:2048',
-            'expiration_date'    =>     'required|date',
-            'status' 		     => 	'required|alpha_num',
-            'file_id' 		     =>     'required|numeric',
-            'user_id' 		     =>     'numeric',
+            'description'           =>     'required|string',
+            'request_date'          =>     'required|date',
+            'request_form'          =>     'required|mimes:pdf|max:2048',
+            'expiration_date'       =>     'required|date',
+            'status'                =>     'required|alpha_num',
+            'file_id'               =>     'required|numeric',
+            'user_id'               =>     'numeric',
         ]);
     }
 
@@ -71,12 +71,12 @@ class RequestController extends Controller
     {
         $this->validation($request);
 
-        if($request->hasFile('request_form')) {
+        if ($request->hasFile('request_form')) {
 
 
             $request_form = $request->file('request_form');
             $request_name = $request_form->getClientOriginalName();
-            $request_form->storePubliclyAs('public/request',$request_name);
+            $request_form->storePubliclyAs('public/request', $request_name);
 
             $req = Req::create([
                 'file_id' => $request->file_id,
@@ -88,7 +88,6 @@ class RequestController extends Controller
                 'user_id' => $request->user_id,
             ]);
             return new RequestResource($req);
-
         }
 
 
@@ -113,85 +112,63 @@ class RequestController extends Controller
         return new RequestResource($req);
     }
 
-    public function requestReportsDaily() {
-        $dailyreports = Req::select(DB::raw('
-            DATE(request_date) as request_date,
-            COUNT(CASE WHEN status = "Approved" THEN 1 ELSE NULL END) as "request_total"'
+    public function requestReportsDaily()
+    {
+        $dailyreports = Req::select(DB::raw(
+            '
+            DATE(request_date) as date,
+            COUNT(CASE WHEN status = "Approved" THEN 1 ELSE NULL END) as "total"'
         ))->groupBy(DB::raw(
             'DATE(request_date)'
         ))->get();
-        
+
 
         return response($dailyreports);
     }
 
-    public function requestReportsWeekly() {
+    public function requestReportsWeekly()
+    {
 
-        
-         $weeklyreports = Req::all()->groupBy(function($date) {
+
+        $weeklyreports = Req::all()->groupBy(function ($date) {
             $request_date = Carbon::parse($date->request_date);
             $start = $request_date->startOfWeek()->format('d-m-Y');
             $end = $request_date->endOfWeek()->format('d-m-Y');
-            
+
             return "{$start} - {$end}";
         });
 
-        /* $weeklyreports = Req::select('*')->where('status','Approved')
-        ->get()
-        ->groupBy(function($date) {
-            return Carbon::parse($date->request_date)->format('W');
+
+        return response($weeklyreports);
+    }
+    public function requestReportsMonthly()
+    {
+        $monthlyreports = Req::all()->groupBy(function ($date) {
+            $request_date = Carbon::parse($date->request_date);
+            $month = $request_date->format('F Y');
+            return "{$month}";
         });
 
 
-
-
-          /*  $weeklyreports = Req::select(DB::raw("
-            WEEK(request_date) as request_date,
-            COUNT(CASE WHEN status = 'Approved' THEN 1 ELSE NULL END) as 'request_total'"
-        ))->groupBy(DB::raw(
-            "WEEK(request_date)"
-        ))->get();
- */
-
-       /*  $weeklyreports = Req::select(DB::raw("
-            DATE_FORMAT(request_date, '%Y-%m') as request_date,
-            COUNT(CASE WHEN status = 'Approved' THEN 1 ELSE NULL END) as 'request_total'"
-        ))->groupBy(DB::raw(
-            "DATE_FORMAT(request_date, '%Y-%m')"
-        ))->get(); */
-        
-        return response($weeklyreports);
-    }
-    public function requestReportsMonthly() {
-        $monthlyreports = Req::select(DB::raw('
-            DATE(request_date) as request_date,
-            COUNT(CASE WHEN status = "Approved" THEN 1 ELSE NULL END) as "request_total"'
-        ))->groupBy(function($date) {
-            return Carbon::parse($date->request_date)->format('D');
-        })->get();
-        
-
         return response($monthlyreports);
     }
-    
+
     public function destroy($id)
     {
         $req = Req::findOrFail($id);
 
-        if($req->delete())
+        if ($req->delete())
             return new RequestResource($req);
     }
-    
+
 
 
     public function destroyRecords(Request $request)
     {
         $ids = $request;
-        $req = Req::whereIn('request_id',$ids)->delete();
-        
+        $req = Req::whereIn('request_id', $ids)->delete();
+
         /* return response($req); */
         return response($req);
-
     }
-    
 }

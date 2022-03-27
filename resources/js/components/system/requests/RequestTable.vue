@@ -293,6 +293,10 @@ export default {
     };
   },
   computed: {
+
+    auth() {
+      return this.$store.state.auth.user
+    },
     //FETCH FILE REQUESTS FROM STATE MANANGEMENT COMPUTED
     fetchRequests() {
       const files = this.$store.getters.getRequests;
@@ -304,6 +308,7 @@ export default {
     getLoading() {
       return this.$store.state.base.isLoading
     },
+    
 
     //FORM TITLE COMPUTED
     formTitle() {

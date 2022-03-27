@@ -179,7 +179,7 @@ export default {
   computed: {
     //FETCH FILE REQUESTS FROM STATE MANANGEMENT COMPUTED
     fetchRequests() {
-      const files = this.$store.getters.getRequestsLog;
+      const files = this.$store.getters.getRequestsLogStaff;
       return this._.orderBy(files, ["created_at"], ["desc"]);
     },
     selectedRequest() {

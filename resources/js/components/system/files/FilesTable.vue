@@ -304,14 +304,14 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
+          <v-icon color="primary" small class="mr-1" @click="editItem(item)">
             mdi-pencil
           </v-icon>
           <v-icon
             v-show="auth.user_type === 'Staff'"
             color="success"
             small
-            class="mr-2"
+            class="mr-1"
             @click="editFileLocation(item)"
           >
             mdi-upload

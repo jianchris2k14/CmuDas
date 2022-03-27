@@ -4,7 +4,7 @@
       <h5 class="display-1 text-center text-uppercase">Signin</h5>
       <!-- Alert Message -->
       <div v-if="msgStatus">
-        <alert-component />
+          <alert-component />
       </div>
       
       <v-card>
@@ -77,10 +77,10 @@ export default {
       showpassForm: false,
       showpass: false,
       showconfirmpass: false,
-      isLoading: false,
       //Error Handlings Property
       error: "",
       msgStatus: false,
+      isLoading:false,
 
       //Form Properties
       form: {

@@ -165,16 +165,23 @@ export default {
         //(v) => (v && /[^A-Za-z0-9]/.test(v) || "Password must have atleast one special character")
       ],
       password_confirmation: [
-        (v) => !!v || "Password confirmation is required",
+        v => !!v || "Password confirmation is required",
         v => v ===  this.form.password || "The password must be match",
-      ],
+      ]
     },
     }
   },
   computed: {
-    isLoading() {
-      return this.$store.state.base.isLoading
-    }
+    //ISLOADING COMPUTED
+    isLoading: {
+      get: function () {
+        return this.$store.state.base.isLoading;
+      },
+
+      set: function (newVal) {
+        return newVal;
+      },
+    },
   },
   methods: {
 

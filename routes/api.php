@@ -24,6 +24,7 @@ Route::post('/requests/search', [RequestController::class, 'search']);
 
 Route::get('/requestreportsdaily', [RequestController::class, 'requestReportsDaily']);
 Route::get('/requestreportsweekly', [RequestController::class, 'requestReportsWeekly']);
+Route::get('/requestreportsmonthly', [RequestController::class, 'requestReportsMonthly']);
 
 
 Route::get('/users', [UserController::class, 'index']);

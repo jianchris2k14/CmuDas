@@ -126,14 +126,14 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon
+          <!-- <v-icon
             color="error"
             small
             @click="deleteItem(item)"
             v-show="item.status === 'Pending'"
           >
             mdi-delete
-          </v-icon>
+          </v-icon> -->
           <v-icon
             color="success"
             small
@@ -227,9 +227,13 @@ export default {
     };
   },
   computed: {
+
+    auth() {
+      return this.$store.state.auth.user.user_id
+    },
     //FETCH FILE REQUESTS FROM STATE MANANGEMENT COMPUTED
     fetchRequests() {
-      const request = this.$store.getters.getApprovedPendingRequest;
+      const request = this.$store.getters.getApprovedPendingRequest(this.auth);
       return this._.orderBy(request, ["created_at"], ["desc"]);
     },
     getDocumentRequest() {
