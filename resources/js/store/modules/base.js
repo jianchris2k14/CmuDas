@@ -21,6 +21,10 @@ const mutations = {
         state.global.status = value.status
         state.global.showMsg = value.show
         state.isLoading = value.isLoading
+        console.log(value)
+    },
+    UPDATE_LOADING:(state,value) => {
+        state.isLoading = value
     }
 }
 const actions = {

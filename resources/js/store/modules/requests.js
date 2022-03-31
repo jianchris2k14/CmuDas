@@ -9,7 +9,7 @@ const getDefaultSate = () => {
         request_document: null,
         request_report: [],
         request_report_weekly: [],
-        request_report_monthly: []
+        request_report_monthly: [],
     }
 }
 
@@ -118,7 +118,8 @@ const mutations = {
     },
     SET_REQUEST_REPORT_MONTHLY: (state, data) => {
         state.request_report_monthly = data
-    }
+    },
+    
 
 
 }
@@ -176,12 +177,11 @@ const actions = {
 
     },
     async showRequestDocument({ commit, rootState }, payload) {
-        console.log(payload)
         try {
             const file_location_data = rootState.files.file_location.find(item => item.file_id === payload.file_id)
             await axios.get('/api/filelocations/' + file_location_data.file_location_id).then((response) => {
                 commit('SET_REQUEST_DOCUMENT', response.data)
-                console.log(response.data)
+                
             }).catch((err) => {
                 console.log(err.response.data)
             });
@@ -252,12 +252,17 @@ const actions = {
     async showRequestForm({ commit, rootState }, req) {
         rootState.base.isLoading = true
         try {
+
             await axios.get('/api/requests/' + req.request_id).then((response) => {
-                console.log(response.data)
+
                 commit('SET_REQUEST_FORM', response.data)
+
             }).catch((err) => {
+
                 console.log(err.response.data)
+
             }).finally(function () {
+
                 rootState.base.isLoading = false
             });
         } catch (error) {
@@ -269,14 +274,20 @@ const actions = {
 
     /* ADD REQUESTS TO DATABASE */
     async addRequest({ commit, rootState }, data) {
+
         rootState.base.isLoading = true
+
         const req = Object.fromEntries(data)
 
+
         try {
+
             await axios.post('/api/requests', data, {
+
                 headers: {
                     'Content-Type': "multipart/form-data"
                 }
+
             }).then((response) => {
 
 
@@ -296,23 +307,36 @@ const actions = {
                     showMsg: true
                 })
             }).finally(function () {
+
                 rootState.base.isLoading = false
+
             });
+
         } catch (error) {
+
             console.log(error)
+
         }
 
     },
     async getRequestReportsDaily({ commit }) {
         try {
             await axios.get('/api/requestreportsdaily').then((response) => {
+
                 commit('SET_REQUEST_REPORT', response.data)
+
             }).catch((err) => {
+
                 console.log(err.response.data)
+
             });
+            
         }
+
         catch (error) {
+
             console.log(error)
+
         }
     },
     async getRequestReportsWeekly({ commit }) {
@@ -327,8 +351,7 @@ const actions = {
 
                 for (let i = 0; i < Object.values(request_reports).length; i++) {
 
-                    let total = Object.values(request_reports)[i].length
-
+                    let total = Object.values(request_reports)[i].filter(item => item.status === 'Approved').length
                     let date = Object.keys(request_reports)[i]
 
                     data.push({total,date})
@@ -361,7 +384,7 @@ const actions = {
 
                     let date = Object.keys(request_reports)[i]
 
-                    let total = Object.values(request_reports)[i].length
+                    let total = Object.values(request_reports)[i].filter(item => item.status === 'Approved').length
 
                     data.push({total,date})
                 }
@@ -378,6 +401,8 @@ const actions = {
             console.log(error)
         }
     }
+
+
 
 
 }

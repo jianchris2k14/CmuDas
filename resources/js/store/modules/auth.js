@@ -31,6 +31,9 @@ const mutations = {
     SET_PERMISSION: (state,value) => {
         state.permission = value
     },
+    UPDATE_USER:(state,value) => {
+        state.user = value.data
+    }
 }
 const actions = { 
     async getUser({commit,rootState}) {
@@ -42,19 +45,76 @@ const actions = {
             }).catch((err) => {
 
                  //Notification
-                 rootState.base.global = Object.assign({
-                    message: err.response.data,
-                    status: 'Error',
-                    showMsg: true,
-                })
+                 if(err.response.status === 401) {
+                     router.push('/')
+                     rootState.base.global = Object.assign({
+                        message: err.response.data,
+                        status: 'Error',
+                        showMsg: true,
+                    })
+                    commit('SET_USER',{})
+                    commit('SET_AUTHENTICATED',false)
+                 }
+                 
 
-                commit('SET_USER',{})
-                commit('SET_AUTHENTICATED',false)
+                
             });
         } catch (error) {
             console.log(error)
         }
         
+    },
+    async updateCurrentUser({commit,rootState},payload) {
+        rootState.base.isLoading = true
+        try {
+            await axios.put('/api/updatecurrentuser/'+payload.user_id,payload).then((response) => {
+                console.log(response.data)
+                commit("UPDATE_USER",response.data)
+                rootState.base.global = Object.assign({
+                    message:[{sucess:"Record Successfully Updated"}],
+                    status: "Success",
+                    showMsg:true
+                })
+            }).catch((err) => {
+                console.log(err.response.data)
+                rootState.base.global = {
+                    message:err.response.data,
+                    status: "Error",
+                    showMsg:true
+                }
+            }).finally(function(){
+                rootState.base.isLoading = false
+
+            });
+        }catch(e) {
+            console.log(e)
+        }
+    },
+    async updateCurrentUserPassword({commit,rootState},payload) {
+        rootState.base.isLoading = true
+        try {
+            await axios.put('/api/updatecurrentuserpassword/'+payload.user_id,payload).then((response) => {
+                console.log(response.data)
+                commit("UPDATE_USER",response.data)
+                rootState.base.global = Object.assign({
+                    message:[{sucess:"Record Successfully Updated"}],
+                    status: "Success",
+                    showMsg:true
+                })
+            }).catch((err) => {
+                console.log(err.response.data)
+                rootState.base.global = {
+                    message:err.response.data,
+                    status: "Error",
+                    showMsg:true
+                }
+            }).finally(function(){
+                rootState.base.isLoading = false
+
+            });
+        }catch(e) {
+            console.log(e)
+        }
     },
     async userLogout({commit,rootState}) {
         localStorage.removeItem('token')
@@ -67,6 +127,7 @@ const actions = {
         rootState.base.global.message = []
         rootState.base.message = []
         rootState.base.status = ""
+        rootState.base.isLoading = false
 
     },
     

@@ -68,10 +68,10 @@ export default {
             userlogo:userlogo,
             navigation:[
                 {
-                    itemText:'Dashboard',
-                    itemIcon:'fa fa-tachometer-alt',
+                    itemText:'Profile',
+                    itemIcon:'fa fa-user-tie',
                     itemIconColor:'text-warning',
-                    itemPath:'/client/dashboard'
+                    itemPath:'/client/clientprofile'
                 },
                 {
                     itemText:'Requests',

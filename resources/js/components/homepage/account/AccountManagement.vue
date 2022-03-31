@@ -4,11 +4,16 @@
     <div class="container pt-lg-7 pb-lg-7">
       <div class="row">
         <div class="col-md-6">
-          <login/>
+          <div v-show="actionType === 'Login'">
+            <login @type="getRegister"/>
+          </div>
+          <div v-show="actionType === 'Register'">
+            <register @type="getLogin"/>
+          </div>
         </div>
 
         <div class="col-md-6">
-          <register/>
+          <img :src="authimg">
         </div>
       </div>
     </div>
@@ -18,11 +23,26 @@
 <script>
 import Register from './Register.vue'
 import Login from './Login.vue'
+import authimg from './../../../../../public/images/authentication.svg'
 export default {
   components:{Register,Login},
+  data() {
+    return {
+      actionType:'Login',
+      authimg:authimg
+    }
+  },
   computed:{
     auth() {
       return this.$store.state.auth
+    }
+  },
+  methods: {
+    getRegister(register) {
+      this.actionType = register
+    },
+    getLogin(login) {
+      this.actionType = login
     }
   }
 }

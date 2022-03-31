@@ -1,32 +1,69 @@
 <template>
   <div>
-    <div>
-      <button id="prev">Previous</button>
-      <button id="next">Next</button>
+    <!-- Alert Message -->
+      {{isLoading}}
+      <v-overlay :value="isLoading">
+      <v-progress-circular
+        indeterminate
+        size="64"
+      ></v-progress-circular>
+    </v-overlay>
+    <v-container>
+      <v-btn id="prev" color="success">
+        <v-icon>mdi-skip-previous</v-icon>
+        </v-btn>
+      <v-btn id="next" color="success"><v-icon>mdi-skip-next</v-icon></v-btn>
+       <v-btn :loading="isLoading" v-show="request.document_type === 'Public'" id="next" color="error" @click="downloadDocuments">
+        <v-icon>mdi-download</v-icon>
+      </v-btn>
       &nbsp; &nbsp;
       <span
         >Page: <span id="page_num"></span> / <span id="page_count"></span
       ></span>
-    </div>
+     
+    </v-container>
 
     <canvas id="the-canvas"></canvas>
     <div class="textLayer"></div>
   </div>
 </template>
 <script>
+import AlertComponent from './../../../AlertComponent.vue'
 export default {
-  props: ["docs"],
+  props: ["docs",'request'],
+  components:{
+    AlertComponent
+  },
   data() {
     return {
       file: null,
+      msgStatus:false,
     };
   },
   computed: {
     getPdf() {
       return this.docs;
     },
+    //ISLOADING COMPUTED
+    isLoading: {
+      get: function () {
+        return this.$store.state.base.isLoading;
+      },
+      set: function (newVal) {
+        return newVal;
+      },
+    },
   },
+  
+  
   methods: {
+    downloadDocuments() {
+      this.msgStatus = true
+      this.isLoading = true
+      let data = {file_url:this.docs.filecontent,file_name:this.request.filename}
+      this.$store.dispatch("downloadDocuments",data)
+       
+    },
     setPdvViewer() {
       document.addEventListener('contextmenu', event => event.preventDefault());
       var url = this.getPdf.filecontent;

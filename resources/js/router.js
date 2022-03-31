@@ -11,7 +11,7 @@ import HomepageLayout from './components/homepage/layouts/HomepageLayout.vue'
 
 /* CLIENT COMPONENTS */
 import clientdashboardlayout from './components/homepage/client/layouts/DashboardLayout'
-import clientdashboard from './components/homepage/client/dashboard/Dashboard.vue'
+import clientprofile from './components/homepage/client/dashboard/Dashboard.vue'
 import clientrequests from './components/homepage/client/clientrequests/ClientRequest.vue'
 import clientsearch from './components/homepage/client/clientsearch/ClientSearch.vue'
 
@@ -41,6 +41,10 @@ import archive from './components/system/archive/Archive.vue'
 const routes = [
 
     {
+        path:'*',
+        component:NotFound,
+    },
+    {
         path:'/404',
         component:NotFound,
         name:"404"
@@ -67,7 +71,7 @@ const routes = [
 
     },
     {
-        path:'/client/dashboard',
+        path:'/client/clientprofile',
         component:clientdashboardlayout,
         meta:{
             middleware:true,
@@ -75,13 +79,13 @@ const routes = [
         },  
         children:[
             {
-                path:'/client/dashboard',
-                component:clientdashboard,
-                name:'clientdashboard',
+                path:'/client/clientprofile',
+                component:clientprofile,
+                name:'clientprofile',
                 meta:{
                     middleware:true,
                     isAdmin:false,
-                    title:"Client Dashboard"
+                    title:"Client Profile"
                 },
             },
             {
@@ -152,7 +156,6 @@ const routes = [
                 meta:{
                     isAdmin:true,
                     middleware:true,
-                    isStaff:true,
                     title:"System Files"
                 },
             },
@@ -163,7 +166,7 @@ const routes = [
                 meta:{
                     isAdmin:true,
                     middleware:true,
-                    isStaff:true,
+                    isChief:true,
                     title:"System Reports"
                 },
             },
@@ -174,7 +177,6 @@ const routes = [
                 meta:{
                     isAdmin:true,
                     middleware:true,
-                    isStaff:true,
                     title:"System Archive"
                 },
             },
@@ -185,10 +187,11 @@ const routes = [
                 name:'systemrequests',
                 meta:{
                     isAdmin:true,
-                    middleware:true,
                     isStaff:true,
+                    middleware:true,
                     title:"System Client Requests"
                 },
+                
 
             },
             {
@@ -198,7 +201,7 @@ const routes = [
                 meta:{
                     isAdmin:true,
                     middleware:true,
-                    isStaff:false,
+                    isChief:true,
                     title:"System Users"
                 },
                 beforeEnter:(to,from,next) => {
@@ -217,7 +220,7 @@ const routes = [
                 name:'systemclients',
                 meta:{
                     isAdmin:true,
-                    isStaff:false,
+                    isChief:true,
                     middleware:true,
                     title:"System Clients"
                 },
@@ -266,7 +269,23 @@ router.beforeEach((to, from, next) => {
                         name:'404'
                     })
                 }else {
-                        next()
+                    if(user_type === 'Chief') {
+                        if(to.matched.some(record => record.meta.isStaff)) {
+                            next({
+                                name:'404'
+                            })
+                        }else {
+                            next()
+                        }
+                    }else {
+                        if(to.matched.some(record => record.meta.isChief)) {
+                            next({
+                                name:'404'
+                            })
+                        }else {
+                            next()
+                        }
+                    }
                 }
             }else {
                 if(user_type === 'Client') {

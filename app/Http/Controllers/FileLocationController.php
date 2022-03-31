@@ -5,53 +5,46 @@ namespace App\Http\Controllers;
 use App\Models\FileLocation;
 use Illuminate\Http\Request;
 use App\Http\Resources\FileLocationResource;
+use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 
 class FileLocationController extends Controller
 {
-    
+
     private $pagination_no = 10;
-    
+
     public function index()
     {
         $files = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get();
-/*         ->join('users','users.user_id', '=', 'files.user_id')
+        /*         ->join('users','users.user_id', '=', 'files.user_id')
         ->select('users.name as name','files.*') */
-/*         ->paginate($this->pagination_no); */
+        /*         ->paginate($this->pagination_no); */
 
         return FileLocationResource::collection($files);
     }
 
     public function show($id)
-    { 
+    {
         $file = FileLocation::findOrFail($id);
         $filename = $file->file_location;
         $contents = Storage::url($filename);
         $extension = pathinfo(storage_path($filename), PATHINFO_EXTENSION);
         $data = array('filecontent' => $contents, 'filetype' => $extension);
         return response($data);
-
-       /*  return Response::make(\file_get_contents($path),200,[
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="'.$filename.'"'
-        ]); */
-
-        /* return response()->file($file->file_location); */
-       /*  return new FileLocationResource(FileLocation::findOrFail($id)); */
     }
 
     public function search(Request $request)
     {
         $request->validate([
-            'keyword' 		         => 	'required|string|min:2',
+            'keyword'                  =>     'required|string|min:2',
         ]);
 
         $files = FileLocation::where('filename', 'like', '%' . $request->keyword . '%')
-                ->orWhere('file_location', 'like', '%' . $request->keyword . '%')
-                ->leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')
-                ->paginate($this->pagination_no);
+            ->orWhere('file_location', 'like', '%' . $request->keyword . '%')
+            ->leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')
+            ->paginate($this->pagination_no);
 
         return FileLocationResource::collection($files);
     }
@@ -59,8 +52,8 @@ class FileLocationController extends Controller
     private function validation(Request $request)
     {
         $request->validate([
-            'file_location'         => 	'required|mimes:png,jpg,jpeg,pdf|max:2048',
-            'file_id' 		        =>  'required|numeric',
+            'file_location'         =>     'required|mimes:png,jpg,jpeg,pdf|max:2048',
+            'file_id'                 =>  'required|numeric',
         ]);
     }
 
@@ -69,19 +62,18 @@ class FileLocationController extends Controller
         $this->validation($request);
         //$file = FileLocation::create($request->all());
 
-        if($request->hasFile('file_location')) {
+        if ($request->hasFile('file_location')) {
 
 
             $filelocation = $request->file('file_location');
             $filename = $filelocation->getClientOriginalName();
-            $filelocation->storePubliclyAs('public',$filename);
+            $filelocation->storePubliclyAs('public', $filename);
 
             $file = FileLocation::create([
                 'file_id' => $request->file_id,
                 'file_location' => $filename
             ]);
             return new FileLocationResource($file);
-
         }
     }
 
@@ -91,18 +83,18 @@ class FileLocationController extends Controller
 
         $file = FileLocation::findOrFail($id);
 
- 
+
         //$file->update($request->all());
-        if($request->hasFile('file_location')) {
-            
-            unlink(storage_path('app/public/'.$request->filename));
+        if ($request->hasFile('file_location')) {
+
+            unlink(storage_path('app/public/' . $request->filename));
 
             $filelocation = $request->file('file_location');
 
             $filename = $filelocation->getClientOriginalName();
 
             /* $filelocation->storePubliclyAs('public',$filename); */
-            $filelocation->storePubliclyAs('public',$filename);
+            $filelocation->storePubliclyAs('public', $filename);
 
             $file->file_id = $request->file_id;
 
@@ -111,26 +103,54 @@ class FileLocationController extends Controller
             $file->save();
 
             return new FileLocationResource($file);
-
         }
-
-        
     }
-    
+
+    public function uploadReportsMonthly()
+    {
+
+        $monthlyreports = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get()->groupBy(function ($date) {
+            $date_upload = Carbon::parse($date->created_at);
+            $month = $date_upload->format('F Y');
+            return "{$month}";
+        });
+
+
+        return response($monthlyreports);
+    }
+    public function uploadReportsYearly()
+    {
+
+        $yearlyreports = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get()->groupBy(function ($date) {
+            $date_upload = Carbon::parse($date->created_at);
+            $month = $date_upload->format('Y');
+            return "{$month}";
+        });
+
+
+        return response($yearlyreports);
+    }
+
+    public function downloadDocuments($id) {
+        $file = FileLocation::findOrFail($id);
+        $path = Storage::url($file->file_location);
+
+        return Storage::download($path); 
+    }
+
     public function destroy($id)
     {
         $file = FileLocation::findOrFail($id);
-        if($file->delete())
-        unlink(storage_path('app/public/'.$file->file_location));
-            return new FileLocationResource($file);
+        if ($file->delete())
+            unlink(storage_path('app/public/' . $file->file_location));
+        return new FileLocationResource($file);
     }
 
     public function destroyRecords(Request $request)
     {
         $ids = $request;
-        $req = FileLocation::whereIn('file_location_id',$ids)->delete();
-        
-        return response($req);
+        $req = FileLocation::whereIn('file_location_id', $ids)->delete();
 
+        return response($req);
     }
 }

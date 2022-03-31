@@ -1,15 +1,15 @@
 <template>
   <v-container>
-    <h5>Request Chart</h5>
-    <report-charts :chartData="chartData" :options="options"></report-charts>
+  
+    <chart :chartData="chartData" :options="options"></chart>
 
   </v-container>
 </template>
 
 <script>
-import ReportCharts from "./ReportsChart.vue";
+import Chart from "./Chart.vue";
 export default {
-  components: { ReportCharts },
+  components: { Chart },
   props:['chartData','options'],
  
 };

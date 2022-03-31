@@ -11,11 +11,6 @@
       </v-card-title>
       
 
-      <!-- Alert Message -->
-      <div v-if="msgStatus">
-        <alert-component />
-      </div>
-
       <!-- REQUESTS TABLE -->
       <v-data-table
         :headers="headers"
@@ -23,19 +18,27 @@
         :search="search"
         class="elevation-1 table-striped"
       >
+
+
         <template v-slot:item.request_date="{ item }">
           <span>{{ new Date(item.request_date).toLocaleDateString() }}</span>
         </template>
+
+
         <template v-slot:item.expiration_date="{ item }">
           <span v-show="item.status === 'Approved'">{{
             new Date(item.expiration_date).toLocaleDateString()
           }}</span>
         </template>
+
+
         <template v-slot:item.status="{ item }">
           <v-chip :color="getColor(item.status)" dark>
             {{ item.status }}
           </v-chip>
         </template>
+
+
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>List of File Requests</v-toolbar-title>
@@ -60,7 +63,7 @@
                   </v-toolbar>
                   <!--- GET FILE CONENTS -->
                   <div v-if="getDocumentRequest" class="text-center">
-                    <web-viewer v-if="getDocumentRequest" :docs.sync="getDocumentRequest"/>
+                    <web-viewer v-if="getDocumentRequest" :docs.sync="getDocumentRequest" :request="selectedRequest"/>
 
                   </div>
                 </v-card>
@@ -295,14 +298,12 @@ export default {
       let set_expiration_date = get_expiration_date.getFullYear()+ '-'+(get_expiration_date.getMonth()+1)+'-'+get_expiration_date.getDate()
       let today = new Date()
       let current_date = today.getFullYear()+ '-'+(today.getMonth()+1)+'-'+today.getDate()
-      console.log('Expiration date: ' + set_expiration_date)
-      console.log('Current date: ' +current_date)
+
       if(set_expiration_date<current_date) {
         this.viewdialog = false
         alert("The request was expired")
         this.form = Object.assign({},item)
         this.form.status = "Expired"
-        await this.$store.dispatch("updateRequest",this.form)
       }else {
         await this.$store.dispatch("showRequestDocument", item);
       }

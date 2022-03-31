@@ -7,6 +7,8 @@ const getDefaultSate = () => {
         files: [],
         file_location: [],
         show_file: null,
+        upload_reports_monthly:[],
+        upload_reports_yearly:[]
     }
 }
 
@@ -95,9 +97,20 @@ const mutations = {
             state.file_location.splice(index,1)
         }
     },
+
+
     SHOW_FILE: (state, file) => {
         state.show_file = file
-    }
+    },
+
+
+    SET_UPLOAD_REPORTS_MONTHLY:(state,data) => {
+        state.upload_reports_monthly = data
+    },
+    SET_UPLOAD_REPORTS_YEARLY:(state,data) => {
+        state.upload_reports_yearly = data
+    },
+    
 
 }
 
@@ -401,7 +414,6 @@ const actions = {
         try {
             await axios.get('/api/filelocations/' + filelocation.file_location_id).then((response) => {
                 commit('SHOW_FILE', response.data)
-                console.log(response.data)
             }).catch((err) => {
                 console.log(err.response.data)
             });
@@ -416,7 +428,7 @@ const actions = {
         try {
             await axios.post('/api/destroyfilelocationrecords', filelocation).then((response) => {
                 commit('DELETE_FILE_LOCATION',filelocation)
-                console.log(response.data)
+
                 //notifacation
                 rootState.base.global = Object.assign({
                     message: [{ success: "File Location successfulyy deleted" }],
@@ -436,6 +448,85 @@ const actions = {
             }).finally(function () { rootState.base.isLoading = false });
         } catch (error) {
             console.log(error)
+        }
+    },
+
+    async getUploadReportsMonthly({commit}) {
+        try {
+            await axios.get('/api/uploadreportsmonthly').then((response) => {
+                
+                let upload_reports = response.data
+
+                let data = []
+
+                for(let i = 0;i<Object.values(upload_reports).length;i++) {
+
+                    let date = Object.keys(upload_reports)[i]
+
+                    let total = Object.values(upload_reports)[i].filter(item => item.file_status === 'Approved').length
+
+                    data.push({total,date})
+                }
+
+                commit('SET_UPLOAD_REPORTS_MONTHLY', data)
+            }).catch((err) => {
+
+                console.log(err.response.data)
+                
+            });
+        }
+        catch (error) {
+            console.log(error)
+        }
+    },
+    async getUploadReportsYearly({commit}) {
+        try {
+            await axios.get('/api/uploadreportsyearly').then((response) => {
+                
+                let upload_reports = response.data
+
+                let data = []
+
+                for(let i = 0;i<Object.values(upload_reports).length;i++) {
+
+                    let date = Object.keys(upload_reports)[i]
+
+                    let total = Object.values(upload_reports)[i].filter(item => item.file_status === 'Approved').length
+
+                    data.push({total,date})
+                }
+
+                commit('SET_UPLOAD_REPORTS_YEARLY', data)
+            }).catch((err) => {
+                
+                console.log(err.response.data)
+                
+            });
+        }
+        catch (error) {
+            console.log(error)
+        }
+    },
+    async downloadDocuments({rootState,state,commit}, docs) {
+        rootState.base.isLoading = true
+        try {
+
+            let link = document.createElement('a')
+            link.href = docs.file_url
+            link.download = docs.file_name
+    
+            document.body.appendChild(link)
+            link.click();
+            document.body.removeChild(link)
+
+        } catch (error) {
+
+            console.log(error)
+
+        }finally{
+            setTimeout(() => {
+                rootState.base.isLoading = false
+            }, 1000);
         }
     }
 

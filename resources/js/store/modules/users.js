@@ -131,6 +131,32 @@ const actions = {
             console.log(e)
         }
     },
+    async updateCurrentUser({commit,rootState},payload) {
+        rootState.base.isLoading = true
+        try {
+            await axios.put('/api/updatecurrentuser/'+payload.user_id,payload).then((response) => {
+                console.log(response.data)
+                commit("UPDATE_USER",response.data)
+                rootState.base.global = Object.assign({
+                    message:[{sucess:"Record Successfully Updated"}],
+                    status: "Success",
+                    showMsg:true
+                })
+            }).catch((err) => {
+                console.log(err.response.data)
+                rootState.base.global = {
+                    message:err.response.data,
+                    status: "Error",
+                    showMsg:true
+                }
+            }).finally(function(){
+                rootState.base.isLoading = false
+
+            });
+        }catch(e) {
+            console.log(e)
+        }
+    },
     /* ADD USER TO DATABASE */
     addUser({commit,rootState},payload) {
         rootState.base.isLoading = true

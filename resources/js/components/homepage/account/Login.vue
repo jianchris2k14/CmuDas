@@ -4,9 +4,12 @@
       <h5 class="display-1 text-center text-uppercase">Signin</h5>
       <!-- Alert Message -->
       <div v-if="msgStatus">
-          <alert-component />
+        <alert-component />
       </div>
-      
+      <v-overlay :value="isLoading">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
+
       <v-card>
         <v-card-text>
           <v-container>
@@ -51,15 +54,13 @@
           </v-container>
         </v-card-text>
         <!-- Form Buttons -->
+
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            :disabled="!rules.isValid"
-            color="success"
-            dark
-            @click="save"
-            :loading="isLoading"
+          <v-btn text @click="showRegister('Register')"
+            >Create an Account</v-btn
           >
+          <v-spacer></v-spacer>
+          <v-btn :disabled="!rules.isValid" color="success" dark @click="save">
             Login
           </v-btn>
         </v-card-actions>
@@ -80,7 +81,7 @@ export default {
       //Error Handlings Property
       error: "",
       msgStatus: false,
-      isLoading:false,
+      isLoading: false,
 
       //Form Properties
       form: {
@@ -101,33 +102,38 @@ export default {
   },
   methods: {
     //SAVE FORM
+    showRegister(register) {
+      this.$emit("type", register);
+    },
     async loginUser() {
-      this.isLoading = true;
+      this.$store.state.base.isLoading = true
       await axios.get("/sanctum/csrf-cookie");
+      
       await axios
         .post("/api/login", this.form)
         .then((response) => {
-            localStorage.setItem("token", response.data.token);
-            /* localStorage.setItem("user_type",response.data.user.user_type) */
-            localStorage.setItem("user_type", response.data.user.user_type);
-            var user_type = response.data.user.user_type;
-            if (user_type === "Chief" || user_type === "Staff") {
-              this.$router.push({name:'systemdashboard'});
-            } else {
-              this.$router.push({name:'clientdashboard'});
-            }
+          console.log(response.data)
+          localStorage.setItem("token", response.data.token);
+          /* localStorage.setItem("user_type",response.data.user.user_type) */
+          localStorage.setItem("user_type", response.data.user.user_type);
+          var user_type = response.data.user.user_type;
+          if (user_type === "Chief" || user_type === "Staff") {
+            this.$router.push({ name: "systemdashboard" });
+          } else {
+            this.$router.push({ name: "clientprofile" });
+          }
         })
         .catch((err) => {
           var error = Object.assign({
             message: err.response.data,
             status: "Error",
             show: true,
-            loading: false,
-          });
+            isLoading: false,
+          })
           this.$store.commit("UPDATE_MESSAGE", error);
         })
         .finally(() => {
-          this.isLoading = false;
+          this.$store.commit("UPDATE_LOADING", false);
         });
 
       /* await axios.get('/sanctum/csrf-cookie')

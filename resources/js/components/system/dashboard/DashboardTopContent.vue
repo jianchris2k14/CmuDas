@@ -6,15 +6,15 @@
           <!-- Card stats -->
           <div class="row">
             <div
-              class="col-6 col-md-6 p-2"
+              class="col-4 col-md-4 p-2"
               v-for="(items, i) in totalDashboard"
               :key="i"
             >
-              <div class="card card-stats mb-3 mb-xl-0" :class="items.bgColor">
+              <div class="card card-stats mb-3 mb-sm-0" :class="items.bgColor">
                 <div class="card-body">
                   <div class="row">
                     <div class="col">
-                      <h3
+                      <h4
                         class="
                           card-title
                           text-uppercase text-muted
@@ -23,7 +23,7 @@
                         "
                       >
                         {{ items.title }}
-                      </h3>
+                      </h4>
                       <span class="counter font-weight-bold text-white">{{
                         items.subtitle
                       }}</span>
@@ -71,13 +71,13 @@ export default {
       let data = []
         return data = [
           {
-            title: "Archive",
+            title: "Archive Documents",
             subtitle: this.$store.getters.totalArchiveDocuments,
             bgColor: "bg-warning",
             icon: "fa fa-archive",
           },
           {
-            title: "Documents",
+            title: "File Documents",
             subtitle: this.$store.getters.totalDocuments,
             bgColor: "bg-success",
             icon: "fa fa-folder",
