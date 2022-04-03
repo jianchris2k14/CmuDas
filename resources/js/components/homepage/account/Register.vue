@@ -111,7 +111,6 @@
             color="success"
             dark
             @click="save"
-            :loading="isLoading"
           >
             Register
           </v-btn>

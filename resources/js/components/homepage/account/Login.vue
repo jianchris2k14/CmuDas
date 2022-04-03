@@ -112,7 +112,6 @@ export default {
       await axios
         .post("/api/login", this.form)
         .then((response) => {
-          console.log(response.data)
           localStorage.setItem("token", response.data.token);
           /* localStorage.setItem("user_type",response.data.user.user_type) */
           localStorage.setItem("user_type", response.data.user.user_type);

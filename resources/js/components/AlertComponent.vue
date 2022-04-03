@@ -1,6 +1,9 @@
 <template>
+<div>
+
 <div v-show="!isLoading">
   <div v-show="message.status === 'Error'">
+
     <v-alert dense outlined prominent type="error" icon="mdi-alert-circle">
       <v-row align="center">
         <v-col class="grow">
@@ -36,6 +39,8 @@
     </v-alert>
   </div> 
 </div>
+</div>
+
 
 </template>
 <script>
@@ -53,5 +58,6 @@ export default {
       return this.$store.state.base.isLoading
     }
   },
+
 };
 </script>

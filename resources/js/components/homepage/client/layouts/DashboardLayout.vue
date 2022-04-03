@@ -1,8 +1,9 @@
 <template>
     <div id="app">
+        
         <navigation/>
         <div class="main-content">
-            <dashboard-header/>
+            
             <dashboard-content/>
         </div>
 
@@ -31,6 +32,7 @@ export default {
         if(this.token) {
             return this.$store.dispatch("getUser")
         }
+
         
     }
 }

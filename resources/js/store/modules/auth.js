@@ -68,13 +68,13 @@ const actions = {
         rootState.base.isLoading = true
         try {
             await axios.put('/api/updatecurrentuser/'+payload.user_id,payload).then((response) => {
-                console.log(response.data)
                 commit("UPDATE_USER",response.data)
                 rootState.base.global = Object.assign({
                     message:[{sucess:"Record Successfully Updated"}],
                     status: "Success",
                     showMsg:true
                 })
+                
             }).catch((err) => {
                 console.log(err.response.data)
                 rootState.base.global = {
@@ -101,6 +101,13 @@ const actions = {
                     status: "Success",
                     showMsg:true
                 })
+
+                this.flashMessage.success({
+                    title: 'Don\'t Warry',
+                    message: 'Be Happy!',
+                    time: 5000,
+                    blockClass: 'custom-block-class'
+                });
             }).catch((err) => {
                 console.log(err.response.data)
                 rootState.base.global = {

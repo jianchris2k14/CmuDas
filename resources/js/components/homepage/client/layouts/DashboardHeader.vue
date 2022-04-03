@@ -42,10 +42,12 @@ export default {
             userlogo:user
         }
     },
+
 }
 </script>
 <style scoped>
 .navbar-container {
     z-index: 50;
 }
+
 </style>

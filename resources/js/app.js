@@ -26,6 +26,8 @@ import VueCharts from 'vue-chartjs'
 import 'chart.js'
 Vue.use(VueCharts)
 
+import FlashMessage from '@smartweb/vue-flash-message';
+Vue.use(FlashMessage);
 
 /** ANIMATE CSS */
 import 'animate.css'
@@ -56,36 +58,8 @@ Vue.component('jw-pagination', JwPagination);
 
 //VUETIFY DATE TIME PICKER
 import DatetimePicker from 'vuetify-datetime-picker'
-
 // (Optional) import 'vuetify-datetime-picker/src/stylus/main.styl'
- 
 Vue.use(DatetimePicker)
-
-
-import VueHtmlToPaper from 'vue-html-to-paper';
-
-const options = {
-  name: '_blank',
-  specs: [
-    'fullscreen=yes',
-    'titlebar=yes',
-    'scrollbars=yes'
-  ],
-  styles: [
-    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
-    'https://unpkg.com/kidlat-css/css/kidlat.css'
-  ],
-  timeout: 1000, // default timeout before the print window appears
-  autoClose: true, // if false, the window will not close after printing
-  windowTitle: window.document.title, // override the window title
-}
-
-Vue.use(VueHtmlToPaper, options);
-
-// or, using the defaults with no stylesheet
-Vue.use(VueHtmlToPaper);
-
-
 
 
 

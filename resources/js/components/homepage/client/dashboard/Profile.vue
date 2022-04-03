@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-row>
+     
             <!-- Alert Message -->
       <div v-if="msgStatus">
         <alert-component />
@@ -362,7 +363,7 @@ export default {
         
 
     },
-  },
+  }
 };
 </script>
 <style scoped>

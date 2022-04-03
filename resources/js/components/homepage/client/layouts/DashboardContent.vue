@@ -1,16 +1,18 @@
 <template>
 <div class="container">
+  <dashboard-header/>
     <transition class="fade" enter-active-class="animate__animated animate__fadeIn" mode="out-in">
      <router-view></router-view>
 </transition>
 </div>
 </template>
 <script>
-import DashboardHeader from "./DashboardHeader.vue";
+import DashboardHeader from './DashboardHeader.vue'
 export default {
   components: {
     DashboardHeader,
-  }
+  },
+ 
 };
 </script>
 <style>
