@@ -2,6 +2,9 @@
   <div class="container">
     <v-card>
       <v-card-title>
+        <select-file-category
+          @selectcategory="getCategory"
+        ></select-file-category>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -202,9 +205,10 @@
   </div>
 </template>
 <script>
+import SelectFileCategory from './SelectFileCategory.vue'
 import AlertComponent from "./../../AlertComponent.vue";
 export default {
-  components: { AlertComponent },
+  components: { AlertComponent,SelectFileCategory},
   data() {
     return {
       singleSelect: false,
@@ -214,6 +218,9 @@ export default {
       search: "",
       file_id: null,
       selectedFile: null,
+
+      category_id:0,
+
 
       //Dialog Property
       dialog: false,
@@ -226,10 +233,10 @@ export default {
       //TABLE HEADERS PROPERTIES
       headers: [
         {
-          text: "File ID",
+          text: "Code",
           align: "start",
           sortable: true,
-          value: "file_id",
+          value: "code",
           class: "info text-black",
         },
         { text: "File Name", value: "filename", class: "info text-black" },
@@ -239,7 +246,6 @@ export default {
           class: "info text-black",
         },
         { text: "Slug", value: "slug", class: "info text-black" },
-        { text: "Code", value: "code", class: "info text-black" },
         { text: "Uploaded", value: "created_at", class: "info text-black" },
         {
           text: "Actions",
@@ -299,9 +305,14 @@ export default {
 
     //FETCH FILE LOCATIONS FROM STATE MANANGEMENT COMPUTED
     fetchFileLocations() {
-      const file_location = this.$store.state.files.file_location;
+      if (this.category_id === 0) {
+        const file_location = this.$store.state.files.file_location;
+        return this._.orderBy(file_location, ["created_at"], ["desc"]);
+      } else {
+        const files = this.$store.getters.filterFilesByCategory(this.category_id);
+        return this._.orderBy(files, ["created_at"], ["desc"]);
+      }
 
-      return this._.orderBy(file_location, ["created_at"], ["desc"]);
     },
 
     //FORM TITLE COMPUTED
@@ -343,7 +354,11 @@ export default {
   },
 
   methods: {
-    //EDIT FILE DATA
+    getCategory(category) {
+      this.category_id = category;
+    },
+
+
     getUserID() {
       this.form.user_id = event.target.value;
     },
@@ -422,6 +437,8 @@ export default {
       this.updateFileLocation();
     },
   },
+
+
 };
 </script>
 <style scoped>

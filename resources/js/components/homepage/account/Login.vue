@@ -1,17 +1,17 @@
 <template>
-  <div class="container">
-    <v-card>
-      <h5 class="display-1 text-center text-uppercase">Signin</h5>
+  <div class="container mt-15">
+      
       <!-- Alert Message -->
       <div v-if="msgStatus">
         <alert-component />
       </div>
-      <v-overlay :value="isLoading">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
-      </v-overlay>
+      <!-- <v-overlay :value="isLoading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay> -->
 
-      <v-card>
+      <v-card outlined>
         <v-card-text>
+          <h6 class="display-1 text-center text-uppercase"><v-icon large>mdi-account</v-icon> Signin</h6>
           <v-container>
             <v-form
               ref="form"
@@ -65,7 +65,6 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-    </v-card>
   </div>
 </template>
 <script>
@@ -81,13 +80,13 @@ export default {
       //Error Handlings Property
       error: "",
       msgStatus: false,
-      isLoading: false,
 
       //Form Properties
       form: {
         email: "",
         password: "",
       },
+      
 
       //Rules Validation Property
       rules: {
@@ -100,26 +99,37 @@ export default {
       },
     };
   },
+  computed:{
+    //ISLOADING COMPUTED
+      isLoading: {
+        get: function () {
+          return this.$store.state.base.isLoading;
+        },
+
+        set: function (newVal) {
+          return newVal;
+        },
+      },
+  },
   methods: {
     //SAVE FORM
     showRegister(register) {
       this.$emit("type", register);
     },
     async loginUser() {
-      this.$store.state.base.isLoading = true
+      this.$store.state.base.isLoading = true;
       await axios.get("/sanctum/csrf-cookie");
-      
+
       await axios
         .post("/api/login", this.form)
         .then((response) => {
           localStorage.setItem("token", response.data.token);
-          /* localStorage.setItem("user_type",response.data.user.user_type) */
           localStorage.setItem("user_type", response.data.user.user_type);
           var user_type = response.data.user.user_type;
           if (user_type === "Chief" || user_type === "Staff") {
             this.$router.push({ name: "systemdashboard" });
           } else {
-            this.$router.push({ name: "clientprofile" });
+            this.$router.push({ name: "clientsearch" });
           }
         })
         .catch((err) => {
@@ -128,23 +138,12 @@ export default {
             status: "Error",
             show: true,
             isLoading: false,
-          })
+          });
           this.$store.commit("UPDATE_MESSAGE", error);
         })
         .finally(() => {
           this.$store.commit("UPDATE_LOADING", false);
         });
-
-      /* await axios.get('/sanctum/csrf-cookie')
-        await axios.post('/api/login',this.form).then((response) => {
-        localStorage.setItem("token", response.data);
-        this.$router.push('/system/dashboard')
-        console.log(response.data) */
-      /* }).catch((err) => {
-        console.log(err)
-      }).finally(() => {
-        this.isLoading = false
-      }) */
     },
     save() {
       this.msgStatus = true;

@@ -217,17 +217,7 @@ export default {
 
       //TABLE HEADERS PROPERTIES
       headers: [
-        
-        {
-          text: "Request ID",
-          align: "start",
-          sortable: true,
-          value: "request_id",
-
-        },
-        
-        { text: "Client Name", value: "name"},
-        { text: "Client Email", value: "email" },
+      
         { text: "File Name", value: "filename" },
         { text: "Code", value: "code"},
         { text: "Status", value: "status"},

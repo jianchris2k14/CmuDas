@@ -17,6 +17,8 @@ export default {
     created() {
         this.$store.dispatch("getFileList")
         this.$store.dispatch("getFileLocations")
+        this.$store.dispatch("getFileCategory")
+
     }
 }
 </script>

@@ -61,6 +61,7 @@
                     dense
                     prepend-inner-icon="mdi-phone"
                     :rules="rules.phone_no"
+                    type="number"
                     required
                   ></v-text-field>
                 </v-col>

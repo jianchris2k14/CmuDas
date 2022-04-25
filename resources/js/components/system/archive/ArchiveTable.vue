@@ -130,15 +130,14 @@ export default {
     //TABLE HEADERS PROPERTIES
     headers: [
       {
-        text: "File ID",
+        text: "Code",
         align: "start",
         sortable: true,
-        value: "file_id",
+        value: "code",
         class: "info text-black",
       },
       { text: "File Name", value: "filename", class: "info text-black" },
       { text: "Slug", value: "slug", class: "info text-black" },
-      { text: "Code", value: "code", class: "info text-black" },
       { text: "Uploaded", value: "created_at", class: "info text-black" },
       { text: "Archive", value: "archive", class: "info text-black" },
       {

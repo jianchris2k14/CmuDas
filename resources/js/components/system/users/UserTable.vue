@@ -41,7 +41,7 @@
                   v-on="on"
                 >
                   <v-icon dark> mdi-plus-circle </v-icon>
-                  New Client
+                  New User
                 </v-btn>
               </template>
               <v-card>
@@ -98,6 +98,7 @@
                             dense
                             :rules="rules.phone_no"
                             required
+                            type="number"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12" v-if="formTitle === 'New User'">

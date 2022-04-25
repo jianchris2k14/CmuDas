@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileCategoryController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequestController;
@@ -26,6 +27,8 @@ Route::post('/requests/search', [RequestController::class, 'search']);
 Route::get('/requestreportsdaily', [RequestController::class, 'requestReportsDaily']);
 Route::get('/requestreportsweekly', [RequestController::class, 'requestReportsWeekly']);
 Route::get('/requestreportsmonthly', [RequestController::class, 'requestReportsMonthly']);
+
+Route::get('/filecategory',[FileCategoryController::class, 'index']);
 
 
 
@@ -52,6 +55,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/requests/{id}', [RequestController::class, 'update']);
     Route::delete('/requests/{id}', [RequestController::class, 'destroy']);
     Route::post('/destroyrecords', [RequestController::class, 'destroyRecords']);
+
+
+    Route::post('/filecategory',[FileCategoryController::class,'store']);
+    Route::put('/filecategory/{id}',[FileCategoryController::class,'update']);
+    Route::delete('/filecategory/{id}',[FileCategoryController::class,'destroy']);
+
     
 
     Route::post('/users', [UserController::class, 'store']);

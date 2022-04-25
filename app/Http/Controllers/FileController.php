@@ -13,9 +13,10 @@ class FileController extends Controller
     
     public function index()
     {
-        $files = File::join('users', 'files.user_id', '=', 'users.user_id')
+        /* $files = File::join('users', 'files.user_id', '=', 'users.user_id')->join('file_category', 'files.category_id', '=', 'file_category.category_id')
         ->select('users.name as name','files.*')
-        ->get();
+        ->get(); */
+        $files = File::leftJoin('file_category', 'files.category_id', '=', 'file_category.category_id')->get();
 
         return FileResource::collection($files);
     }
@@ -49,6 +50,7 @@ class FileController extends Controller
             'slug' 		         => 	'required|string|max:24',
             'description' 		 =>     'required|string',
             'user_id' 		     =>     'required|numeric',
+            'category_id' 		 =>     'required|numeric',
         ]);
     }
     public function store(Request $request)

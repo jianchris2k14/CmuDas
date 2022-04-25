@@ -26,7 +26,10 @@ const getters = {
         return total
     },
     getDocuments(state) {
-        return state.files.filter(item => item.file_status === 'Approved' && item.archive === 'Archive')
+        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Archive' && item.retention_status === 'Active')
+    },
+    filterFilesByCategory:(state) => (category_id) => {
+        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Archive' && item.category_id === category_id)
     },
     getApprovedDocuments(state) {
         return state.files.filter(item => item.file_status === 'Approved')
@@ -122,6 +125,7 @@ const actions = {
         try {
             await axios.get('/api/files').then((response) => {
                 commit("GET_FILES", response.data.data)
+                console.log(response.data.data)
             }).catch((err) => {
 
                 console.log(err.response.data)

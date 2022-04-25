@@ -8,7 +8,7 @@
     <v-overlay :value="isLoading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <div class="container">
+    <div class="container" id="navbar">
       <a class="navbar-brand mr-lg-5" href="">
         <img :src="logo" />
       </a>
@@ -24,13 +24,19 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse collapse" id="navbar_global">
-        <div class="navbar-collapse-header">
+        <div class="navbar-collapse-header"  style="border:1px solid #000">
+
+
           <div class="row">
+
+
             <div class="col-6 collapse-brand">
               <a href="">
                 <img :src="logo" />
               </a>
             </div>
+
+
             <div class="col-6 collapse-close">
               <button
                 type="button"
@@ -47,18 +53,28 @@
             </div>
           </div>
         </div>
-        <ul
+        <div class="row">
+          <div class="col-md-8">
+          </div>
+          <div class="col-md-4">
+            <div>
+          <ul
           class="navbar-nav navbar-nav-hover align-items-lg-center"
           v-scroll-spy-active="{ class: 'active' }"
           v-scroll-spy-link
         >
-          <li class="nav-item" :key="items" v-for="items in navFiltered">
+          <li class="nav-item" :key="items" v-for="items in navLink">
             <a class="nav-link" role="button">
               <i class="ni ni-collection d-lg-none"></i>
               <span class="nav-link-inner--text">{{ items }}</span>
             </a>
           </li>
         </ul>
+        </div>
+          </div>
+          
+        </div>
+        
         <ul
           class="navbar-nav align-items-lg-center ml-lg-auto"
           v-show="auth.authenticated"
@@ -74,7 +90,7 @@
               aria-expanded="false"
             >
               <i class="fa fa-user"></i>
-              {{ auth.user.email }}
+              {{ auth.user.name }}
             </a>
             <div
               class="dropdown-menu dropdown-menu-right"
@@ -103,8 +119,7 @@ export default {
       logo: logo,
       scrollPosition: null,
       scrolled: false,
-      isLogin: this.$store.state.auth.authenticated,
-      navLink: ["Home", "About", "Search", "Contact", "Signin"],
+      navLink: ["Home", "About", "Search", "Contact"],
     };
   },
   methods: {
@@ -115,17 +130,10 @@ export default {
         this.scrolled = true;
       }
     },
-    //Filter Navigation if isLoggedIn
-    filterNav() {
-      if (!this.isLogin) {
-        this.navLink.splice(this.navLink.indexOf("Signin"));
-      }
-    },
+  
     async logout() {
-      this.$store.state.base.isLoading = true;
       await axios.post("/api/logout").then((response) => {
           this.$store.dispatch("userLogout");
-          console.log(response.data);
           this.$router.push("/").catch((error) => {
             if (error.name != "NavigationDuplicated") {
               throw error;
@@ -135,20 +143,12 @@ export default {
         .catch((err) => {
           console.log(err.response.data);
         }).finally(function() {
-          
         });
     },
   },
   computed: {
     auth() {
       return this.$store.state.auth;
-    },
-    navFiltered() {
-      if (!this.auth.authenticated) {
-        return this.navLink;
-      } else {
-        return this.navLink.slice(0, this.navLink.length - 1);
-      }
     },
     //ISLOADING COMPUTED
     isLoading: {
@@ -174,13 +174,15 @@ export default {
   },
   mounted() {
     window.addEventListener("scroll", this.updateScroll);
-    //this.filterNav()
   },
 };
 </script>
 <style scoped>
+#navbar {
+  height: 50px;
+}
 .navbg {
-  background: transparent !important;
+  background: #1e8133  !important;
 }
 .navbg.scrolled {
   background-color: #1e8133 !important;

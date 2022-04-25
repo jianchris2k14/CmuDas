@@ -1,50 +1,57 @@
 <template>
   <div>
     <div class="section section-hero section-shaped">
-      <v-parallax height="700" class="mt-n16" src="https://cdn.vuetifyjs.com/images/parallax/material.jpg">
+      <!-- <v-parallax
+        height="700"
+        class="mt-n16"
+        src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+      > -->
         <div class="page-header">
           <div class="container shape-container align-items-center py-lg">
+            
             <div class="row">
-              <div class="col-lg-12 text-center">
-                <div
-                  data-aos="fade-right"
-                  data-aos-offset="300"
-                  data-aos-easing="ease-in-sine"
-                >
-                  <h1 class="display-1 title">Central Mindanao</h1>
-                </div>
-                <div
-                  data-aos="fade-left"
-                  data-aos-offset="300"
-                  data-aos-easing="ease-in-sine"
-                >
-                  <h1 class="display-4 subtitle">University</h1>
-                </div>
-                <div data-aos="fade-up" data-aos-duration="3000">
-                  <h2
-                    class="
-                      display-5
-                      font-weight-normal
-                      text-white
-                      animate__animated animate__fadeIn
-                    "
+              <div class="col-md-6 mt-15">
+                <div v-show="auth.authenticated">
+                  <div class="col-lg-12 text-center">
+                  <div
+                    data-aos="fade-right"
+                    data-aos-offset="300"
+                    data-aos-easing="ease-in-sine"
                   >
-                    Digital Archiving system
-                  </h2>
-                  <div class="btn-wrapper mt-4">
-                    <a href="" class="btn btn-bg-yellow btn-icon mt--4 mb-sm-0">
-                      <span class="btn-inner--icon"
-                        ><i class="fas fa-search"></i
-                      ></span>
-                      <span class="btn-inner--text">Search</span>
-                    </a>
+                    <h1 class="display-1 title">Central Mindanao</h1>
+                  </div>
+                  <div
+                    data-aos="fade-left"
+                    data-aos-offset="300"
+                    data-aos-easing="ease-in-sine"
+                  >
+                    <h1 class="display-4 subtitle">University</h1>
+                  </div>
+                  <div data-aos="fade-up" data-aos-duration="3000">
+                    <h2
+                      class="
+                        display-5
+                        font-weight-normal
+                        text-black
+                        animate__animated animate__fadeIn
+                      "
+                    >
+                      Digital Archiving system
+                    </h2>
                   </div>
                 </div>
+                </div>
+
+                <account-management></account-management>
+
+              </div>
+              <div class="col-md-6">
+                <img :src="personalfiles">
               </div>
             </div>
           </div>
         </div>
-      </v-parallax>
+      <!-- </v-parallax> -->
 
       <div class="separator separator-bottom separator-skew zindex-100">
         <svg
@@ -103,15 +110,34 @@
   width: 450px;
   height: 250px;
 }
+.personalfiles {
+  width: 100%;
+  height: 80%;
+}
 </style>
 <script>
+import AccountManagement from './../account/AccountManagement.vue'
+import Login from './../account/Login.vue'
+import Register from './../account/Register.vue'
 import office from "../../../../../public/assets/img/office/office.png";
+import personalfiles from '../../../../../public/images/personalfiles.svg'
 export default {
+  components:{
+    AccountManagement,
+    Login,
+    Register
+  },
   data() {
     return {
       officeicon: office,
-    };
+      personalfiles:personalfiles
+    }
   },
+  computed:{
+    auth() {
+      return this.$store.state.auth
+    }
+  }
 };
 </script>
 

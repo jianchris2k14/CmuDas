@@ -191,6 +191,7 @@
                         dense
                         :rules="rules.editProfileRules.phone_no"
                         required
+                        type="number"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" class="mb-n7">

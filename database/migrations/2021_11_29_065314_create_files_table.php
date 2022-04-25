@@ -22,14 +22,17 @@ class CreateFilesTable extends Migration
             $table->text('archive');
             $table->text('file_status');
             $table->text('document_type');
+            $table->text('retention_status');
             $table->dateTime('retention_date');
             $table->timestamps();
         });
 
         Schema::table('files', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-        
             $table->foreign('user_id')->references('user_id')->on('users');
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('category_id')->on('file_category');
+            
         });
     }
 

@@ -172,7 +172,7 @@ export default {
         maintainAspectRatio: false,
         title: {
           display: true,
-          text: "Request Reports",
+          text: "Reports",
         },
       };
     },

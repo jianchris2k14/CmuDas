@@ -14,9 +14,6 @@
                     <section>
                         <contact/>
                     </section>
-                    <section>
-                        <account/>
-                    </section>
                 </div>
         <footer-layout/>
     </v-app>
