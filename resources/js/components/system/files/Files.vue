@@ -17,7 +17,7 @@
                 <v-tab href="#mobile-tabs-5-2" class="primary--text">
                   <v-icon>mdi-file-cabinet </v-icon> File Locations
                 </v-tab>
-                <v-tab href="#mobile-tabs-5-3" class="primary--text">
+                <v-tab href="#mobile-tabs-5-3" class="primary--text" v-show="auth.user_type === 'Chief'">
                   <v-icon>mdi-file-compare </v-icon> File Category
                 </v-tab>
 
@@ -64,6 +64,11 @@ export default {
           tabs:null,
           category_id:0,
       }
+  },
+  computed:{
+    auth() {
+      return this.$store.state.auth.user
+    }
   },
 
   created() {

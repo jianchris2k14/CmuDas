@@ -6,12 +6,16 @@
       <div v-if="msgStatus">
         <alert-component />
       </div>
-      <v-col cols="12" md="2" sm="8">
+
+      <v-col cols="12" md="4" sm="2">
+        <div class="text-center">
         <v-avatar size="260">
           <img :src="userlogo" />
         </v-avatar>
+        </div>
       </v-col>
-      <v-col cols="12" md="10" sm="12">
+      
+      <v-col cols="12" md="8" sm="6">
         <v-card class="mx-auto" tile v-show="showInfo">
           <v-list flat>
             <v-subheader class="info text-uppercase text-white"

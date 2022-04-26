@@ -13,7 +13,7 @@ class Request extends Model
     protected $primaryKey = 'request_id';
 
     protected $fillable = [
-        'description',
+        'purpose',
         'request_date',
         'status',
         'user_id',

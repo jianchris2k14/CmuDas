@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    {{counter}}
     <v-row>
       <v-col cols="12">
         <v-row>
@@ -89,7 +90,9 @@
                       <v-toolbar color="primary" dark>Request File</v-toolbar>
                       <v-container>
                         <!-- REQUEST FORM -->
-                        <v-form ref="form" @submit.prevent="save">
+                        <v-form ref="form" @submit.prevent="save"
+                      v-model="rules.isValid"
+                      lazy-validation>
                           <v-text-field
                             v-model="form.file_name"
                             prepend-icon="mdi-file"
@@ -100,8 +103,8 @@
                           >
                           </v-text-field>
                           <v-textarea
-                            v-model="form.description"
-                            :rules="rules.description"
+                            v-model="form.purpose"
+                            :rules="rules.purpose"
                             prepend-icon="mdi-text"
                             filled
                             name="input-7-4"
@@ -119,7 +122,7 @@
                           </v-alert>
                           <input
                             type="file"
-                            name="request_file_form"
+                            ref="fileupload"
                             @change="onChangeFile"
                             required
                           />
@@ -133,8 +136,10 @@
                           Close
                         </v-btn>
                         <v-btn
-                          color="blue darken-1"
-                          text
+                         :disabled="!rules.isValid"
+                    color="success"
+                    dark
+                    :loading="isLoading"
                           @click="save(getUserId)"
                         >
                           Send Request
@@ -200,29 +205,32 @@ export default {
       form: {
         user_id: null,
         file_id: null,
-        description: "",
+        purpose: "",
         status: "Pending",
         expiration_date: null,
         request_date: null,
-        request_form: null,
+        request_form: '',
         file_name: null,
       },
 
       //RULES VALIDATION PROPERTIES
       rules: {
-        isValid: true,
-      },
+      isValid: true,
+      purpose: [v => !!v || "Purpose is required"],
+      requesform: [v => !!v || "Request form is required"],
+    },
       count: null,
 
       //DEFAULT FORM DATA
       defaultItem: {
-        user_id: null,
+         user_id: null,
         file_id: null,
-        description: "",
+        purpose: "",
         status: "Pending",
-        retention_date: null,
+        expiration_date: null,
         request_date: null,
-        request_form: null,
+        request_form: '',
+        file_name: null,
       },
     };
   },
@@ -358,20 +366,24 @@ export default {
       this.calculateDate();
       this.form.user_id = getUserId;
       let fd = new FormData();
-      fd.append("description", this.form.description);
-      fd.append("request_date", this.form.request_date);
-      fd.append("status", "Pending");
-      fd.append("expiration_date", this.form.expiration_date);
-      fd.append("request_form", this.form.request_form);
-      fd.append("user_id", this.form.user_id);
-      fd.append("file_id", this.form.file_id);
-      await this.$store.dispatch("addRequest", fd);
+      fd.append("purpose", this.form.purpose)
+      fd.append("request_date", this.form.request_date)
+      fd.append("status", "Pending")
+      fd.append("expiration_date", this.form.expiration_date)
+      fd.append("request_form", this.form.request_form)
+      fd.append("user_id", this.form.user_id)
+      fd.append("file_id", this.form.file_id)
+      await this.$store.dispatch("addRequest", fd)
     },
 
     /* ON CHANGE FILE FOR FILE INPUT */
     onChangeFile(e) {
       this.form.request_form = e.target.files[0];
     },
+    clear () {
+      	const input = this.$refs.fileupload.values;
+        console.log(input)
+      },
 
     /* SAVE BUTTON ( SEND FORM DATA TO DATABASE) */
     save(getUserId) {

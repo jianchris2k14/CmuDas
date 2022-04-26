@@ -57,7 +57,7 @@ class RequestController extends Controller
     private function validation(Request $request)
     {
         $request->validate([
-            'description'           =>     'required|string',
+            'purpose'               =>     'required|string',
             'request_date'          =>     'required|date',
             'request_form'          =>     'required|mimes:pdf|max:2048',
             'expiration_date'       =>     'required|date',
@@ -82,7 +82,7 @@ class RequestController extends Controller
                 'file_id' => $request->file_id,
                 'request_form' => $request_name,
                 'request_date' => $request->request_date,
-                'description' => $request->description,
+                'purpose' => $request->purpose,
                 'status' => $request->status,
                 'expiration_date' => $request->expiration_date,
                 'user_id' => $request->user_id,
