@@ -44,6 +44,7 @@
         </template>
 
         <template v-slot:top>
+          <h4>List of Documents</h4>
           <v-switch v-model="singleSelect" label="Single Select" class="pa-3">
           </v-switch>
           <v-toolbar flat>
@@ -53,48 +54,23 @@
               <!-- ADD NEW FILE BUTTON -->
 
               <template v-slot:activator="{ on, attrs }">
-                <v-row>
-                  <v-col cols="12" md="10" sm="12">
-                    <h4>List of Documents</h4>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    md="2"
-                    sm="4"
-                    v-show="auth.user_type === 'Staff'"
-                  >
-                    <v-row>
-                      <v-col cols="12" class="mb-3">
-                        <v-btn-toggle v-model="icon" borderless>
-                          <v-btn
-                            value="left"
-                            color="info"
-                            v-bind="attrs"
-                            v-on="on"
-                          >
-                            <span class="hidden-sm-and-down">New File</span>
+                <div v-show="auth.user_type === 'Staff'">
+                  <v-btn-toggle v-model="icon" borderless>
+                    <v-btn value="left" color="info" v-bind="attrs" v-on="on">
+                      <span class="hidden-sm-and-down">New File</span>
 
-                            <v-icon right class="text-white">
-                              mdi-plus-circle
-                            </v-icon>
-                          </v-btn>
+                      <v-icon right class="text-white">
+                        mdi-plus-circle
+                      </v-icon>
+                    </v-btn>
 
-                          <v-btn
-                            value="center"
-                            color="error"
-                            @click="deleteItem"
-                          >
-                            <span class="hidden-sm-and-down">Delete</span>
+                    <v-btn value="center" color="error" @click="deleteItem">
+                      <span class="hidden-sm-and-down">Delete</span>
 
-                            <v-icon right class="text-white">
-                              mdi-delete
-                            </v-icon>
-                          </v-btn>
-                        </v-btn-toggle>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
+                      <v-icon right class="text-white"> mdi-delete </v-icon>
+                    </v-btn>
+                  </v-btn-toggle>
+                </div>
               </template>
 
               <v-card>

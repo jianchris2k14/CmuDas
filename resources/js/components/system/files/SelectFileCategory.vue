@@ -5,6 +5,7 @@
           :items="category"
           item-text="category"
           item-value="category_id"
+          v-model="defaultSelect"
           label="Select Category"
           @change="onChangeCategory"
           dense
@@ -24,15 +25,21 @@ export default {
         defaultSelect:{
             category_id:0,
         },
-        peste:this.$store.state.filecategory.filecategory,
-        kolera:null,
-        selected:null,
+        filecateg:[
+          { 
+            category_id: 0,
+            category: "All",
+            created_at: "2022-04-26T01:56:19.000000Z",
+            updated_at: "2022-04-26T01:56:19.000000Z"
+          }
+        ]
     };
   },
   computed: {
     category() {
         const categ = this.$store.state.filecategory.filecategory
-        return categ
+        const newCateg = categ.concat(this.filecateg)
+        return newCateg
     }
 
 

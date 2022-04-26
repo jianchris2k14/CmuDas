@@ -42,10 +42,10 @@ export default {
 <style scoped>
 .p-about {
   text-indent: 50px;
-   line-height: 3;
+   line-height: 2;
 }
 .about-content {
-  height: 800px;
+  height: 100%;
 }
 .content-bg-green {
     background-color: #1e8133;

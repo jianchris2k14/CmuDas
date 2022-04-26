@@ -27,7 +27,7 @@ const mutations = {
     },
 
     ADD_FILE_CATEGORY:(state,filecategory) => {
-        state.filecategory.splice(0, 0, filecategory)
+        state.filecategory.push(filecategory)
     },
 
     UPDATE_FILE_CATEGORY:(state,filecategory) => {
@@ -36,9 +36,8 @@ const mutations = {
     },
 
     DELETE_FILE_CATEGORY:(state,filecategory) => {
-        console.log(state.filecategory.length -=1)
         const index = state.filecategory.findIndex(item => item.category_id === filecategory.category_id)
-        state.filecategory.splice(index+1,1)
+        state.filecategory.splice(index,1)
     }
 
 }
@@ -51,7 +50,6 @@ const actions = {
         try {
             await axios.get('/api/filecategory').then((response) => {
                 let data = response.data.data
-                data.push({category_id:0,category:"All"})
                 commit('GET_FILE_CATEGORY', data)
 
             }).catch((err) => {

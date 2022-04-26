@@ -24,18 +24,13 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse collapse" id="navbar_global">
-        <div class="navbar-collapse-header"  style="border:1px solid #000">
-
-
+        <div class="navbar-collapse-header" style="border: 1px solid #000">
           <div class="row">
-
-
             <div class="col-6 collapse-brand">
               <a href="">
                 <img :src="logo" />
               </a>
             </div>
-
 
             <div class="col-6 collapse-close">
               <button
@@ -54,58 +49,57 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-8">
-          </div>
-          <div class="col-md-4">
+          <div class="col-md-7"></div>
+          <div class="col-md-5">
             <div>
-          <ul
-          class="navbar-nav navbar-nav-hover align-items-lg-center"
-          v-scroll-spy-active="{ class: 'active' }"
-          v-scroll-spy-link
-        >
-          <li class="nav-item" :key="items" v-for="items in navLink">
-            <a class="nav-link" role="button">
-              <i class="ni ni-collection d-lg-none"></i>
-              <span class="nav-link-inner--text">{{ items }}</span>
-            </a>
-          </li>
-        </ul>
-        </div>
-          </div>
-          
-        </div>
-        
-        <ul
-          class="navbar-nav align-items-lg-center ml-lg-auto"
-          v-show="auth.authenticated"
-        >
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link nav-link-icon dropdown-toggle"
-              href="javascript:;"
-              id="navbar-default_dropdown_1"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <i class="fa fa-user"></i>
-              {{ auth.user.name }}
-            </a>
-            <div
-              class="dropdown-menu dropdown-menu-right"
-              aria-labelledby="navbar-default_dropdown_1"
-            >
-              <router-link :to="redirect" class="dropdown-item">
-                <i class="fa fa-tachometer-alt"></i> Dashboard
-              </router-link>
-              <a class="dropdown-item" @click="logout">
-                <i class="fa fa-sign-out-alt"></i> Logout</a
+              <ul
+                class="navbar-nav navbar-nav-hover align-items-lg-center"
+                v-scroll-spy-active="{ class: 'active' }"
+                v-scroll-spy-link
               >
-              <div class="dropdown-divider"></div>
+                <li class="nav-item" :key="items" v-for="items in navLink">
+                  <a class="nav-link" role="button">
+                    <i class="ni ni-collection d-lg-none"></i>
+                    <span class="nav-link-inner--text">{{ items }}</span>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <ul
+                    class="navbar-nav align-items-lg-center"
+                    v-show="auth.authenticated"
+                  >
+                    <li class="nav-item dropdown">
+                      <a
+                        class="nav-link nav-link-icon dropdown-toggle"
+                        href="javascript:;"
+                        id="navbar-default_dropdown_1"
+                        role="button"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        <i class="fa fa-user"></i>
+                      </a>
+                      <div
+                        class="dropdown-menu dropdown-menu-right"
+                        aria-labelledby="navbar-default_dropdown_1"
+                      >
+                        <router-link :to="redirect" class="dropdown-item">
+                          <i class="fa fa-tachometer-alt"></i> Dashboard
+                        </router-link>
+                        <a class="dropdown-item" @click="logout">
+                          <i class="fa fa-sign-out-alt"></i> Logout</a
+                        >
+                        <div class="dropdown-divider"></div>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -130,9 +124,11 @@ export default {
         this.scrolled = true;
       }
     },
-  
+
     async logout() {
-      await axios.post("/api/logout").then((response) => {
+      await axios
+        .post("/api/logout")
+        .then((response) => {
           this.$store.dispatch("userLogout");
           this.$router.push("/").catch((error) => {
             if (error.name != "NavigationDuplicated") {
@@ -142,8 +138,8 @@ export default {
         })
         .catch((err) => {
           console.log(err.response.data);
-        }).finally(function() {
-        });
+        })
+        .finally(function () {});
     },
   },
   computed: {
@@ -182,7 +178,7 @@ export default {
   height: 50px;
 }
 .navbg {
-  background: #1e8133  !important;
+  background: #1e8133 !important;
 }
 .navbg.scrolled {
   background-color: #1e8133 !important;

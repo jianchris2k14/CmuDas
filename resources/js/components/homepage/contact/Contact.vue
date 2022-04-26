@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h3 class="display-3 text-center">Contact Us</h3>
+        <h3 class="display-3 text-center">Contact Us</h3><br>
         <div class="row">
             <div class="col-md-4">
                 <div class="col-md-12 info" data-aos="flip-down">
