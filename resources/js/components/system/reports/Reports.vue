@@ -25,8 +25,9 @@
           <v-tabs-items v-model="tabs">
             <v-tab-item v-for="i in 2" :key="i" :value="'mobile-tabs-5-' + i">
               <v-card flat v-if="i === 1">
+                 <reports-options @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
                 <div id="generaterequestreports">
-                <reports-options @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
+               
                 
                 <!-- REQUEST REPORT CHART TAB -->
                 
