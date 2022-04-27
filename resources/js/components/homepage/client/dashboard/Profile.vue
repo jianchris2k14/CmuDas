@@ -12,6 +12,11 @@
         <v-avatar size="260">
           <img :src="userlogo" />
         </v-avatar>
+        <v-divider></v-divider>
+        <a href="#" @click.prevent="downloadRequestForm({
+          url:'http://localhost:8000/storage/requestform/sample.pdf',
+          label:'CMUDAS_Request_form.pdf'
+        })">Download Request Form</a>
         </div>
       </v-col>
       
@@ -252,6 +257,8 @@ export default {
   },
   data() {
     return {
+
+
       dialog: false,
       showForm: false,
       showInfo: true,
@@ -357,6 +364,19 @@ export default {
         this.form = Object.assign({}, this.defaultItem)
         this.editedIndex = -1;
       });
+    },
+    async downloadRequestForm({url,label}) {
+      const response = await axios.get(url,{
+        responseType:"blob"
+      })
+      const blob = new Blob([response.data],{
+        type:"application/pdf"
+      })
+      const link = document.createElement("a")
+      link.href = URL.createObjectURL(blob)
+      link.download = label
+      link.click()
+      URL.revokeObjectURL(link.href)
     },
     save() {
         this.msgStatus = true

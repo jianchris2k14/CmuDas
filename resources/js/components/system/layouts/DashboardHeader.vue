@@ -12,9 +12,9 @@
               <div class="media align-items-center">
 
                 <div class="media-body ml-2 d-none d-lg-block">
-                  <span class="mb-0 text-sm  font-weight-bold"> {{$store.state.auth.user.name}}</span>
+                  <span class="mb-0 text-sm text-uppercase  font-weight-bold"> {{$store.state.auth.user.name}}</span>
                 </div>
-                <span class="avatar avatar-sm rounded-circle">
+                <span class="avatar avatar-sm rounded-circle ml-2">
                   <img alt="Image placeholder" :src="userlogo">
                 </span>
               </div>

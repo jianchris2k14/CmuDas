@@ -3,7 +3,9 @@
     <div class="container-fluid">
       <!-- Toggler -->
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon">
+          <i class="fas fa-bars" style="color:#fff; font-size:28px;"></i>
+        </span>
       </button>
       <!-- Brand -->
       <a class="navbar-brand pt-0" href="#">
@@ -19,6 +21,7 @@
               </span>
             </div>
           </a>
+          <account-settings></account-settings>
         </li>
       </ul>
       <!-- Collapse -->

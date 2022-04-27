@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    {{getSelectedFile}}
     <v-card>
       <v-card-title>
         <v-spacer></v-spacer>
@@ -22,7 +21,7 @@
         :items="fetchRequests"
         :search="search"
         v-model="selected"
-        item-key="file_id"
+        item-key="request_id"
         :single-select="singleSelect"
         :loading="isLoading"
         show-select
@@ -186,8 +185,6 @@ export default {
           value: "request_id",
           class: "info text-black",
         },
-        { text: "Client Name", value: "name", class: "info text-black" },
-        { text: "Client Email", value: "email", class: "info text-black" },
         { text: "File Name", value: "filename", class: "info text-black" },
         { text: "Code", value: "code", class: "info text-black" },
         { text: "Status", value: "status", class: "info text-black" },
@@ -244,11 +241,11 @@ export default {
     },
 
     //Get Selected Request Log
-    getSelectedFile() {
-      let file_id = this.selected.map((item) => {
-        return item.file_id;
+    getSelectedRequest() {
+      let request_id = this.selected.map((item) => {
+        return item.request_id;
       });
-      return file_id;
+      return request_id;
     },
 
     //ISLOADING COMPUTED
@@ -289,12 +286,17 @@ export default {
 
     //DELETE REQUESTS DATA
     deleteItem(item) {
-      this.dialogDelete = true;
+      if(this.getSelectedRequest.length > 0) {
+        this.dialogDelete = true
+      }else {
+        alert("Please select request")
+      }
     },
 
     //CONFIRM DELETE FILE REQUEST
     async deleteItemConfirm() {
       this.msgStatus = true;
+      await this.$store.dispatch("deleteMultipleRequest", this.getSelectedRequest);
       this.closeDelete();
     },
 

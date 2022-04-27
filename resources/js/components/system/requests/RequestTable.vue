@@ -61,14 +61,15 @@
                     >
                       <v-row>
                         <v-col cols="12">
-                          <v-text-field
-                            v-model="form.request_id"
-                            label="Name"
+                          <v-textarea
+                            v-model="form.purpose"
+                            label="Purpose"
                             outlined
                             disabled
-                            dense
+                            filled
+                            name="input-7-4"
                             required
-                          ></v-text-field>
+                          ></v-textarea>
                         </v-col>
 
                         <v-col cols="12">
@@ -220,6 +221,7 @@ export default {
       
         { text: "File Name", value: "filename" },
         { text: "Code", value: "code"},
+        { text: "Purpose", value: "purpose"},
         { text: "Status", value: "status"},
         {
           text: "Request Date",
@@ -263,6 +265,7 @@ export default {
       form: {
         request_id: null,
         status: "",
+        purpose:"",
         expiration_date: null,
       },
 
@@ -278,6 +281,7 @@ export default {
       defaultItem: {
         request_id: null,
         status: "",
+        purpose:"",
         expiration_date:null
       },
     };
@@ -341,6 +345,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.fetchRequests.indexOf(item);
       this.form = Object.assign({},item)
+      console.log(item)
       switch(item.status){
         case "Approved":
           this.form.status = {text:'Approve',value:'Approved'}

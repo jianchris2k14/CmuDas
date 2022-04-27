@@ -7,6 +7,7 @@ import files from "./modules/files"
 import requests from "./modules/requests"
 import filecategory from "./modules/filecategory";
 import createdPersistedState from 'vuex-persistedstate'
+import mail from './modules/mail'
 
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -25,6 +26,7 @@ export default new Vuex.Store({
         auth,
         files,
         filecategory,
+        mail,
         base
     }
 })

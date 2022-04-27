@@ -8,6 +8,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\FileLocationController;
+use App\Http\Controllers\MailController;
 use App\Models\FileLocation;
 use Illuminate\Routing\Router;
 
@@ -42,6 +43,9 @@ Route::post('/filelocations/search', [FileLocationController::class, 'search']);
 
 Route::get('/uploadreportsmonthly',[FileLocationController::class, 'uploadReportsMonthly']);
 Route::get('/uploadreportsyearly',[FileLocationController::class, 'uploadReportsYearly']);
+
+Route::post('/mail', [MailController::class, 'index']);
+Route::post('/mail', [MailController::class, 'sendEmail']);
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {

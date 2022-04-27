@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    {{counter}}
     <v-row>
       <v-col cols="12">
         <v-row>
@@ -90,9 +89,7 @@
                       <v-toolbar color="primary" dark>Request File</v-toolbar>
                       <v-container>
                         <!-- REQUEST FORM -->
-                        <v-form ref="form" @submit.prevent="save"
-                      v-model="rules.isValid"
-                      lazy-validation>
+                        <v-form ref="form" @submit.prevent="save">
                           <v-text-field
                             v-model="form.file_name"
                             prepend-icon="mdi-file"
@@ -122,6 +119,7 @@
                           </v-alert>
                           <input
                             type="file"
+                            v-if="uploadReady"
                             ref="fileupload"
                             @change="onChangeFile"
                             required
@@ -220,6 +218,7 @@ export default {
       requesform: [v => !!v || "Request form is required"],
     },
       count: null,
+      uploadReady:true,
 
       //DEFAULT FORM DATA
       defaultItem: {
@@ -319,9 +318,11 @@ export default {
 
     //MODAL CLOSE
     close() {
-      this.formDialog = false;
+      this.formDialog = false
+      this.uploadReady = false  
       this.$nextTick(() => {
         this.form = Object.assign({}, this.defaultItem);
+        this.uploadReady = true
       });
     },
 
@@ -380,15 +381,18 @@ export default {
     onChangeFile(e) {
       this.form.request_form = e.target.files[0];
     },
-    clear () {
-      	const input = this.$refs.fileupload.values;
-        console.log(input)
+    	clear () {
+      	this.uploadReady = false
+        this.$nextTick(() => {
+        	this.uploadReady = true
+        })
       },
 
     /* SAVE BUTTON ( SEND FORM DATA TO DATABASE) */
     save(getUserId) {
       this.msgStatus = true;
-      this.addRequest(getUserId);
+      this.addRequest(getUserId)
+
     },
   },
 };

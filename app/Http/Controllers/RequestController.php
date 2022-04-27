@@ -16,7 +16,7 @@ class RequestController extends Controller
 
     public function index()
     {
-        $reqs = Req::leftJoin('files', 'requests.file_id', '=', 'files.file_id')
+        $reqs = Req::leftJoin('files', 'requests.file_id', '=', 'files.file_id')->join('file_locations','files.file_id', '=','file_locations.file_id')
             ->leftJoin('users', 'requests.user_id', '=', 'users.user_id')->get();
         /* ->paginate($this->pagination_no); */
 

@@ -227,6 +227,7 @@
                           v-show="formTitle === 'File Location'"
                           :rules="rules.file_location"
                           ref="file"
+                          v-if="fileReady"
                           v-on:change="onChangeFile"
                           required
                         />
@@ -305,6 +306,8 @@ export default {
   components: { AlertComponent, SelectFileCategory },
   data() {
     return {
+
+      fileReady:true,
       //DATE PICKER PROPERTY
       activePicker: null,
       date: null,
@@ -577,9 +580,10 @@ export default {
 
     //MODAL CLOSE
     close() {
-      this.dialog = false;
-
+      this.dialog = false
+      this.fileReady = false
       this.$nextTick(() => {
+        this.fileReady = true
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });

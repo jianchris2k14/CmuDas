@@ -178,8 +178,9 @@ const actions = {
     },
     async showRequestDocument({ commit, rootState }, payload) {
         try {
-            const file_location_data = rootState.files.file_location.find(item => item.file_id === payload.file_id)
-            await axios.get('/api/filelocations/' + file_location_data.file_location_id).then((response) => {
+            //const file_location_data = rootState.files.file_location.find(item => item.file_id === payload.file_id)
+            console.log(rootState.files.file_location)
+            await axios.get('/api/filelocations/' + payload.file_location_id).then((response) => {
                 commit('SET_REQUEST_DOCUMENT', response.data)
                 
             }).catch((err) => {
@@ -220,6 +221,14 @@ const actions = {
             console.log(error)
         }
     },
+    /* async deleteMultipleRequestLog({commit,rootState},data) {
+        rootState.base.isLoading = true
+        try {
+            
+        } catch (error) {
+            console.error();
+        }
+    }, */
 
     async deleteMultipleRequest({ commit, rootState }, records) {
         rootState.base.isLoading = true
