@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use Illuminate\Http\Request;
 use App\Http\Resources\FileResource;
+use DB;
 
 class FileController extends Controller
 {
@@ -60,6 +61,17 @@ class FileController extends Controller
         $file = File::create($request->all());
 
         return new FileResource($file);
+    }
+    
+    public function getFileDisposal()
+    {
+        $filedis = File::select(DB::raw('*'))
+        ->where('retention_date', '<=',DB::raw('NOW()'))
+        ->where('file_status', '=','Approved')
+        ->where('retention_status', '=','Active')
+        ->get();
+
+        return response($filedis);
     }
     public function update(Request $request, $id)
     {

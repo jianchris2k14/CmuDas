@@ -1,12 +1,12 @@
 <template>
   <div class="dashboard text-center">
     <div class="header pb-5 pt-2">
-      <div class="container-fluid">
+      <div class="container">
         <div class="header-body">
           <!-- Card stats -->
           <div class="row">
             <div
-              class="col-4 col-md-4 p-2"
+              class="col-md-4"
               v-for="(items, i) in totalDashboard"
               :key="i"
             >
@@ -100,6 +100,13 @@ export default {
             bgColor: "bg-primary",
             icon: "fa fa-thumbs-down",
           },
+          {
+            title: "For Disposal",
+            subtitle: this.$store.getters.getDocumentsForDisposal.length,
+            bgColor: "bg-warning",
+            icon: "fa fa-hourglass-end",
+          },
+
           {
             title: "Expired Requests",
             subtitle: this.$store.getters.totalExpiredRequest,

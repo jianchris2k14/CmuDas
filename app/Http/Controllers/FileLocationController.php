@@ -64,15 +64,20 @@ class FileLocationController extends Controller
 
         if ($request->hasFile('file_location')) {
 
-
             $filelocation = $request->file('file_location');
+
             $filename = $filelocation->getClientOriginalName();
+
             $filelocation->storePubliclyAs('public', $filename);
 
             $file = FileLocation::create([
+
                 'file_id' => $request->file_id,
+
                 'file_location' => $filename
+                
             ]);
+
             return new FileLocationResource($file);
         }
     }

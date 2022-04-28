@@ -29,8 +29,13 @@ Route::get('/requestreportsdaily', [RequestController::class, 'requestReportsDai
 Route::get('/requestreportsweekly', [RequestController::class, 'requestReportsWeekly']);
 Route::get('/requestreportsmonthly', [RequestController::class, 'requestReportsMonthly']);
 
-Route::get('/filecategory',[FileCategoryController::class, 'index']);
+Route::get('/filerequestreports',[RequestController::class,'fileRequestReports']);
 
+
+
+
+Route::get('/filecategory',[FileCategoryController::class, 'index']);
+Route::get('/filedisposal',[FileController::class,'getFileDisposal']);
 
 
 Route::get('/users', [UserController::class, 'index']);
@@ -43,6 +48,7 @@ Route::post('/filelocations/search', [FileLocationController::class, 'search']);
 
 Route::get('/uploadreportsmonthly',[FileLocationController::class, 'uploadReportsMonthly']);
 Route::get('/uploadreportsyearly',[FileLocationController::class, 'uploadReportsYearly']);
+
 
 Route::post('/mail', [MailController::class, 'index']);
 Route::post('/mail', [MailController::class, 'sendEmail']);

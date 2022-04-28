@@ -235,6 +235,9 @@ export default {
   },
   computed: {
     /* FETCH DOCUMENTS RECORDS FROM STORE STATES */
+    getFileRequestReports() {
+      return this.$store.state.requests.file_request_reports
+    },
     fetchFiles() {
       let files = {}
       if(this.category_id === 0) {
