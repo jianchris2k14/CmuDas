@@ -2,6 +2,9 @@
   <div class="container">
     <v-card>
       <v-card-title>
+        <select-file-category
+          @selectcategory="getCategory"
+        ></select-file-category>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -41,57 +44,33 @@
         </template>
 
         <template v-slot:top>
+          <h4>List of Documents</h4>
           <v-switch v-model="singleSelect" label="Single Select" class="pa-3">
           </v-switch>
           <v-toolbar flat>
-            
             <!-- FILES MANAGEMENT MODALS -->
 
             <v-dialog v-model="dialog" max-width="960px">
               <!-- ADD NEW FILE BUTTON -->
 
               <template v-slot:activator="{ on, attrs }">
-                <v-row>
-                  <v-col cols="12" md="10" sm="12">
-                    <h4>List of Documents</h4>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    md="2"
-                    sm="4"
-                    v-show="auth.user_type === 'Staff'"
-                  >
-                    <v-row>
-                      <v-col cols="12" class="mb-3">
-                        <v-btn-toggle v-model="icon" borderless>
-                          <v-btn 
-                          value="left"
-                          color="info"
-                          v-bind="attrs"
-                          v-on="on"
-                          >
-                            <span class="hidden-sm-and-down">New File</span>
+                <div v-show="auth.user_type === 'Staff'">
+                  <v-btn-toggle v-model="icon" borderless>
+                    <v-btn value="left" color="info" v-bind="attrs" v-on="on">
+                      <span class="hidden-sm-and-down">New File</span>
 
-                            <v-icon right class="text-white">
-                              mdi-plus-circle
-                            </v-icon>
-                          </v-btn>
+                      <v-icon right class="text-white">
+                        mdi-plus-circle
+                      </v-icon>
+                    </v-btn>
 
-                          <v-btn 
-                          value="center" 
-                          color="error"
-                          @click="deleteItem">
-                          <span class="hidden-sm-and-down">Delete</span>
+                    <v-btn value="center" color="error" @click="deleteItem">
+                      <span class="hidden-sm-and-down">Delete</span>
 
-                            <v-icon right class="text-white">
-                              mdi-delete
-                            </v-icon>
-                          </v-btn>
-                        </v-btn-toggle>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
+                      <v-icon right class="text-white"> mdi-delete </v-icon>
+                    </v-btn>
+                  </v-btn-toggle>
+                </div>
               </template>
 
               <v-card>
@@ -122,26 +101,11 @@
                       <v-form ref="form" @submit.prevent="save">
                         <v-text-field
                           v-show="
-                            formTitle === 'File Location' ||
-                            formTitle === 'Update File'
-                          "
-                          v-model="form.file_id"
-                          disabled
-                          prepend-icon="mdi-information-outline"
-                          label="File ID"
-                          dense
-                          outlined
-                          required
-                        >
-                        </v-text-field>
-                        <v-text-field
-                          v-show="
                             formTitle === 'New File' ||
                             formTitle === 'Update File'
                           "
                           v-model="form.filename"
                           :rules="rules.filename"
-                          @input="generateFileCode"
                           prepend-icon="mdi-file"
                           label="Filename"
                           dense
@@ -156,7 +120,6 @@
                           "
                           v-model="form.code"
                           :rules="rules.code"
-                          disabled
                           prepend-icon="mdi-file-code"
                           label="File Code"
                           dense
@@ -178,6 +141,21 @@
                           required
                         >
                         </v-text-field>
+                        <v-select
+                          v-show="
+                            formTitle === 'New File' ||
+                            formTitle === 'Update File'
+                          "
+                          :items="category.filecategory"
+                          item-text="category"
+                          item-value="category_id"
+                          v-model="form.category_id"
+                          prepend-icon="mdi-information-outline"
+                          label="Select Category"
+                          outlined
+                          dense
+                        >
+                        </v-select>
                         <v-select
                           v-show="
                             formTitle === 'New File' ||
@@ -249,6 +227,7 @@
                           v-show="formTitle === 'File Location'"
                           :rules="rules.file_location"
                           ref="file"
+                          v-if="fileReady"
                           v-on:change="onChangeFile"
                           required
                         />
@@ -322,20 +301,25 @@
 </template>
 <script>
 import AlertComponent from "./../../AlertComponent.vue";
+import SelectFileCategory from "./SelectFileCategory.vue";
 export default {
-  components: { AlertComponent },
+  components: { AlertComponent, SelectFileCategory },
   data() {
     return {
+
+      fileReady:true,
       //DATE PICKER PROPERTY
       activePicker: null,
       date: null,
       menu: false,
 
+      category_id: 0,
+
       singleSelect: false,
       selected: [],
 
       document_type: ["Public", "Private"],
-
+      items: ["1", "2", "3"],
       //SELECT ITEM
       selectItem: [
         {
@@ -371,16 +355,16 @@ export default {
       //TABLE HEADERS PROPERTIES
       headers: [
         {
-          text: "File ID",
+          text: "Code",
           align: "start",
           sortable: true,
-          value: "file_id",
+          value: "code",
           class: "info text-black",
         },
         { text: "File Name", value: "filename", class: "info text-black" },
         { text: "Description", value: "description", class: "info text-black" },
         { text: "Slug", value: "slug", class: "info text-black" },
-        { text: "Code", value: "code", class: "info text-black" },
+        { text: "Category", value: "category", class: "info text-black" },
         { text: "Date Created", value: "created_at", class: "info text-black" },
         {
           text: "Date Retention",
@@ -406,9 +390,11 @@ export default {
         slug: "",
         file_location: null,
         user_id: null,
+        category_id: null,
         code: "",
         file_status: null,
-        archive: "Unarchive",
+        retention_status: "Active",
+        archive: "Archive",
         document_type: "",
         file_id: null,
       },
@@ -431,6 +417,8 @@ export default {
         archive: "Archive",
         file_location: null,
         file_status: null,
+        retention_status: "Active",
+        category_id: null,
         code: "",
         file_id: null,
       },
@@ -441,12 +429,17 @@ export default {
     auth() {
       return this.$store.state.auth.user;
     },
+
+    category() {
+      return this.$store.state.filecategory;
+    },
+
     //Get Selected File Document
     getSelectedFile() {
       let file_id = this.selected.map((item) => {
-        return item.file_id
-      })
-      return file_id
+        return item.file_id;
+      });
+      return file_id;
     },
 
     //Get User ID from the Current user logged in
@@ -456,9 +449,15 @@ export default {
 
     //fetch File Documents from state
     fetchFiles() {
-      const files = this.$store.state.files.files;
-
-      return this._.orderBy(files, ["created_at"], ["desc"]);
+      if (this.category_id === 0) {
+        const files = this.$store.state.files.files;
+        return this._.orderBy(files, ["created_at"], ["desc"]);
+      } else {
+        const files = this.$store.getters.filterFilesByCategory(
+          this.category_id
+        );
+        return this._.orderBy(files, ["created_at"], ["desc"]);
+      }
     },
 
     //FORM TITLE COMPUTED
@@ -509,6 +508,9 @@ export default {
   },
 
   methods: {
+    getCategory(category) {
+      this.category_id = category;
+    },
     getColor(item) {
       if (item === "Denied") {
         return "red";
@@ -531,6 +533,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.fetchFiles.indexOf(item);
       this.form = Object.assign({}, item);
+      console.log(this.form.file_id);
       this.date = item.retention_date;
       this.dialog = true;
       this.editedIndex = 0;
@@ -543,7 +546,7 @@ export default {
     },
 
     //GENERATE FILE CODE
-    generateFileCode(event) {
+    /* generateFileCode(event) {
       if (event) {
         let filename = this.form.filename;
 
@@ -557,14 +560,14 @@ export default {
           this.form.code = generatedcode;
         }
       }
-    },
+    }, */
 
     //DELETE FILE DATA
     deleteItem() {
-      if(this.getSelectedFile.length>0) {
+      if (this.getSelectedFile.length > 0) {
         this.dialogDelete = true;
-      }else {
-        alert("Please select file document")
+      } else {
+        alert("Please select file document");
       }
     },
 
@@ -577,9 +580,10 @@ export default {
 
     //MODAL CLOSE
     close() {
-      this.dialog = false;
-
+      this.dialog = false
+      this.fileReady = false
       this.$nextTick(() => {
+        this.fileReady = true
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
@@ -641,7 +645,7 @@ export default {
         } else {
           this.updateFile();
         }
-        this.generateFileCode();
+        /* this.generateFileCode(); */
       } else if (this.editedIndex === -1) {
         this.$refs.form.validate();
         this.addFile();

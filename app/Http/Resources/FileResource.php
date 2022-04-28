@@ -27,6 +27,9 @@ class FileResource extends JsonResource
             'file_status'   => $this->file_status,
             'document_type' => $this->document_type,
             'user_id'       => $this->user_id,
+            'retention_status' => $this->retention_status,
+            'category'   => $this->category,
+            'category_id' => $this->category_id
         ];
     }
 }

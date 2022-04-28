@@ -3,7 +3,9 @@
     <div class="container-fluid">
       <!-- Toggler -->
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon">
+          <i class="fas fa-bars" style="color:#fff; font-size:28px;"></i>
+        </span>
       </button>
       <!-- Brand -->
       <a class="navbar-brand pt-0" href="#">
@@ -15,10 +17,11 @@
           <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="media align-items-center">
               <span class="avatar avatar-sm rounded-circle">
-                <!-- <img alt="Image placeholder" :src="userlogo"> -->
+                <img alt="Image placeholder" :src="userlogo">
               </span>
             </div>
           </a>
+          <account-settings/>
         </li>
       </ul>
       <!-- Collapse -->
@@ -91,8 +94,14 @@ export default {
 }
 </script>
 <style scoped>
+.page-header-text {
+  color: #ffffff;
+}
 .link {
     color:#fff;
+}
+.bg-green {
+  background-color: #1e8133;
 }
 .nav-item {
   width:100%

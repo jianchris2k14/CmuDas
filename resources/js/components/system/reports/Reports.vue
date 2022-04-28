@@ -25,8 +25,9 @@
           <v-tabs-items v-model="tabs">
             <v-tab-item v-for="i in 2" :key="i" :value="'mobile-tabs-5-' + i">
               <v-card flat v-if="i === 1">
+                 <reports-options @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
                 <div id="generaterequestreports">
-                <reports-options @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
+               
                 
                 <!-- REQUEST REPORT CHART TAB -->
                 
@@ -39,7 +40,7 @@
                     />
                   </div>
                   <div v-else-if="selection === 'Table'">
-                    <reports-table :period="period" :data="getRequestData" />
+                    <reports-table :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
                   </div>
 
                   <div v-else>
@@ -52,7 +53,7 @@
                         />
                       </v-col>
                       <v-col cols="12" md="6" sm="8">
-                        <reports-table :period="period" :data="getRequestData" />
+                        <reports-table :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
                       </v-col>
                     </v-row>
                   </div>
@@ -113,6 +114,9 @@ export default {
   },
   computed: {
     //GET DATA OF APPROVED REQUEST FROM STORE
+    getFileRequestReports() {
+      return this.$store.state.requests.file_request_reports
+    },
     getRequestData() {
       switch (this.period) {
         case "Daily":
@@ -172,7 +176,7 @@ export default {
         maintainAspectRatio: false,
         title: {
           display: true,
-          text: "Request Reports",
+          text: "Reports",
         },
       };
     },
@@ -241,6 +245,7 @@ export default {
     this.$store.dispatch("getRequestReportsMonthly")
     this.$store.dispatch("getUploadReportsMonthly")
     this.$store.dispatch("getUploadReportsYearly")
+    this.$store.dispatch("getFileRequestReports")
   },
 };
 </script>

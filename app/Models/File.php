@@ -21,6 +21,8 @@ class File extends Model
         'retention_date',
         'file_status',
         'document_type',
+        'retention_status',
+        'category_id',
         'archive'
     ];
 

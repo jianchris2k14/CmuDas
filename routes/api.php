@@ -3,10 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileCategoryController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\FileLocationController;
+use App\Http\Controllers\MailController;
 use App\Models\FileLocation;
 use Illuminate\Routing\Router;
 
@@ -27,6 +29,13 @@ Route::get('/requestreportsdaily', [RequestController::class, 'requestReportsDai
 Route::get('/requestreportsweekly', [RequestController::class, 'requestReportsWeekly']);
 Route::get('/requestreportsmonthly', [RequestController::class, 'requestReportsMonthly']);
 
+Route::get('/filerequestreports',[RequestController::class,'fileRequestReports']);
+
+
+
+
+Route::get('/filecategory',[FileCategoryController::class, 'index']);
+Route::get('/filedisposal',[FileController::class,'getFileDisposal']);
 
 
 Route::get('/users', [UserController::class, 'index']);
@@ -40,6 +49,10 @@ Route::post('/filelocations/search', [FileLocationController::class, 'search']);
 Route::get('/uploadreportsmonthly',[FileLocationController::class, 'uploadReportsMonthly']);
 Route::get('/uploadreportsyearly',[FileLocationController::class, 'uploadReportsYearly']);
 
+
+Route::post('/mail', [MailController::class, 'index']);
+Route::post('/mail', [MailController::class, 'sendEmail']);
+
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', [AuthController::class,'user']);
@@ -52,6 +65,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/requests/{id}', [RequestController::class, 'update']);
     Route::delete('/requests/{id}', [RequestController::class, 'destroy']);
     Route::post('/destroyrecords', [RequestController::class, 'destroyRecords']);
+
+
+    Route::post('/filecategory',[FileCategoryController::class,'store']);
+    Route::put('/filecategory/{id}',[FileCategoryController::class,'update']);
+    Route::delete('/filecategory/{id}',[FileCategoryController::class,'destroy']);
+
     
 
     Route::post('/users', [UserController::class, 'store']);

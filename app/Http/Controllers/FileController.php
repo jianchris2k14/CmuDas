@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use Illuminate\Http\Request;
 use App\Http\Resources\FileResource;
+use DB;
 
 class FileController extends Controller
 {
@@ -13,9 +14,10 @@ class FileController extends Controller
     
     public function index()
     {
-        $files = File::join('users', 'files.user_id', '=', 'users.user_id')
+        /* $files = File::join('users', 'files.user_id', '=', 'users.user_id')->join('file_category', 'files.category_id', '=', 'file_category.category_id')
         ->select('users.name as name','files.*')
-        ->get();
+        ->get(); */
+        $files = File::leftJoin('file_category', 'files.category_id', '=', 'file_category.category_id')->get();
 
         return FileResource::collection($files);
     }
@@ -49,6 +51,7 @@ class FileController extends Controller
             'slug' 		         => 	'required|string|max:24',
             'description' 		 =>     'required|string',
             'user_id' 		     =>     'required|numeric',
+            'category_id' 		 =>     'required|numeric',
         ]);
     }
     public function store(Request $request)
@@ -58,6 +61,17 @@ class FileController extends Controller
         $file = File::create($request->all());
 
         return new FileResource($file);
+    }
+    
+    public function getFileDisposal()
+    {
+        $filedis = File::select(DB::raw('*'))
+        ->where('retention_date', '<=',DB::raw('NOW()'))
+        ->where('file_status', '=','Approved')
+        ->where('retention_status', '=','Active')
+        ->get();
+
+        return response($filedis);
     }
     public function update(Request $request, $id)
     {

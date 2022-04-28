@@ -2,11 +2,11 @@
   <div class="mt-15">
     <div class="container shadow p-3 mb-5 bg-white">
       <v-row>
-        <v-col cols="12" md="6" sm="8">
+        <v-col cols="12" md="8" sm="10">
           <dashboard-top-content />
         </v-col>
-        <v-col cols="12" md="6" sm="8">
-          <request-reports-table :period="period" :data="fetchRequestReports"/>
+        <v-col cols="12" md="4" sm="6">
+          <request-reports-table :period="period" :data="fetchRequestReports" :filerequestreports="getFileRequestReports"/>
         </v-col>
         
       </v-row>
@@ -39,8 +39,15 @@ export default {
     }
   },
   computed:{
+    getFileRequestReports() {
+      return this.$store.state.requests.file_request_reports
+    },
+    
     fetchRequestReports() {
       return this.$store.state.requests.request_report
+    },
+    fetchFilesForDisposal() {
+      return this.$store.getters.getDocumentsForDisposal
     },
     fetchUploadReports() {
       return this.$store.state.files.upload_reports_monthly
@@ -58,7 +65,7 @@ export default {
         maintainAspectRatio: false,
         title: {
           display: true,
-          text: "Request Reports",
+          text: "Reports",
         },
       };
     },
@@ -107,12 +114,21 @@ export default {
     this.$store.dispatch("getFileLocations")
     this.$store.dispatch("getRequestReportsDaily")
     this.$store.dispatch("getUploadReportsMonthly")
+    this.$store.dispatch("getFileRequestReports")
   },
 };
 </script>
 <style scoped>
 .content {
   background: #fff;
+}
+.col-container {
+  display: table;
+  width: 100%;
+}
+.col {
+  display: table-cell;
+  padding: 16px;
 }
 </style>
 

@@ -5,18 +5,28 @@ import users from './modules/users'
 import auth from "./modules/auth";
 import files from "./modules/files"
 import requests from "./modules/requests"
+import filecategory from "./modules/filecategory";
 import createdPersistedState from 'vuex-persistedstate'
+import mail from './modules/mail'
 
 Vue.use(Vuex)
 export default new Vuex.Store({
-    plugins:[
-        createdPersistedState
+    plugins: [
+        createdPersistedState({
+            storage: window.localStorage,
+            key: 'yourkey',
+            paths: [
+              'auth',
+            ],
+          }),
     ],
     modules:{
         users,
         requests,
         auth,
         files,
+        filecategory,
+        mail,
         base
     }
 })

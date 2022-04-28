@@ -10,6 +10,7 @@ const getDefaultSate = () => {
         request_report: [],
         request_report_weekly: [],
         request_report_monthly: [],
+        file_request_reports:[],
     }
 }
 
@@ -119,6 +120,9 @@ const mutations = {
     SET_REQUEST_REPORT_MONTHLY: (state, data) => {
         state.request_report_monthly = data
     },
+    SET_FILE_REQUEST_REPORTS:(state,data) => {
+        state.file_request_reports = data
+    }
     
 
 
@@ -178,8 +182,9 @@ const actions = {
     },
     async showRequestDocument({ commit, rootState }, payload) {
         try {
-            const file_location_data = rootState.files.file_location.find(item => item.file_id === payload.file_id)
-            await axios.get('/api/filelocations/' + file_location_data.file_location_id).then((response) => {
+            //const file_location_data = rootState.files.file_location.find(item => item.file_id === payload.file_id)
+            console.log(rootState.files.file_location)
+            await axios.get('/api/filelocations/' + payload.file_location_id).then((response) => {
                 commit('SET_REQUEST_DOCUMENT', response.data)
                 
             }).catch((err) => {
@@ -220,6 +225,14 @@ const actions = {
             console.log(error)
         }
     },
+    /* async deleteMultipleRequestLog({commit,rootState},data) {
+        rootState.base.isLoading = true
+        try {
+            
+        } catch (error) {
+            console.error();
+        }
+    }, */
 
     async deleteMultipleRequest({ commit, rootState }, records) {
         rootState.base.isLoading = true
@@ -337,6 +350,18 @@ const actions = {
 
             console.log(error)
 
+        }
+    },
+    async getFileRequestReports({commit}) {
+        try {
+            await axios.get('/api/filerequestreports').then((response) => {
+                commit("SET_FILE_REQUEST_REPORTS",response.data.data)
+            }).catch((err) => {
+                console.log(err.response.data)
+            }).finally(function() {
+            })
+        } catch (error) {
+            console.log(error)
         }
     },
     async getRequestReportsWeekly({ commit }) {

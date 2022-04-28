@@ -11,14 +11,6 @@
           <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
         <v-btn id="next" color="success"><v-icon>mdi-skip-next</v-icon></v-btn>
-        <v-btn
-          v-show="request.document_type === 'Public'"
-          id="next"
-          color="error"
-          @click="downloadDocuments"
-        >
-          <v-icon>mdi-download</v-icon>
-        </v-btn>
         &nbsp; &nbsp;
         <span
           >Page: <span id="page_num"></span> / <span id="page_count"></span

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Request as Req;
 use App\Http\Resources\RequestResource;
+use App\Http\Resources\FileRequestReportsResource;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,7 @@ class RequestController extends Controller
 
     public function index()
     {
-        $reqs = Req::leftJoin('files', 'requests.file_id', '=', 'files.file_id')
+        $reqs = Req::leftJoin('files', 'requests.file_id', '=', 'files.file_id')->join('file_locations','files.file_id', '=','file_locations.file_id')
             ->leftJoin('users', 'requests.user_id', '=', 'users.user_id')->get();
         /* ->paginate($this->pagination_no); */
 
@@ -27,9 +28,13 @@ class RequestController extends Controller
     {
 
         $file = Req::findOrFail($id);
+
         $filename = $file->request_form;
+
         $contents = Storage::url('request/' . $filename);
+
         $extension = pathinfo(storage_path('request/' . $filename), PATHINFO_EXTENSION);
+
         $data = array('request_id' => $id, 'filecontent' => $contents, 'filetype' => $extension);
 
         return response($data);
@@ -57,7 +62,7 @@ class RequestController extends Controller
     private function validation(Request $request)
     {
         $request->validate([
-            'description'           =>     'required|string',
+            'purpose'               =>     'required|string',
             'request_date'          =>     'required|date',
             'request_form'          =>     'required|mimes:pdf|max:2048',
             'expiration_date'       =>     'required|date',
@@ -75,18 +80,21 @@ class RequestController extends Controller
 
 
             $request_form = $request->file('request_form');
+
             $request_name = $request_form->getClientOriginalName();
+
             $request_form->storePubliclyAs('public/request', $request_name);
 
             $req = Req::create([
                 'file_id' => $request->file_id,
                 'request_form' => $request_name,
                 'request_date' => $request->request_date,
-                'description' => $request->description,
+                'purpose' => $request->purpose,
                 'status' => $request->status,
                 'expiration_date' => $request->expiration_date,
                 'user_id' => $request->user_id,
             ]);
+
             return new RequestResource($req);
         }
 
@@ -106,7 +114,9 @@ class RequestController extends Controller
         $req = Req::findOrFail($id);
 
         $req->status = $request->status;
+
         $req->expiration_date = $request->expiration_date;
+        
         $req->save();
 
         return new RequestResource($req);
@@ -124,6 +134,21 @@ class RequestController extends Controller
 
 
         return response($dailyreports);
+    }
+
+    public function fileRequestReports()
+    {
+        $filereqreports = Req::select(DB::raw(
+            'COUNT(requests.file_id) as totalrequests,
+            files.filename as "filename",
+            file_category.category as "category"'
+            
+        ))
+        ->join('files','requests.file_id', '=','files.file_id')
+        ->join('file_category','files.category_id','=','file_category.category_id')
+        ->groupBy("files.filename")
+        ->get();
+      return new FileRequestReportsResource($filereqreports);
     }
 
     public function requestReportsWeekly()

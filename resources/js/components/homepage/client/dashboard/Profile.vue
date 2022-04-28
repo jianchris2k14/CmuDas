@@ -6,12 +6,21 @@
       <div v-if="msgStatus">
         <alert-component />
       </div>
-      <v-col cols="12" md="2" sm="8">
+
+      <v-col cols="12" md="4" sm="2">
+        <div class="text-center">
         <v-avatar size="260">
           <img :src="userlogo" />
         </v-avatar>
+        <v-divider></v-divider>
+        <a href="#" @click.prevent="downloadRequestForm({
+          url:'http://localhost:8000/storage/requestform/sample.pdf',
+          label:'CMUDAS_Request_form.pdf'
+        })">Download Request Form</a>
+        </div>
       </v-col>
-      <v-col cols="12" md="10" sm="12">
+      
+      <v-col cols="12" md="8" sm="6">
         <v-card class="mx-auto" tile v-show="showInfo">
           <v-list flat>
             <v-subheader class="info text-uppercase text-white"
@@ -191,6 +200,7 @@
                         dense
                         :rules="rules.editProfileRules.phone_no"
                         required
+                        type="number"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" class="mb-n7">
@@ -247,6 +257,8 @@ export default {
   },
   data() {
     return {
+
+
       dialog: false,
       showForm: false,
       showInfo: true,
@@ -352,6 +364,19 @@ export default {
         this.form = Object.assign({}, this.defaultItem)
         this.editedIndex = -1;
       });
+    },
+    async downloadRequestForm({url,label}) {
+      const response = await axios.get(url,{
+        responseType:"blob"
+      })
+      const blob = new Blob([response.data],{
+        type:"application/pdf"
+      })
+      const link = document.createElement("a")
+      link.href = URL.createObjectURL(blob)
+      link.download = label
+      link.click()
+      URL.revokeObjectURL(link.href)
     },
     save() {
         this.msgStatus = true

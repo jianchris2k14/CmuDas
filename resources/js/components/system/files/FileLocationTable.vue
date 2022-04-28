@@ -2,6 +2,9 @@
   <div class="container">
     <v-card>
       <v-card-title>
+        <select-file-category
+          @selectcategory="getCategory"
+        ></select-file-category>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -32,78 +35,61 @@
           <span>{{ new Date(item.created_at).toLocaleDateString() }}</span>
         </template>
         <template v-slot:top>
+          <h4>List of Documents</h4>
           <v-switch v-model="singleSelect" class="pa-3" label="Single Select">
-
           </v-switch>
 
           <v-toolbar flat>
-            <v-row>
-              <v-col cols="12" md="11" sm="13">
-                <h4>List of Documents</h4>
-              </v-col>
-              <v-col
-                cols="12"
-                md="1"
-                sm="3"
-                v-show="auth.user_type === 'Staff'"
-              >
-                <v-row>
-                  <v-col cols="12" class="mb-3">
-                    <v-btn-toggle v-model="icon" borderless>
-                      <v-btn
-                        color="error"
-                        :loading="isLoading"
-                        @click="deleteItem"
-                      >
-                        <span class="hidden-sm-and-down" @click="deleteItem">Delete</span>
+            <div v-show="auth.user_type === 'Staff'">
+              <v-btn-toggle v-model="icon" borderless>
+                <v-btn color="error" :loading="isLoading" @click="deleteItem">
+                  <span class="hidden-sm-and-down" @click="deleteItem"
+                    >Delete</span
+                  >
 
-                        <v-icon right class="text-white"> mdi-delete </v-icon>
-                      </v-btn>
-                    </v-btn-toggle>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
+                  <v-icon right class="text-white"> mdi-delete </v-icon>
+                </v-btn>
+              </v-btn-toggle>
+            </div>
 
             <!-- FILES MANAGEMENT MODALS -->
-              <v-dialog
-                v-model="viewdialog"
-                fullscreen
-                hide-overlay
-                transition="dialog-bottom-transition"
-              >
-                <v-card>
-                  <v-toolbar dark color="primary">
-                    <v-btn icon dark @click="viewdialog = false">
-                      <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                  </v-toolbar>
-                  <!--- GET FILE CONENTS -->
+            <v-dialog
+              v-model="viewdialog"
+              fullscreen
+              hide-overlay
+              transition="dialog-bottom-transition"
+            >
+              <v-card>
+                <v-toolbar dark color="primary">
+                  <v-btn icon dark @click="viewdialog = false">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </v-toolbar>
+                <!--- GET FILE CONENTS -->
 
-                  <div v-if="getFile" class="text-center">
-                    <img
-                      :src="getFile.filecontent"
-                      v-show="
-                        getFile.filetype === 'png' ||
-                        getFile.filetype === 'jpg' ||
-                        getFile.filetype === 'jpeg' ||
-                        getFile.filetype === 'PNG' ||
-                        getFile.filetype === 'JPG' ||
-                        getFile.filetype === 'JPEG'
-                      "
-                    />
-                    <embed
-                      :src="getFile.filecontent"
-                      v-show="
-                        getFile.filetype === 'pdf' || getFile.filetype === 'PDF'
-                      "
-                      width="100%"
-                      height="900"
-                    />
-                  </div>
-                </v-card>
-              </v-dialog>
-
+                <div v-if="getFile" class="text-center">
+                  <img
+                    :src="getFile.filecontent"
+                    v-show="
+                      getFile.filetype === 'png' ||
+                      getFile.filetype === 'jpg' ||
+                      getFile.filetype === 'jpeg' ||
+                      getFile.filetype === 'PNG' ||
+                      getFile.filetype === 'JPG' ||
+                      getFile.filetype === 'JPEG'
+                    "
+                  />
+                  <embed
+                    :src="getFile.filecontent"
+                    v-show="
+                      getFile.filetype === 'pdf' || getFile.filetype === 'PDF'
+                    "
+                    width="100%"
+                    height="900"
+                  />
+                </div>
+              </v-card>
+            </v-dialog>
 
             <v-dialog v-model="dialog" max-width="960px">
               <v-card>
@@ -202,9 +188,10 @@
   </div>
 </template>
 <script>
+import SelectFileCategory from "./SelectFileCategory.vue";
 import AlertComponent from "./../../AlertComponent.vue";
 export default {
-  components: { AlertComponent },
+  components: { AlertComponent, SelectFileCategory },
   data() {
     return {
       singleSelect: false,
@@ -214,6 +201,8 @@ export default {
       search: "",
       file_id: null,
       selectedFile: null,
+
+      category_id: 0,
 
       //Dialog Property
       dialog: false,
@@ -226,10 +215,10 @@ export default {
       //TABLE HEADERS PROPERTIES
       headers: [
         {
-          text: "File ID",
+          text: "Code",
           align: "start",
           sortable: true,
-          value: "file_id",
+          value: "code",
           class: "info text-black",
         },
         { text: "File Name", value: "filename", class: "info text-black" },
@@ -239,7 +228,6 @@ export default {
           class: "info text-black",
         },
         { text: "Slug", value: "slug", class: "info text-black" },
-        { text: "Code", value: "code", class: "info text-black" },
         { text: "Uploaded", value: "created_at", class: "info text-black" },
         {
           text: "Actions",
@@ -286,11 +274,10 @@ export default {
 
     getSelectedFileLocation() {
       let file_location_id = this.selected.map((item) => {
-        return item.file_location_id
-      })
-      return file_location_id
+        return item.file_location_id;
+      });
+      return file_location_id;
     },
-
 
     //GET CURRENT USER LOGGED IN
     auth() {
@@ -299,9 +286,15 @@ export default {
 
     //FETCH FILE LOCATIONS FROM STATE MANANGEMENT COMPUTED
     fetchFileLocations() {
-      const file_location = this.$store.state.files.file_location;
-
-      return this._.orderBy(file_location, ["created_at"], ["desc"]);
+      if (this.category_id === 0) {
+        const file_location = this.$store.state.files.file_location;
+        return this._.orderBy(file_location, ["created_at"], ["desc"]);
+      } else {
+        const files = this.$store.getters.filterFilesByCategory(
+          this.category_id
+        );
+        return this._.orderBy(files, ["created_at"], ["desc"]);
+      }
     },
 
     //FORM TITLE COMPUTED
@@ -343,7 +336,10 @@ export default {
   },
 
   methods: {
-    //EDIT FILE DATA
+    getCategory(category) {
+      this.category_id = category;
+    },
+
     getUserID() {
       this.form.user_id = event.target.value;
     },
@@ -357,11 +353,11 @@ export default {
 
     //DELETE FILE DATA
     deleteItem() {
-      if(this.getSelectedFileLocation.length>0) {
+      if (this.getSelectedFileLocation.length > 0) {
         this.dialogDelete = true;
-      }else {
-        alert("Please select Item")
-        return false
+      } else {
+        alert("Please select Item");
+        return false;
       }
     },
 
@@ -373,7 +369,10 @@ export default {
     //CONFIRM DELETE FILE
     async deleteItemConfirm() {
       this.msgStatus = true;
-      await this.$store.dispatch("deleteFileLocation", this.getSelectedFileLocation);
+      await this.$store.dispatch(
+        "deleteFileLocation",
+        this.getSelectedFileLocation
+      );
       this.closeDelete();
     },
 

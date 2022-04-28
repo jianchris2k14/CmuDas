@@ -181,9 +181,9 @@ export default {
           value: "request_id",
           class: "info text-black",
         },
-        { text: "Client Name", value: "name", class: "info text-black" },
-        { text: "Client Email", value: "email", class: "info text-black" },
+
         { text: "File Name", value: "filename", class: "info text-black" },
+        { text: "Purpose", value: "purpose", class: "info text-black" },
         { text: "Status", value: "status", class: "info text-black" },
         {
           text: "Request Date",
@@ -305,6 +305,7 @@ export default {
         this.form = Object.assign({},item)
         this.form.status = "Expired"
       }else {
+        console.log(item)
         await this.$store.dispatch("showRequestDocument", item);
       }
       

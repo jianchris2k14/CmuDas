@@ -1,21 +1,13 @@
 <template>
     <div>
-    <section class="section section-shaped" v-show="!auth.authenticated">
+    <section class="section section-shaped" v-show="!auth.authenticated" v-cloak>
     <div class="container pt-lg-7 pb-lg-7">
-      <div class="row">
-        <div class="col-md-6">
           <div v-show="actionType === 'Login'">
             <login @type="getRegister"/>
           </div>
           <div v-show="actionType === 'Register'">
             <register @type="getLogin"/>
           </div>
-        </div>
-
-        <div class="col-md-6">
-          <img :src="authimg">
-        </div>
-      </div>
     </div>
   </section>
     </div>
@@ -47,3 +39,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+[v-cloak] {
+  display: none;
+}
+</style>
