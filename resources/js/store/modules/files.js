@@ -158,7 +158,6 @@ const actions = {
         try {
             await axios.get('/api/filedisposal').then((response) => {
                 commit("GET_FILE_DISPOSAL", response.data)
-                console.log(response.data)
             }).catch((err) => {
 
                 console.log(err.response.data)

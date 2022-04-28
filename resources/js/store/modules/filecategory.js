@@ -129,7 +129,6 @@ const actions = {
         rootState.base.isLoading = true
         try {
             await axios.delete('/api/filecategory/'+data.category_id,data).then((response) => {
-                console.log(response.data)
                 commit("DELETE_FILE_CATEGORY",response.data)
 
                  //Notification
