@@ -44,7 +44,7 @@ const actions = {
             axios.post('/api/mail',payload).then((response) => {
                 console.log(response.data)
                     rootState.base.global = Object.assign({
-                        message:[{sucess:"Record Successfully Added"}],
+                        message:[{sucess:"Message Successfully Sent"}],
                         status: "Success",
                         showMsg:true
                     })

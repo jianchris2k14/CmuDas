@@ -135,7 +135,6 @@ const actions = {
         rootState.base.isLoading = true
         try {
             await axios.put('/api/updatecurrentuser/'+payload.user_id,payload).then((response) => {
-                console.log(response.data.data)
                 commit("UPDATE_USER",response.data)
                 rootState.base.global = Object.assign({
                     message:[{sucess:"Record Successfully Updated"}],

@@ -2,6 +2,10 @@
     <div class="container">
         <h3 class="display-3 text-center">Contact Us</h3><br>
         <div class="row">
+            <!-- Alert Message -->
+      <div v-if="msgStatus">
+        <alert-component />
+      </div>
             <div class="col-md-4">
                 <div class="col-md-12 info" data-aos="flip-down">
                 <div>
@@ -66,9 +70,12 @@
     </div>
 </template>
 <script>
+import AlertComponent from "./../../AlertComponent.vue";
 export default {
+    components:{AlertComponent},
     data() {
         return {
+            msgStatus:false,
             form:{
                 name:'',
                 email:'',
@@ -96,18 +103,31 @@ export default {
     computed:{
          //ISLOADING COMPUTED
         isLoading: {
-        get:function(){ 
-            return this.$store.state.base.isLoading
+            get:function(){ 
+                return this.$store.state.base.isLoading
+            },
+            set:function(newVal) {
+                return newVal
+            }
         },
-        set:function(newVal) {
-            return newVal
-        }
+        isError: {
+            get:function(){ 
+                return this.$store.state.base.global.status
+            },
+            set:function(newVal) {
+                return newVal
+            }
         }
     },
     methods:{
         sendemail() {
-            this.$refs.form.validate();
+            this.msgStatus = true;
             this.$store.dispatch("sendEmail",this.form)
+            if(this.isError === 'Success') {
+                this.$refs.form.reset();
+            }else {
+                this.$refs.form.validate();
+            }
         }
     }
 }
