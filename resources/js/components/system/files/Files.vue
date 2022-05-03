@@ -17,10 +17,10 @@
                 <v-tab href="#mobile-tabs-5-2" class="primary--text">
                   <v-icon>mdi-file-cabinet </v-icon> File Locations
                 </v-tab>
-                <v-tab href="#mobile-tabs-5-4" class="primary--text" v-show="auth.user_type === 'Staff'">
+                <v-tab href="#mobile-tabs-5-3" class="primary--text" v-show="auth.user_type === 'Staff'">
                   <v-icon>mdi-file-compare </v-icon> File Disposal
                 </v-tab>
-                <v-tab href="#mobile-tabs-5-5" class="primary--text" v-show="auth.user_type === 'Chief'">
+                <v-tab href="#mobile-tabs-5-4" class="primary--text" v-show="auth.user_type === 'Chief'">
                   <v-icon>mdi-file-compare </v-icon> File Category
                 </v-tab>
 
@@ -42,11 +42,12 @@
               </v-card>
 
                <v-card flat v-if="i === 3">
-                  <file-category-table/>
+                 <file-disposal-table/>
+                  
               </v-card>
 
               <v-card flat v-if="i === 4">
-                  <file-disposal-table/>
+                  <file-category-table/>
               </v-card>
 
               

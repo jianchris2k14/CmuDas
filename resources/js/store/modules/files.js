@@ -154,7 +154,8 @@ const mutations = {
 /* STORE ACTIONS */
 const actions = {
 
-    async getFileDisposal({commit}) {
+    async getFileDisposal({commit,rootState}) {
+        rootState.base.isLoading = true
         try {
             await axios.get('/api/filedisposal').then((response) => {
                 commit("GET_FILE_DISPOSAL", response.data)
@@ -162,6 +163,8 @@ const actions = {
 
                 console.log(err.response.data)
 
+            }).finally(function() {
+                rootState.base.isLoading = false
             });
 
         } catch (e) {
@@ -173,6 +176,7 @@ const actions = {
 
     /* FETCH FILE DATA FROM DATABASE */
     async getFileList({ commit, rootState }) {
+        rootState.base.isLoading = true
         try {
             await axios.get('/api/files').then((response) => {
                 commit("GET_FILES", response.data.data)
@@ -180,7 +184,9 @@ const actions = {
 
                 console.log(err.response.data)
 
-            });
+            }).finally(function() {
+                rootState.base.isLoading = false
+            });;
 
         } catch (e) {
 

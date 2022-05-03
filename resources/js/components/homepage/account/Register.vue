@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <v-card>
-      <h5 class="display-1 text-center text-uppercase">Signup</h5>
+      <h3 class="display-7 text-uppercase">Create Account</h3>
+      <p>Get access to CMU Archive by creating an account.</p>
       <!-- Alert Message -->
       <div v-if="msgStatus">
         <alert-component />
@@ -42,7 +43,7 @@
                 </v-col>
               </v-row>
               <v-row class="mt-n6">
-                <v-col cols="12" sm="8" md="6">
+                <v-col cols="12">
                   <v-text-field
                     v-model="form.address"
                     label="Address"
@@ -53,7 +54,9 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="8" md="6">
+              </v-row>
+              <v-row class="mt-n6">
+                <v-col cols="12">
                   <v-text-field
                     v-model="form.phone_no"
                     label="Contact No."
@@ -105,16 +108,26 @@
         </v-card-text>
         <!-- Form Buttons -->
         <v-card-actions>
-          <v-btn text @click="showLogin('Login')">Already have an Account?</v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
+          <v-row>
+            <v-col cols="12" md="6" sm="8">
+              <v-btn
+              x-large 
             :disabled="!rules.isValid"
             color="success"
             dark
             @click="save"
           >
-            Register
+            Create my Account
           </v-btn>
+            </v-col>
+
+            <v-col cols="12" md="6" sm="8">
+              <v-btn x-large text @click="showLogin('Login')">Already have an Account?</v-btn>
+            </v-col>
+          </v-row>
+          
+
+          
         </v-card-actions>
       </v-card>
     </v-card>
@@ -203,3 +216,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+::v-deep .v-btn {
+  padding-left: 12px;
+  padding-right: 12px;
+  width: 100%;
+}
+</style>

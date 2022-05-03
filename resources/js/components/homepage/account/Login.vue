@@ -11,7 +11,8 @@
 
       <v-card outlined>
         <v-card-text>
-          <h6 class="display-1 text-center text-uppercase"><v-icon large>mdi-account</v-icon> Signin</h6>
+          <h3 class="display-7 text-uppercase">Login</h3>
+          <p>Welcome to CMU Archive, please input your credentials below.</p>
           <v-container>
             <v-form
               ref="form"
@@ -56,13 +57,19 @@
         <!-- Form Buttons -->
 
         <v-card-actions>
-          <v-btn text @click="showRegister('Register')"
-            >Create an Account</v-btn
-          >
-          <v-spacer></v-spacer>
-          <v-btn :disabled="!rules.isValid" color="success" dark @click="save">
+          <v-row>
+            <v-col cols="12" md="6" sm="4">
+              <v-btn x-large :disabled="!rules.isValid" color="success" dark @click="save">
             Login
           </v-btn>
+            </v-col>
+            <v-col cols="12" md="6" sm="4">
+              <v-btn x-large width="100%" text @click="showRegister('Register')"
+            >Create an Account</v-btn
+          >
+            </v-col>
+          </v-row>
+          
         </v-card-actions>
       </v-card>
   </div>
@@ -153,3 +160,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+::v-deep .v-btn {
+  padding-left: 12px;
+  padding-right: 12px;
+  width: 100%;
+}
+</style>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use Illuminate\Http\Request;
 use App\Http\Resources\FileResource;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class FileController extends Controller
 {

@@ -24,7 +24,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-collapse collapse" id="navbar_global">
-        <div class="navbar-collapse-header" style="border: 1px solid #000">
+        <div class="navbar-collapse-header">
           <div class="row">
             <div class="col-6 collapse-brand">
               <a href="">
@@ -48,12 +48,10 @@
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-7"></div>
-          <div class="col-md-5">
-            <div>
-              <ul
-                class="navbar-nav navbar-nav-hover align-items-lg-center"
+        <div class="container">
+          <div class="float-right">
+            <ul
+                class="nav navbar-nav navbar-nav-hover"
                 v-scroll-spy-active="{ class: 'active' }"
                 v-scroll-spy-link
               >
@@ -65,22 +63,12 @@
                 </li>
 
                 <li class="nav-item">
-                  <ul
-                    class="navbar-nav align-items-lg-center"
-                    v-show="auth.authenticated"
+                  <div v-if="auth.authenticated">
+                    <ul
+                    class="navbar-nav align-items-lg-center mt-2"
                   >
                     <li class="nav-item dropdown">
-                      <a
-                        class="nav-link nav-link-icon dropdown-toggle"
-                        href="javascript:;"
-                        id="navbar-default_dropdown_1"
-                        role="button"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <i class="fa fa-user"></i>
-                      </a>
+                      <v-btn>My Account</v-btn>
                       <div
                         class="dropdown-menu dropdown-menu-right"
                         aria-labelledby="navbar-default_dropdown_1"
@@ -95,13 +83,38 @@
                       </div>
                     </li>
                   </ul>
+                  </div>
+                  <div v-else>
+                  <ul
+                    class="navbar-nav align-items-lg-center mt-2"
+                  >
+                    <li class="nav-item dropdown">
+                       <v-btn>My Account</v-btn>
+
+                      <div
+                        class="dropdown-menu dropdown-menu-right"
+                        aria-labelledby="navbar-default_dropdown_1"
+                      >
+                        <router-link :to="redirect" class="dropdown-item">
+                          <i class="fa fa-address-card"></i> Register
+                        </router-link>
+                        <router-link :to="redirect" class="dropdown-item">
+                          <i class="fa fa-sign-in-alt"></i> Login
+                        </router-link>
+                        
+                        <div class="dropdown-divider"></div>
+                      </div>
+                    </li>
+                  </ul>
+                  </div>
+                  
                 </li>
               </ul>
+          </div>
+              
             </div>
           </div>
         </div>
-      </div>
-    </div>
   </nav>
   <!-- End Navbar -->
 </template>
@@ -113,7 +126,7 @@ export default {
       logo: logo,
       scrollPosition: null,
       scrolled: false,
-      navLink: ["Home", "About", "Search", "Contact"],
+      navLink: ["Home", "About", "FAQs", "Contact"],
     };
   },
   methods: {
@@ -178,10 +191,10 @@ export default {
   height: 50px;
 }
 .navbg {
-  background: #1e8133 !important;
+  background: #21c65e !important;
 }
 .navbg.scrolled {
-  background-color: #1e8133 !important;
+  background-color: #21c65e !important;
   transition: ease-in-out 0.6s;
 }
 </style>

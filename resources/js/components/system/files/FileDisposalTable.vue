@@ -38,6 +38,7 @@
             <v-dialog v-model="dialog" max-width="960px">
               <v-card>
                 <v-toolbar color="primary" dark>
+                  <v-toolbar-title>Update File Status</v-toolbar-title>
                 </v-toolbar>
                 <v-card-title> </v-card-title>
                 <v-card-text>

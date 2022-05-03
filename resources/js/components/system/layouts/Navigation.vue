@@ -90,25 +90,25 @@ export default {
                {
                     itemText:'Dashboard',
                     itemIcon:'fa fa-tachometer-alt',
-                    itemIconColor:'text-warning',
+                    itemIconColor:'text-white',
                     itemPath:'/system/dashboard'
                 },
                 {
                     itemText:'Document List',
                     itemIcon:'fa fa-archive',
-                    itemIconColor:'text-green',
+                    itemIconColor:'text-white',
                     itemPath:'/system/files'
                 },
                 {
                     itemText:'Archive',
                     itemIcon:'fa fa-archive',
-                    itemIconColor:'text-red',
+                    itemIconColor:'text-white',
                     itemPath:'/system/archive'
                 },
                 {
                     itemText:'Client Manangement',
                     itemIcon:'fa fa-user-tie',
-                    itemIconColor:'text-primary',
+                    itemIconColor:'text-white',
                     itemPath:'/system/clients'
                 },
                 {
@@ -129,25 +129,25 @@ export default {
                 {
                     itemText:'Dashboard',
                     itemIcon:'fa fa-tachometer-alt',
-                    itemIconColor:'text-warning',
+                    itemIconColor:'text-white',
                     itemPath:'/system/dashboard'
                 },
                 {
                     itemText:'Document Manangement',
                     itemIcon:'fa fa-archive',
-                    itemIconColor:'text-green',
+                    itemIconColor:'text-white',
                     itemPath:'/system/files'
                 },
                 {
                     itemText:'Request Manangement',
                     itemIcon:'fa fa-chalkboard-teacher',
-                    itemIconColor:'text-red',
+                    itemIconColor:'text-white',
                     itemPath:'/system/requests'
                 },
                 {
                     itemText:'Archive',
                     itemIcon:'fa fa-archive',
-                    itemIconColor:'text-red',
+                    itemIconColor:'text-white',
                     itemPath:'/system/archive'
                 },
 
@@ -168,12 +168,12 @@ export default {
   width:100%
 }
 .nav-item:hover {
-    background:#fcf825;
+    background:#21c65e;
     color:#000;
     transition:0.6s ease-in-out;
 }
 .active {
-    background:#fcf825;
+    background:#21c65e;
 
 }
 .active span {

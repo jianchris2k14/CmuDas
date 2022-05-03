@@ -9,7 +9,7 @@
                         <about/>
                     </section>
                     <section>
-                        <search/>
+                        <faqs/>
                     </section>
                     <section>
                         <contact/>
@@ -23,7 +23,7 @@ import Navigation from './Navigation.vue'
 import FooterLayout from './Footer.vue'
 import About from '../about/About.vue'
 import Contact from '../contact/Contact.vue'
-import Search from '../search/Search.vue'
+import Faqs from '../faqs/Faqs.vue'
 import Home from '../home/Home.vue'
 import Account from '../account/AccountManagement.vue'
 export default {
@@ -33,7 +33,7 @@ export default {
         Home,
         About,
         Contact,
-        Search,
+        Faqs,
         Account
 
     },
