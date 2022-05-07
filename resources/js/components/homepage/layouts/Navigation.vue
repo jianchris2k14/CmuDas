@@ -95,10 +95,10 @@
                         class="dropdown-menu dropdown-menu-right"
                         aria-labelledby="navbar-default_dropdown_1"
                       >
-                        <router-link :to="redirect" class="dropdown-item">
+                        <router-link :to="redirectRegister" class="dropdown-item">
                           <i class="fa fa-address-card"></i> Register
                         </router-link>
-                        <router-link :to="redirect" class="dropdown-item">
+                        <router-link :to="redirectLogin" class="dropdown-item">
                           <i class="fa fa-sign-in-alt"></i> Login
                         </router-link>
                         
@@ -137,6 +137,7 @@ export default {
         this.scrolled = true;
       }
     },
+   
 
     async logout() {
       await axios
@@ -167,6 +168,18 @@ export default {
       set: function (newVal) {
         return newVal;
       },
+    },
+     redirectLogin() {
+      return {
+        name:"authentication",
+        params:{action:'login'}
+      }
+    },
+    redirectRegister() {
+      return {
+        name:"authentication",
+        params:{action:'register'}
+      }
     },
     redirect() {
       let user_type = this.auth.user.user_type;

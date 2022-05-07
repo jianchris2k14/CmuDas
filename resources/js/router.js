@@ -9,6 +9,9 @@ import homepage from './components/homepage/home/Home.vue'
 import HomepageLayout from './components/homepage/layouts/HomepageLayout.vue'
 
 
+import Authentication from './components/homepage/login/Authentication.vue'
+
+
 /* CLIENT COMPONENTS */
 import clientdashboardlayout from './components/homepage/client/layouts/DashboardLayout'
 import clientprofile from './components/homepage/client/dashboard/Dashboard.vue'
@@ -41,83 +44,96 @@ import archive from './components/system/archive/Archive.vue'
 const routes = [
 
     {
-        path:'*',
-        component:NotFound,
+        path: '*',
+        component: NotFound,
     },
     {
-        path:'/404',
-        component:NotFound,
-        name:"404"
+        path: '/404',
+        component: NotFound,
+        name: "404"
     },
     {
-        path:'/',
-        component:HomepageLayout,
-        meta:{
-            guest: true,
-            title:"portal"
-        },
-        children:[
+        path: '/authentication/:action',
+        component: Authentication,
+        children: [
             {
-                path:'/',
-                component:homepage,
-                name:'homepage',
-                meta:{
+                path: '/authentication/:action',
+                component: homepage,
+                name: 'authentication',
+                meta: {
                     guest: true,
-                    title:"Landing Page"
-                }
+                    title: "login"
+                },
             },
 
         ]
 
     },
     {
-        path:'/client/clientprofile',
-        component:clientdashboardlayout,
-        meta:{
-            middleware:true,
-            title:"system",
-        },  
-        children:[
+        path: '/',
+        component: HomepageLayout,
+        meta: {
+            guest: true,
+            title: "portal"
+        },
+        children: [
             {
-                path:'/client/clientprofile',
-                component:clientprofile,
-                name:'clientprofile',
-                meta:{
-                    middleware:true,
-                    isAdmin:false,
-                    title:"Client Profile"
+                path: '/',
+                component: homepage,
+                name: 'homepage',
+            },
+
+        ]
+
+    },
+    {
+        path: '/client/clientprofile',
+        component: clientdashboardlayout,
+        meta: {
+            middleware: true,
+            title: "system",
+        },
+        children: [
+            {
+                path: '/client/clientprofile',
+                component: clientprofile,
+                name: 'clientprofile',
+                meta: {
+                    middleware: true,
+                    isAdmin: false,
+                    title: "Client Profile"
                 },
             },
             {
-                path:'/client/viewrequest/:file_id',
-                component:viewrequest,
-                props:true,
-                name:'clientviewrequest',
-                meta:{
-                    middleware:true,
-                    isAdmin:false,
-                    title:"Client View Request"
+                path: '/client/viewrequest/:file_id',
+                component: viewrequest,
+                props: true,
+                name: 'clientviewrequest',
+                meta: {
+                    middleware: true,
+                    isAdmin: false,
+                    title: "Client View Request"
                 },
-                
+
             },
             {
-                path:'/client/requests',
-                component:clientrequests,
-                name:'clientrequests',
-                meta:{
-                    middleware:true,
-                    isAdmin:false,
-                    title:"Client Request"
+                path: '/client/requests',
+                component: clientrequests,
+                name: 'clientrequests',
+                meta: {
+                    middleware: true,
+                    isAdmin: false,
+                    title: "Client Request"
                 },
             },
             {
-                path:'/client/clientsearch',
-                component:clientsearch,
-                name:'clientsearch',
-                meta:{
-                    middleware:true,
-                    isAdmin:false,
-                    title:"Client Search File"
+                path: '/client/clientsearch',
+                component: clientsearch,
+                name: 'clientsearch',
+                meta: {
+                    middleware: true,
+                    isAdmin: false,
+                    title: "Client Search File"
                 },
 
             },
@@ -125,111 +141,111 @@ const routes = [
         ]
     },
     {
-        path:'/system/',
-        component:DashboardLayout,
-        meta:{
-            middleware:true,
-            title:"system",
-        },  
-        children:[
+        path: '/system/',
+        component: DashboardLayout,
+        meta: {
+            middleware: true,
+            title: "system",
+        },
+        children: [
             {
-                path:'/system/dashboard',
-                component:dashboard,
-                name:'systemdashboard',
-                meta:{
-                    isAdmin:true,
-                    middleware:true,
-                    isStaff:false,
-                    title:"System Dashboard"
+                path: '/system/dashboard',
+                component: dashboard,
+                name: 'systemdashboard',
+                meta: {
+                    isAdmin: true,
+                    middleware: true,
+                    isStaff: false,
+                    title: "System Dashboard"
                 },
                 /* beforeEnter:(to,from,next) => {
                     store.dispatch("getUserList")
                     next()
                 }, */
 
-                
-            },
-            {
-                path:'/system/files',
-                component:files,
-                name:'systemfiles',
-                meta:{
-                    isAdmin:true,
-                    middleware:true,
-                    title:"System Files"
-                },
-            },
-            {
-                path:'/system/reports',
-                component:reports,
-                name:'systemreports',
-                meta:{
-                    isAdmin:true,
-                    middleware:true,
-                    isChief:true,
-                    title:"System Reports"
-                },
-            },
-            {
-                path:'/system/archive',
-                component:archive,
-                name:'systemarchive',
-                meta:{
-                    isAdmin:true,
-                    middleware:true,
-                    title:"System Archive"
-                },
-            },
-                
-            {
-                path:'/system/requests',
-                component:requests,
-                name:'systemrequests',
-                meta:{
-                    isAdmin:true,
-                    isStaff:true,
-                    middleware:true,
-                    title:"System Client Requests"
-                },
-                
 
             },
             {
-                path:'/system/user',
-                component:users,
-                name:'systemusers',
-                meta:{
-                    isAdmin:true,
-                    middleware:true,
-                    isChief:true,
-                    title:"System Users"
+                path: '/system/files',
+                component: files,
+                name: 'systemfiles',
+                meta: {
+                    isAdmin: true,
+                    middleware: true,
+                    title: "System Files"
                 },
-                beforeEnter:(to,from,next) => {
-                    if(store.state.auth.user.user_type === 'Staff') {
+            },
+            {
+                path: '/system/reports',
+                component: reports,
+                name: 'systemreports',
+                meta: {
+                    isAdmin: true,
+                    middleware: true,
+                    isChief: true,
+                    title: "System Reports"
+                },
+            },
+            {
+                path: '/system/archive',
+                component: archive,
+                name: 'systemarchive',
+                meta: {
+                    isAdmin: true,
+                    middleware: true,
+                    title: "System Archive"
+                },
+            },
+
+            {
+                path: '/system/requests',
+                component: requests,
+                name: 'systemrequests',
+                meta: {
+                    isAdmin: true,
+                    isStaff: true,
+                    middleware: true,
+                    title: "System Client Requests"
+                },
+
+
+            },
+            {
+                path: '/system/user',
+                component: users,
+                name: 'systemusers',
+                meta: {
+                    isAdmin: true,
+                    middleware: true,
+                    isChief: true,
+                    title: "System Users"
+                },
+                beforeEnter: (to, from, next) => {
+                    if (store.state.auth.user.user_type === 'Staff') {
                         next({
-                            name:'404'
+                            name: '404'
                         })
-                    }else {
+                    } else {
                         next()
                     }
                 }
             },
             {
-                path:'/system/clients',
-                component:clients,
-                name:'systemclients',
-                meta:{
-                    isAdmin:true,
-                    isChief:true,
-                    middleware:true,
-                    title:"System Clients"
+                path: '/system/clients',
+                component: clients,
+                name: 'systemclients',
+                meta: {
+                    isAdmin: true,
+                    isChief: true,
+                    middleware: true,
+                    title: "System Clients"
                 },
-                beforeEnter:(to,from,next) => {
-                    if(store.state.auth.user.user_type === 'Staff') {
+                beforeEnter: (to, from, next) => {
+                    if (store.state.auth.user.user_type === 'Staff') {
                         next({
-                            name:'404'
+                            name: '404'
                         })
-                    }else {
+                    } else {
                         next()
                     }
                 }
@@ -240,14 +256,14 @@ const routes = [
 ]
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
-    return originalPush.call(this,location).catch(err =>err)
+    return originalPush.call(this, location).catch(err => err)
 }
 const router = new VueRouter({
     routes,
-    mode:'history',
+    mode: 'history',
     linkActiveClass: 'active',
-    scrollBehavior(to,from,savedPosition) {
-        return {x:0,y:0}
+    scrollBehavior(to, from, savedPosition) {
+        return { x: 0, y: 0 }
     }
 })
 
@@ -255,55 +271,82 @@ function loggedIn() {
     return localStorage.getItem('token');
 }
 router.beforeEach((to, from, next) => {
-      if (to.matched.some(record => record.meta.middleware)) {
+    let user_type = localStorage.getItem("user_type")
+    if (to.matched.some(record => record.meta.middleware)) {
         if (!loggedIn() && !store.state.auth.authenticated) {
-          next({
-            path: '/',
-            query: {redirect: to.fullPath }
-          })
-        }else {
-            let user_type = localStorage.getItem("user_type")
-            if(to.matched.some(record => record.meta.isAdmin)) {
-                if(user_type === 'Client') {
+            next({
+                path: '/',
+                query: { redirect: to.fullPath }
+            })
+        } else {
+            if (to.matched.some(record => record.meta.isAdmin)) {
+
+                if (user_type === 'Client') {
                     next({
-                        name:'404'
+                        name: '404'
                     })
-                }else {
-                    if(user_type === 'Chief') {
-                        if(to.matched.some(record => record.meta.isStaff)) {
+                } else {
+                    if (user_type === 'Chief') {
+                        if (to.matched.some(record => record.meta.isStaff)) {
                             next({
-                                name:'404'
+                                name: '404'
                             })
-                        }else {
+                        } else {
                             next()
                         }
-                    }else {
-                        if(to.matched.some(record => record.meta.isChief)) {
+                    } else {
+                        if (to.matched.some(record => record.meta.isChief)) {
                             next({
-                                name:'404'
+                                name: '404'
                             })
-                        }else {
+                        } else {
                             next()
                         }
                     }
                 }
-            }else {
-                if(user_type === 'Client') {
+
+            }
+            else {
+
+                if (user_type === 'Client') {
                     next()
-                }else {
+                } else {
                     next({
-                        name:'404'
+                        name: '404'
                     })
                 }
+
+
             }
             next()
 
         }
-      }
-      else {
+    } else if (to.matched.some(record => record.meta.guest)) {
+        if (loggedIn()) {
+            if (user_type === 'Client') {
+                next({
+                    path: '/client/clientprofile',
+                })
+            } else if (user_type === 'Staff') {
+                next({
+                    path: '/system/dashboard',
+
+                })
+            } else {
+                next({
+                    path: '/system/dashboard',
+
+                })
+            }
+
+        } else {
+            next()
+        }
+    }
+    else {
         next() // make sure to always call next()!
-      }
-    })
+    }
+})
 
 export default router
 

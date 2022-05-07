@@ -4,8 +4,8 @@
       <div class="page-header">
         <div class="container shape-container align-items-center py-lg">
           <div class="row">
+            
             <div class="col-md-6 mt-15">
-              <div>
                 <div class="col-lg-12">
                   <div
                     data-aos="fade-right"
@@ -57,59 +57,16 @@
                     </v-list>
                   </div>
                 </div>
-              </div>
 
-              <div v-show="auth.authenticated">
-                <div class="col-lg-12 text-center">
-                  <div
-                    data-aos="fade-right"
-                    data-aos-offset="300"
-                    data-aos-easing="ease-in-sine"
-                  >
-                    <h1 class="display-1 title">Central Mindanao</h1>
-                  </div>
-                  <div
-                    data-aos="fade-left"
-                    data-aos-offset="300"
-                    data-aos-easing="ease-in-sine"
-                  >
-                    <h1 class="display-4 subtitle">University</h1>
-                  </div>
-                  <div data-aos="fade-up" data-aos-duration="3000">
-                    <h2
-                      class="
-                        display-5
-                        font-weight-normal
-                        text-black
-                        animate__animated animate__fadeIn
-                      "
-                    >
-                      Digital Archiving system
-                    </h2>
-                  </div>
-                </div>
-              </div>
 
-              <account-management></account-management>
             </div>
             <div class="col-md-6">
-              <img :src="personalfiles" height="70%" />
+              <img :src="personalfiles" height="85%" />
             </div>
+
+            
           </div>
         </div>
-      </div>
-
-      <div class="separator separator-bottom separator-skew zindex-100">
-        <svg
-          x="0"
-          y="0"
-          viewBox="0 0 2560 100"
-          preserveAspectRatio="none"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
-        </svg>
       </div>
     </div>
   </div>
@@ -162,14 +119,13 @@
 }
 </style>
 <script>
-import AccountManagement from "./../account/AccountManagement.vue";
+
 import Login from "./../account/Login.vue";
 import Register from "./../account/Register.vue";
 import office from "../../../../../public/assets/img/office/office.png";
 import personalfiles from "../../../../../public/images/personalfiles.svg";
 export default {
   components: {
-    AccountManagement,
     Login,
     Register,
   },
