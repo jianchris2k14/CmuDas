@@ -2,6 +2,7 @@
   <div class="container">
     <v-row>
       <v-col cols="12">
+        {{ pageOfItems }}
         <v-row>
           <v-alert outlined type="info" prominent border="left">
             Please Read before making a request, make sure to secure the
@@ -90,7 +91,7 @@
                 <div class="float-left">
                   <v-icon large color="success">mdi-folder</v-icon>
                 </div>
-              
+
                 <v-card-title class="text-black text-h4">{{
                   items.filename
                 }}</v-card-title>
@@ -101,7 +102,31 @@
             </v-card-text>
 
             <v-card-text class="flex">
-              <div class="body-1">{{ items.description }}</div>
+              <v-row>
+                <v-col cols="12">
+                  <div class="body-1">{{ items.description }}</div>
+                  <div class="float-right">
+                    
+                   
+                      <!-- Excerpt section -->
+                <div class="mb-1 gray-bg" v-show="!items.Flag">
+                    <p class="mb-1">{{items.description | summary }}</p>
+                    <div class="float-right">
+                      <v-btn text color="info" @click="toggler(items,true)">Show More</v-btn>
+                    </div>
+                </div>
+                <!-- Excerpt section end -->
+
+                <!-- Content section -->
+                <div class="mb-1 gray-bg" v-show="items.Flag">
+                    <p class="mb-1" v-html="items.description"></p>
+                    <div class="float-right">
+                      <v-btn text color="info" @click="toggler(items,false)">Show Less</v-btn>
+                    </div>
+                </div>
+                  </div>
+                </v-col>
+              </v-row>
             </v-card-text>
             <v-card-subtitle
               >Uploaded:
@@ -130,7 +155,9 @@
                   </template>
                   <template>
                     <v-card>
-                      <v-toolbar color="primary" dark>Request File</v-toolbar>
+                      <v-toolbar color="primary" dark
+                        >Request this Document</v-toolbar
+                      >
                       <v-container>
                         <!-- REQUEST FORM -->
                         <v-form ref="form" @submit.prevent="save">
@@ -269,6 +296,7 @@ export default {
       search: null,
       msg: "",
       showMsg: false,
+      paragraph: "The quick brown fox jumps over the lazy dog",
 
       //Dialog Property
       formDialog: false,
@@ -304,6 +332,8 @@ export default {
       count: null,
       uploadReady: true,
       filename: "choose file",
+
+      more: false,
 
       //DEFAULT FORM DATA
       defaultItem: {
@@ -391,8 +421,28 @@ export default {
       val || this.close();
     },
   },
-
+  filters: {
+    summary: function (text) {
+      return text.substring(0, 150) + " ...";
+    },
+  },
   methods: {
+    toggler(obj, flag) {
+      if(obj.description >=150) {
+        this.$set(obj, "Flag", flag)
+      }else {
+        this.$set(obj, "Flag", flag)
+      }
+      
+    },
+    /* showMore() {
+      let arrDocuments = this.pageOfItems;
+      for (var i = 0; i < arrDocuments.length; i++) {
+        let desc_lngt = arrDocuments[i].description.length;
+        if (desc_lngt >= 100) {
+        }
+      }
+    }, */
     async downloadRequestForm({ url, label }) {
       const response = await axios.get(url, {
         responseType: "blob",
