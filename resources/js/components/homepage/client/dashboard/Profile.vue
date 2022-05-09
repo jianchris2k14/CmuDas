@@ -13,20 +13,86 @@
           <img :src="userlogo" />
         </v-avatar>
         <v-divider></v-divider>
-        <a href="#" @click.prevent="downloadRequestForm({
-          url:'http://localhost:8000/storage/requestform/sample.pdf',
-          label:'CMUDAS_Request_form.pdf'
-        })">Download Request Form</a>
         </div>
       </v-col>
       
       <v-col cols="12" md="8" sm="6">
-        <v-card class="mx-auto" tile v-show="showInfo">
+
           <v-list flat>
-            <v-subheader class="info text-uppercase text-white"
-              >Personal Information</v-subheader
-            >
-            <v-list-item-group>
+              <h2 class="text-uppercase personal-info">Personal Information</h2>
+            
+            <v-form
+                  ref="form"
+                  @submit.prevent="save"
+                  v-model="rules.isValid"
+                  lazy-validation
+                  class="mt-5"
+                >
+                  <v-row>
+                    <v-col cols="12" class="mb-n7">
+                      <v-text-field
+                        v-model="form.name"
+                        label="Name"
+                        outlined
+                        dense
+                        prepend-inner-icon="mdi-account"
+                        :rules="rules.editProfileRules.name"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" class="mb-n7">
+                      <v-text-field
+                        v-model="form.email"
+                        label="Email"
+                        disabled
+                        outlined
+                        prepend-inner-icon="mdi-email"
+                        dense
+                        :rules="rules.editProfileRules.email"
+                        required
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col sm="12" class="mb-n7">
+                      <v-text-field
+                        v-model="form.address"
+                        label="Address"
+                        outlined
+                        dense
+                        prepend-inner-icon="mdi-map-marker"
+                        :rules="rules.editProfileRules.address"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col sm="12" class="mb-n7">
+                      <v-text-field
+                        v-model="form.phone_no"
+                        label="Contact No."
+                        outlined
+                        dense
+                        prepend-inner-icon="mdi-phone"
+                        :rules="rules.editProfileRules.phone_no"
+                        required
+                        type="number"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" class="mb-n7">
+                      <v-text-field
+                        label="Current Password"
+                        v-model="form.password"
+                        outlined
+                        dense
+                        :append-icon="showpass ? 'mdi-eye' : 'mdi-eye-off'"
+                        :type="showpass ? 'text' : 'password'"
+                        @click:append="showpass = !showpass"
+                        :rules="rules.editProfileRules.password"
+                        required
+                      >
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-form>
+            <!-- <v-list-item-group>
               <v-list-item>
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
@@ -67,7 +133,7 @@
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-            </v-list-item-group>
+            </v-list-item-group> -->
           </v-list>
           <v-btn
             color="info"
@@ -85,7 +151,6 @@
             <v-icon> mdi-pencil </v-icon>
             Update Password
           </v-btn>
-        </v-card>
 
         <!-- User Management Modal -->
         <div v-show="showForm">
@@ -256,9 +321,10 @@ export default {
     },
   },
   data() {
+    const user = this.getUserProfile
     return {
 
-
+      user:user,
       dialog: false,
       showForm: false,
       showInfo: true,
@@ -345,7 +411,7 @@ export default {
       this.form = Object.assign({}, user)
     },
     updatePassword(user) {
-        this.user_type = 'updatepassword'
+      this.user_type = 'updatepassword'
       this.showForm = true
       this.isUpdatePassword = true
       this.showInfo = false
@@ -392,4 +458,7 @@ export default {
 };
 </script>
 <style scoped>
+.personal-info {
+  color:#21c65e;
+}
 </style>

@@ -1,9 +1,9 @@
 <template>
 <div>
-    <nav class="navbar navbar-top navbar-expand-md navbar-dark bg-dark navbar-container" id="navbar-main">
+    <nav class="navbar navbar-top navbar-expand-md navbar-dark navbar-container page-header" id="navbar-main">
       <div class="container-fluid">
         <!-- Brand -->
-        <span class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" href="">Digital Archiving System</span>
+        <span class="h4 mb-0 text-black text-uppercase d-none d-lg-inline-block" href="">Digital Archiving System</span>
         <!-- User -->
         
         <ul class="navbar-nav align-items-center d-none d-md-flex">
@@ -12,9 +12,9 @@
               <div class="media align-items-center">
 
                 <div class="media-body ml-2 d-none d-lg-block">
-                  <span class="mb-0 text-sm  font-weight-bold"> {{$store.state.auth.user.name}}</span>
+                  <span class="mb-0 text-sm text-uppercase text-black font-weight-bold"> {{$store.state.auth.user.name}}</span>
                 </div>
-                <span class="avatar avatar-sm rounded-circle">
+                <span class="avatar avatar-sm rounded-circle ml-2">
                   <img :src="userlogo">
                 </span>
               </div>
@@ -50,8 +50,8 @@ export default {
 .navbar-container {
     z-index: 50;
 }
-.bg-green {
-  background-color: #1e8133;
+.page-header {
+  background-color: #21c65e;
 }
 
 </style>

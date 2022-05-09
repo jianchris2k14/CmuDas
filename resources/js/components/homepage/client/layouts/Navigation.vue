@@ -71,23 +71,24 @@ export default {
             userlogo:userlogo,
             navigation:[
                 {
-                    itemText:'Profile',
-                    itemIcon:'fa fa-user-tie',
-                    itemIconColor:'text-warning',
-                    itemPath:'/client/clientprofile'
+                    itemText:'Documents',
+                    itemIcon:'fa fa-folder',
+                    itemIconColor:'text-success',
+                    itemPath:'/client/clientsearch'
                 },
                 {
                     itemText:'Requests',
                     itemIcon:'fa fa-chalkboard-teacher',
-                    itemIconColor:'text-red',
+                    itemIconColor:'text-success',
                     itemPath:'/client/requests'
                 },
                 {
-                    itemText:'Search',
-                    itemIcon:'fa fa-search',
-                    itemIconColor:'text-primary',
-                    itemPath:'/client/clientsearch'
+                    itemText:'Profile',
+                    itemIcon:'fa fa-user-tie',
+                    itemIconColor:'text-success',
+                    itemPath:'/client/clientprofile'
                 },
+                
             ]
         }
     }
@@ -100,19 +101,16 @@ export default {
 .link {
     color:#fff;
 }
-.bg-green {
-  background-color: #1e8133;
-}
 .nav-item {
   width:100%
 }
 .nav-item:hover {
-    background:#fcf825;
+    background:#d0fae4;
     color:#000;
     transition:0.6s ease-in-out;
 }
 .active {
-    background:#fcf825;
+    background:#d0fae4;
 
 }
 .active span {

@@ -1,6 +1,6 @@
 <template>
 <div>
-    <nav class="navbar navbar-top navbar-expand-md navbar-dark navbar-container page-header" id="navbar-main" clas>
+    <nav class="navbar navbar-top navbar-expand-md navbar-dark navbar-container page-header" id="navbar-main">
       <div class="container-fluid">
   
         <!-- Brand -->
@@ -12,7 +12,7 @@
               <div class="media align-items-center">
 
                 <div class="media-body ml-2 d-none d-lg-block">
-                  <span class="mb-0 text-sm text-uppercase text-black  font-weight-bold"> {{$store.state.auth.user.name}}</span>
+                  <span class="mb-0 text-sm text-uppercase text-black font-weight-bold"> {{$store.state.auth.user.name}}</span>
                 </div>
                 <span class="avatar avatar-sm rounded-circle ml-2">
                   <img alt="Image placeholder" :src="userlogo">

@@ -72,10 +72,6 @@ const routes = [
     {
         path: '/',
         component: HomepageLayout,
-        meta: {
-            guest: true,
-            title: "portal"
-        },
         children: [
             {
                 path: '/',
@@ -283,13 +279,15 @@ router.beforeEach((to, from, next) => {
 
                 if (user_type === 'Client') {
                     next({
-                        name: '404'
+                        name: 'clientprofile',
+                        query: { redirect: to.fullPath }
                     })
                 } else {
                     if (user_type === 'Chief') {
                         if (to.matched.some(record => record.meta.isStaff)) {
                             next({
-                                name: '404'
+                                name: 'systemdashboard',
+                                query: { redirect: to.fullPath }
                             })
                         } else {
                             next()
@@ -297,7 +295,8 @@ router.beforeEach((to, from, next) => {
                     } else {
                         if (to.matched.some(record => record.meta.isChief)) {
                             next({
-                                name: '404'
+                                name: 'systemdashboard',
+                                query: { redirect: to.fullPath }
                             })
                         } else {
                             next()
@@ -312,7 +311,8 @@ router.beforeEach((to, from, next) => {
                     next()
                 } else {
                     next({
-                        name: '404'
+                        name: 'systemdashboard',
+                        query: { redirect: to.fullPath }
                     })
                 }
 

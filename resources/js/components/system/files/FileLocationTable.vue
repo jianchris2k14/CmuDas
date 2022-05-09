@@ -103,7 +103,7 @@
                       <v-text-field
                         v-show="formTitle === 'Update File'"
                         v-model="form.file_id"
-                        prepend-icon="mdi-information-outline"
+                        prepend-inner-icon="mdi-information-outline"
                         label="File ID"
                         disabled
                         dense
@@ -111,14 +111,76 @@
                         required
                       >
                       </v-text-field>
-                      <input
+                      <!-- <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text"
+                            ><v-icon>mdi-file-cabinet</v-icon></span
+                          >
+                        </div>
+                        <div class="custom-file">
+                          <input
+                            type="file"
+                            class="custom-file-input"
+                            id="inputGroupFile01"
+                            v-show="formTitle === 'Update File'"
+                            v-if="uploadReady"
+                            :rules="rules.file_location"
+                            ref="file"
+                            @change="onChangeFile"
+                            required
+                          />
+                          <label
+                            class="custom-file-label"
+                            for="inputGroupFile01"
+                            >Choose file</label
+                          >
+                        </div>
+                      </div> -->
+
+
+                      <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"
+                                ><v-icon>mdi-file-cabinet</v-icon></span
+                              >
+                            </div>
+                            <div class="custom-file">
+                              <input
+                                type="file"
+                                class="custom-file-input"
+                                id="exampleFormControlFile1"
+                                 v-show="formTitle === 'Update File'"
+                                v-if="uploadReady"
+                                :rules="rules.file_location"
+                                ref="fileupload"
+                                @change="onChangeFile"
+                                required
+                              />
+
+                              <label
+                                class="custom-file-label"
+                                for="inputGroupFile01"
+                                >{{ filename }}</label
+                              >
+                            </div>
+                          </div>
+                          <div v-if="isLoading">
+                            <v-progress-linear
+                              indeterminate
+                              color="yellow darken-2"
+                            ></v-progress-linear>
+                          </div>
+                          
+                      <!-- <input
                         type="file"
+                        class="custom-file-input" id="inputGroupFile01"
                         v-show="formTitle === 'Update File'"
+                         v-if="uploadReady"
                         :rules="rules.file_location"
                         ref="file"
-                        v-on:change="onChangeFile"
+                        @change="onChangeFile"
                         required
-                      />
+                      /> -->
                     </v-form>
                   </v-container>
                 </v-card-text>
@@ -194,6 +256,8 @@ export default {
   components: { AlertComponent, SelectFileCategory },
   data() {
     return {
+      uploadReady: true,
+      filename:'choose file',
       singleSelect: false,
       selected: [],
       icon: "justify",
@@ -209,6 +273,7 @@ export default {
       dialogDelete: false,
       viewdialog: false,
 
+      uploadPercentage:0,
       //NOTIFY PROPERTIES
       msgStatus: false,
 
@@ -309,13 +374,14 @@ export default {
     //ISLOADING COMPUTED
     isLoading: {
       get: function () {
-        return this.$store.state.base.isLoading;
+        return this.$store.state.base.isLoading
       },
 
       set: function (newVal) {
         return newVal;
       },
     },
+  
   },
 
   watch: {
@@ -379,9 +445,12 @@ export default {
     //MODAL CLOSE
     close() {
       this.dialog = false;
-
+      this.uploadReady = false;
+      this.filename = 'choose file'
       this.$nextTick(() => {
         this.form = Object.assign({}, this.defaultItem);
+        this.filename = 'choose file'
+        this.uploadReady = true;
         this.editedIndex = -1;
       });
     },
@@ -409,8 +478,12 @@ export default {
         alert("Please select file");
       }
     },
-    onChangeFile() {
-      this.form.file_location = this.$refs.file.files[0];
+    onChangeFile(e) {
+      this.form.file_location = e.target.files[0];
+      this.filename = e.target.files[0].name;
+
+      /* this.form.file_location = this.$refs.file.files[0]
+      this.filename = this.$refs.file.files[0].name */
     },
 
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)
