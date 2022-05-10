@@ -6,6 +6,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -58,54 +60,56 @@
                       lazy-validation
                     >
                       <v-row>
-                        <v-col cols="12">
                           <v-text-field
                             v-model="form.name"
                             label="Name"
                             outlined
+                            prepend-inner-icon="mdi-account"
                             dense
                             :rules="rules.name"
                             required
                           ></v-text-field>
-                        </v-col>
 
-                        <v-col cols="12">
+
+
                           <v-text-field
                             v-model="form.email"
                             label="Email"
+                            prepend-inner-icon="mdi-email"
                             outlined
                             dense
                             :rules="rules.email"
                             required
                           ></v-text-field>
-                        </v-col>
 
-                        <v-col cols="12" sm="8" md="6">
+
                           <v-text-field
                             v-model="form.address"
                             label="Address"
+                            prepend-inner-icon="mdi-map-marker"
                             outlined
                             dense
                             :rules="rules.address"
                             required
                           ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="8" md="6">
+
                           <v-text-field
                             v-model="form.phone_no"
                             label="Contact No."
+                            prepend-inner-icon="mdi-phone"
                             outlined
                             dense
                             :rules="rules.phone_no"
                             required
                             type="number"
                           ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" v-if="formTitle === 'New User'">
+
                           <v-text-field
+                          v-if="formTitle === 'New User'"
                             label="Password"
                             v-model="form.password"
                             outlined
+                            prepend-inner-icon="mdi-lock"
                             dense
                             :append-icon="showpass ? 'mdi-eye' : 'mdi-eye-off'"
                             :type="showpass ? 'text' : 'password'"
@@ -114,11 +118,13 @@
                             required
                           >
                           </v-text-field>
-                        </v-col>
-                        <v-col cols="12" v-if="formTitle === 'New User'">
+
+
                           <v-text-field
+                          v-if="formTitle === 'New User'"
                             label="Confirm Password"
                             v-model="form.password_confirmation"
+                            prepend-inner-icon="mdi-lock"
                             outlined
                             dense
                             :append-icon="
@@ -130,18 +136,17 @@
                             required
                           >
                           </v-text-field>
-                        </v-col>
-                        <v-col cols="12">
+
                           <v-select
                             :items="usertype"
                             label="User Type"
+                            prepend-inner-icon="mdi-account"
                             v-model="form.user_type"
                             :rules="rules.user_type"
                             required
                             dense
                             outlined
                           ></v-select>
-                        </v-col>
                       </v-row>
                     </v-form>
                   </v-container>
@@ -311,7 +316,7 @@ export default {
 
     //ISLOADING COMPUTED
     isLoading: {
-      get:function(){ 
+      get:function(){
         return this.$store.state.base.isLoading
       },
       set:function(newVal) {
@@ -377,7 +382,7 @@ export default {
       });
     },
 
-  
+
     //CALL STORE MANANGEMENT DISPATCH FOR UPDATING DATA TO STATE MANANGEMENT
     async updateUser() {
         this.$store.dispatch("updateUser",this.form)
@@ -391,7 +396,7 @@ export default {
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)
     save() {
       this.msgStatus = true;
-      
+
       //Check if actions update or add
       if (this.editedIndex > -1) {
         this.updateUser()

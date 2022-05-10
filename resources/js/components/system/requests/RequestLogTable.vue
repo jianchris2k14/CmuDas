@@ -6,6 +6,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -43,18 +45,11 @@
           </v-switch>
 
           <v-toolbar flat>
-            <v-row>
-              <v-col cols="12" md="11" sm="13">
-                <h4>List of Documents</h4>
-              </v-col>
-              <v-col
-                cols="12"
-                md="1"
-                sm="3"
+
+              <div
                 v-show="auth.user_type === 'Staff'"
               >
-                <v-row>
-                  <v-col cols="12" class="mb-3">
+
                     <v-btn-toggle v-model="icon" borderless>
                       <v-btn
                         color="error"
@@ -66,10 +61,8 @@
                         <v-icon right class="text-white"> mdi-delete </v-icon>
                       </v-btn>
                     </v-btn-toggle>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
+                  </div>
+
 
             <!-- Delete Confirmation Modal -->
             <v-dialog v-model="dialogDelete" max-width="500px">

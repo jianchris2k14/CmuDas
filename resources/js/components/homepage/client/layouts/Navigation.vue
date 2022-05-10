@@ -26,13 +26,13 @@
       </ul>
       <!-- Collapse -->
       <div class="collapse navbar-collapse bg-dark" id="sidenav-collapse-main">
-        <!-- Collapse header -->
+
         <div class="navbar-collapse-header d-md-none">
           <div class="row">
             <div class="col-6 collapse-brand">
-              <a href="">
-                <!-- <img src="./assets/img/brand/blue.png"> -->
-              </a>
+              <!-- <a href="">
+                <img src="./assets/img/brand/blue.png">
+              </a> -->
             </div>
             <div class="col-6 collapse-close">
               <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle sidenav">
@@ -88,7 +88,7 @@ export default {
                     itemIconColor:'text-success',
                     itemPath:'/client/clientprofile'
                 },
-                
+
             ]
         }
     }
@@ -97,6 +97,9 @@ export default {
 <style scoped>
 .page-header-text {
   color: #ffffff;
+}
+.page-header {
+  background-color: #21c65e;
 }
 .link {
     color:#fff;

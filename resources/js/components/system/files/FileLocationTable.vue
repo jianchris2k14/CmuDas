@@ -8,6 +8,8 @@
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
+          dense
+          outlined
           label="Search"
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
@@ -111,31 +113,6 @@
                         required
                       >
                       </v-text-field>
-                      <!-- <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text"
-                            ><v-icon>mdi-file-cabinet</v-icon></span
-                          >
-                        </div>
-                        <div class="custom-file">
-                          <input
-                            type="file"
-                            class="custom-file-input"
-                            id="inputGroupFile01"
-                            v-show="formTitle === 'Update File'"
-                            v-if="uploadReady"
-                            :rules="rules.file_location"
-                            ref="file"
-                            @change="onChangeFile"
-                            required
-                          />
-                          <label
-                            class="custom-file-label"
-                            for="inputGroupFile01"
-                            >Choose file</label
-                          >
-                        </div>
-                      </div> -->
 
 
                       <div class="input-group mb-3">
@@ -170,7 +147,7 @@
                               color="yellow darken-2"
                             ></v-progress-linear>
                           </div>
-                          
+
                       <!-- <input
                         type="file"
                         class="custom-file-input" id="inputGroupFile01"
@@ -381,7 +358,7 @@ export default {
         return newVal;
       },
     },
-  
+
   },
 
   watch: {

@@ -6,6 +6,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -282,7 +284,7 @@ export default {
       else return "orange";
     },
 
-    
+
 
     //DELETE REQUESTS DATA
     deleteItem(item) {

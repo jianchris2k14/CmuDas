@@ -116,7 +116,7 @@ export default {
 
 
         ]
-      
+
     },
     fetchRequests() {
       const files = this.$store.getters.getPendingRequests
@@ -125,11 +125,11 @@ export default {
   },
   watch:{
     totalDashboard:function() {
-      
+
     }
   },
-   
-  
+
+
 };
 </script>
 <style scoped>

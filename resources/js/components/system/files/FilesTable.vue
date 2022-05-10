@@ -84,7 +84,7 @@
                       <v-form ref="form" @submit.prevent="save">
                         <v-select
                           v-model="form.file_status"
-                          prepend-icon="mdi-archive"
+                          prepend-inner-icon="mdi-archive"
                           :items="selectItem"
                           item-value="value"
                           item-text="text"
@@ -106,7 +106,7 @@
                           "
                           v-model="form.filename"
                           :rules="rules.filename"
-                          prepend-icon="mdi-file"
+                          prepend-inner-icon="mdi-file"
                           label="Filename"
                           dense
                           outlined
@@ -120,7 +120,7 @@
                           "
                           v-model="form.code"
                           :rules="rules.code"
-                          prepend-icon="mdi-file-code"
+                          prepend-inner-icon="mdi-file-code"
                           label="File Code"
                           dense
                           outlined
@@ -134,7 +134,7 @@
                           "
                           v-model="form.slug"
                           :rules="rules.slug"
-                          prepend-icon="mdi-information-outline"
+                          prepend-inner-icon="mdi-information-outline"
                           label="Slug"
                           dense
                           outlined
@@ -150,7 +150,7 @@
                           item-text="category"
                           item-value="category_id"
                           v-model="form.category_id"
-                          prepend-icon="mdi-information-outline"
+                          prepend-inner-icon="mdi-information-outline"
                           label="Select Category"
                           outlined
                           dense
@@ -161,7 +161,7 @@
                             formTitle === 'New File' ||
                             formTitle === 'Update File'
                           "
-                          prepend-icon="mdi-file-sign"
+                          prepend-inner-icon="mdi-file-sign"
                           :items="document_type"
                           label="Select Document Type"
                           v-model="form.document_type"
@@ -179,7 +179,7 @@
                           "
                           v-model="form.description"
                           :rules="rules.description"
-                          prepend-icon="mdi-text"
+                          prepend-inner-icon="mdi-text"
                           filled
                           name="input-7-4"
                           label="File Description"
@@ -205,7 +205,7 @@
                                 formTitle === 'Update File'
                               "
                               v-model="date"
-                              prepend-icon="mdi-calendar"
+                              prepend-inner-icon="mdi-calendar"
                               label="Retention Date"
                               :rules="rules.retention_date"
                               readonly
@@ -222,16 +222,43 @@
                             @change="saveDate"
                           ></v-date-picker>
                         </v-menu>
-                        
-                        <input
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"
+                                ><v-icon>mdi-file-cabinet</v-icon></span
+                              >
+                            </div>
+                            <div class="custom-file">
+                              <input
+                                type="file"
+                                class="custom-file-input"
+                                id="exampleFormControlFile1"
+                                 v-show="formTitle === 'File Location'"
+                                v-if="uploadReady"
+                                :rules="rules.file_location"
+                                ref="file"
+                                @change="onChangeFile"
+                                required
+                              />
+
+                              <label
+                                class="custom-file-label"
+                                for="inputGroupFile01"
+                                >{{ filename }}</label
+                              >
+                            </div>
+                          </div>
+
+                       <!--  <input
                           type="file"
                           v-show="formTitle === 'File Location'"
                           :rules="rules.file_location"
                           ref="file"
-                          v-if="fileReady"
+                          v-if="uploadReady"
                           v-on:change="onChangeFile"
                           required
-                        />
+                        /> -->
                       </v-form>
                     </div>
                   </v-container>
@@ -308,7 +335,8 @@ export default {
   data() {
     return {
 
-      fileReady:true,
+      uploadReady: true,
+      filename:'choose file',
       //DATE PICKER PROPERTY
       activePicker: null,
       date: null,
@@ -527,7 +555,7 @@ export default {
 
     //EDIT FILE DATA
     /*     getUserID(event) {
-      
+
       this.form.user_id = event.target.value
 
     }, */
@@ -585,15 +613,18 @@ export default {
       this.fileReady = false
       this.$nextTick(() => {
         this.fileReady = true
-        this.form = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
+        this.form = Object.assign({}, this.defaultItem)
+        this.filename = 'choose file'
+        this.uploadReady = true
+        this.editedIndex = -1
+      })
     },
 
     //CLOSE DELETE CONFIRMATION
     closeDelete() {
       this.dialogDelete = false;
-
+      this.uploadReady = false;
+      this.filename = 'choose file'
       this.$nextTick(() => {
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -631,8 +662,9 @@ export default {
         alert("Please select file");
       }
     },
-    onChangeFile() {
-      this.form.file_location = this.$refs.file.files[0];
+    onChangeFile(e) {
+      this.form.file_location = e.target.files[0]
+      this.filename = e.target.files[0].name
     },
 
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)

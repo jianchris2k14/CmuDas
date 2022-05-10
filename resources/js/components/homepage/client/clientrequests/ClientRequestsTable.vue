@@ -6,10 +6,12 @@
         <v-text-field
           v-model="search"
           label="Search"
+          outlined
+          dense
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
-      
+
 
       <!-- REQUESTS TABLE -->
       <v-data-table
@@ -284,7 +286,7 @@ export default {
       if(!this.viewdialog) {
         this.$router.go()
       }
-      
+
 
       /* this.$router.go() */
       /* window.location.reload() */
@@ -308,7 +310,7 @@ export default {
         console.log(item)
         await this.$store.dispatch("showRequestDocument", item);
       }
-      
+
     },
 
     //DELETE REQUESTS DATA

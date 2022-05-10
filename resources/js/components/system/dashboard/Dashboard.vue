@@ -2,13 +2,10 @@
   <div class="mt-15">
     <div class="container shadow p-3 mb-5 bg-white">
       <v-row>
-        <v-col cols="12" md="8" sm="10">
+        <v-col cols="12">
           <dashboard-top-content />
         </v-col>
-        <v-col cols="12" md="4" sm="6">
-          <request-reports-table :period="period" :data="fetchRequestReports" :filerequestreports="getFileRequestReports"/>
-        </v-col>
-        
+
       </v-row>
       <v-row>
         <v-col cols="12" md="6" sm="8">
@@ -42,7 +39,7 @@ export default {
     getFileRequestReports() {
       return this.$store.state.requests.file_request_reports
     },
-    
+
     fetchRequestReports() {
       return this.$store.state.requests.request_report
     },
@@ -90,7 +87,7 @@ export default {
         return chartData
       },
       uploadReportChart() {
-      
+
       let request_reports = this.fetchUploadReports;
         let daily_date = request_reports.map((item) => item.date);
         let daily_total = request_reports.map((item) => item.total);
@@ -105,7 +102,7 @@ export default {
         ],
       };
       return chartData;
-      
+
     },
   },
   created() {

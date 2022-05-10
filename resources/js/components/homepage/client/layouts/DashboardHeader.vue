@@ -1,11 +1,11 @@
 <template>
 <div>
-    <nav class="navbar navbar-top navbar-expand-md navbar-dark navbar-container page-header" id="navbar-main">
+    <nav class="navbar navbar-top navbar-expand-md page-header" id="navbar-main">
       <div class="container-fluid">
         <!-- Brand -->
         <span class="h4 mb-0 text-black text-uppercase d-none d-lg-inline-block" href="">Digital Archiving System</span>
         <!-- User -->
-        
+
         <ul class="navbar-nav align-items-center d-none d-md-flex">
           <li class="nav-item dropdown">
             <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -52,6 +52,7 @@ export default {
 }
 .page-header {
   background-color: #21c65e;
+
 }
 
 </style>

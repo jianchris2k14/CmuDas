@@ -1,5 +1,6 @@
 <template>
     <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-dark" id="sidenav-main">
+
     <div class="container-fluid">
       <!-- Toggler -->
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,9 +14,11 @@
       </a>
       <!-- User -->
       <ul class="nav align-items-center d-md-none">
+
         <li class="nav-item dropdown">
           <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="media align-items-center">
+
               <span class="avatar avatar-sm rounded-circle">
                 <img alt="Image placeholder" :src="userlogo">
               </span>

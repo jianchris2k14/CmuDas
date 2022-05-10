@@ -19,7 +19,7 @@
           <v-layout row justify-center align-center class="mt-10">
             <v-card max-width="800">
 
-                
+
               <!-- Alert Message -->
               <div v-if="msgStatus">
                 <alert-component />

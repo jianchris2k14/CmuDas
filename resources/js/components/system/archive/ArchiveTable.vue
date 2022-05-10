@@ -7,6 +7,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          outlined
+          dense
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -57,7 +59,7 @@
                     @submit.prevent="save">
                       <v-select
                       v-model="form.archive"
-                      prepend-icon="mdi-archive"
+                      prepend-inner-icon="mdi-archive"
                       :items="selectItem"
                       dense
                       outlined
@@ -181,7 +183,7 @@ export default {
     },
     fetchDocuments() {
 
-        const documents = this.$store.getters.getApprovedDocuments  
+        const documents = this.$store.getters.getApprovedDocuments
 
         return this._.orderBy(documents, ["created_at"], ["desc"]);
 
@@ -200,7 +202,7 @@ export default {
     //ISLOADING COMPUTED
     isLoading: {
 
-      get:function(){ 
+      get:function(){
         return this.$store.state.base.isLoading
       },
 

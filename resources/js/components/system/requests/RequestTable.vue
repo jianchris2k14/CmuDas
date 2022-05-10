@@ -6,6 +6,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -36,7 +38,7 @@
             {{ item.status }}
           </v-chip>
         </template>
-        
+
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>List of File Requests</v-toolbar-title>
@@ -218,7 +220,7 @@ export default {
 
       //TABLE HEADERS PROPERTIES
       headers: [
-      
+
         { text: "File Name", value: "filename" },
         { text: "Code", value: "code"},
         { text: "Purpose", value: "purpose"},
@@ -302,7 +304,7 @@ export default {
     getLoading() {
       return this.$store.state.base.isLoading
     },
-    
+
 
     //FORM TITLE COMPUTED
     formTitle() {
@@ -363,7 +365,7 @@ export default {
 
 
       this.form.request_id = item.request_id
-      
+
       this.dialog = true;
     },
 

@@ -2,7 +2,6 @@
   <div class="container">
     <v-row>
       <v-col cols="12">
-        {{ pageOfItems }}
         <v-row>
           <v-alert outlined type="info" prominent border="left">
             Please Read before making a request, make sure to secure the
@@ -85,46 +84,58 @@
           v-for="(items, index) in pageOfItems"
           :key="index.file_id"
         >
+
+
           <v-card class="elevation-5 flex d-flex flex-column">
-            <v-card-text class="flex">
+            <v-card-text>
               <v-row>
                 <div class="float-left">
                   <v-icon large color="success">mdi-folder</v-icon>
                 </div>
+                <div>
 
-                <v-card-title class="text-black text-h4">{{
-                  items.filename
-                }}</v-card-title>
-                <v-card-title class="text-black text-h6">{{
-                  items.category
-                }}</v-card-title>
+                </div>
+                 <div class="mb-1 gray-bg" v-show="!items.Show">
+                     <v-card-title class="text-black text-h4">
+                    <h4 class="mb-1">{{items.filename | title }}</h4>
+                     </v-card-title>
+                     <div class="float-right">
+                      <v-btn text color="info" @click="titleToggler(items,true)">Show Title</v-btn>
+                     </div>
+                </div>
+                <div class="mb-1 gray-bg" v-show="items.Show">
+                    <v-card-title class="text-black text-h4">
+                    <h4 class="mb-1" v-html="items.filename"></h4>
+                    </v-card-title>
+                    <div class="float-right">
+                      <v-btn text color="info" @click="titleToggler(items,false)">Show Less</v-btn>
+                    </div>
+                </div>
               </v-row>
             </v-card-text>
 
             <v-card-text class="flex">
               <v-row>
                 <v-col cols="12">
-                  <div class="body-1">{{ items.description }}</div>
-                  <div class="float-right">
-                    
-                   
-                      <!-- Excerpt section -->
+                    <h5>Description</h5>
+                  <!-- <div class="body-1" style="overflow-y: auto; height:200px">{{ items.description }}</div> -->
                 <div class="mb-1 gray-bg" v-show="!items.Flag">
                     <p class="mb-1">{{items.description | summary }}</p>
                     <div class="float-right">
+                         <div v-if="items.description.length >=50">
                       <v-btn text color="info" @click="toggler(items,true)">Show More</v-btn>
+                         </div>
                     </div>
                 </div>
-                <!-- Excerpt section end -->
 
-                <!-- Content section -->
+
                 <div class="mb-1 gray-bg" v-show="items.Flag">
                     <p class="mb-1" v-html="items.description"></p>
                     <div class="float-right">
                       <v-btn text color="info" @click="toggler(items,false)">Show Less</v-btn>
                     </div>
                 </div>
-                  </div>
+
                 </v-col>
               </v-row>
             </v-card-text>
@@ -334,7 +345,7 @@ export default {
       filename: "choose file",
 
       more: false,
-
+      summary:false,
       //DEFAULT FORM DATA
       defaultItem: {
         user_id: null,
@@ -425,15 +436,16 @@ export default {
     summary: function (text) {
       return text.substring(0, 150) + " ...";
     },
+    title:function(title) {
+        return title.substring(0,15) + " ..."
+    }
   },
   methods: {
     toggler(obj, flag) {
-      if(obj.description >=150) {
         this.$set(obj, "Flag", flag)
-      }else {
-        this.$set(obj, "Flag", flag)
-      }
-      
+    },
+    titleToggler(obj, show) {
+        this.$set(obj, "Show", show)
     },
     /* showMore() {
       let arrDocuments = this.pageOfItems;

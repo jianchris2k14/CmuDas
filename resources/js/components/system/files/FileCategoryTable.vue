@@ -6,6 +6,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -196,7 +198,7 @@ export default {
     }
   },
   computed: {
-      
+
     //FETCH CATEGORY DATA FROM STATE MANANGEMENT COMPUTED
     fetchCategory() {
       const category = this.$store.getters.getCategory
@@ -210,7 +212,7 @@ export default {
 
     //ISLOADING COMPUTED
     isLoading: {
-      get:function(){ 
+      get:function(){
         return this.$store.state.base.isLoading
       },
       set:function(newVal) {
@@ -278,7 +280,7 @@ export default {
       });
     },
 
-  
+
     //CALL STORE MANANGEMENT DISPATCH FOR UPDATING DATA TO STATE MANANGEMENT
     async updateCategory() {
         this.$store.dispatch("updateCategory",this.form)
@@ -302,7 +304,7 @@ export default {
 
     },
   },
-  
+
 
 };
 </script>
