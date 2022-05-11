@@ -6,9 +6,11 @@
           @selectcategory="getCategory"
         ></select-file-category>
         <v-spacer></v-spacer>
+        <label>Search</label>
         <v-text-field
           v-model="search"
-          label="Search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -65,7 +67,7 @@
                     </v-btn>
 
                     <v-btn value="center" color="error" @click="deleteItem">
-                      <span class="hidden-sm-and-down">Delete</span>
+                      <span class="hidden-sm-and-down text-white">Delete</span>
 
                       <v-icon right class="text-white"> mdi-delete </v-icon>
                     </v-btn>
@@ -224,33 +226,33 @@
                         </v-menu>
 
                         <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text"
-                                ><v-icon>mdi-file-cabinet</v-icon></span
-                              >
-                            </div>
-                            <div class="custom-file">
-                              <input
-                                type="file"
-                                class="custom-file-input"
-                                id="exampleFormControlFile1"
-                                 v-show="formTitle === 'File Location'"
-                                v-if="uploadReady"
-                                :rules="rules.file_location"
-                                ref="file"
-                                @change="onChangeFile"
-                                required
-                              />
-
-                              <label
-                                class="custom-file-label"
-                                for="inputGroupFile01"
-                                >{{ filename }}</label
-                              >
-                            </div>
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"
+                              ><v-icon>mdi-file-cabinet</v-icon></span
+                            >
                           </div>
+                          <div class="custom-file">
+                            <input
+                              type="file"
+                              class="custom-file-input"
+                              id="exampleFormControlFile1"
+                              v-show="formTitle === 'File Location'"
+                              v-if="uploadReady"
+                              :rules="rules.file_location"
+                              ref="file"
+                              @change="onChangeFile"
+                              required
+                            />
 
-                       <!--  <input
+                            <label
+                              class="custom-file-label"
+                              for="inputGroupFile01"
+                              >{{ filename }}</label
+                            >
+                          </div>
+                        </div>
+
+                        <!--  <input
                           type="file"
                           v-show="formTitle === 'File Location'"
                           :rules="rules.file_location"
@@ -311,17 +313,19 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon
-            v-show="auth.user_type === 'Staff'"
-            color="success"
-            small
-            @click="editFileLocation(item)"
-          >
-            mdi-upload
-          </v-icon>
+          <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="info" @click="editItem(item)">
+              <v-icon x-small class="text-white"> mdi-pencil-outline </v-icon>
+            </v-btn>
+            <v-btn
+              value="center"
+              x-small
+              color="warning"
+              @click="editFileLocation(item)"
+            >
+              <v-icon x-small class="text-white"> mdi-upload-outline </v-icon>
+            </v-btn>
+          </v-btn-toggle>
         </template>
       </v-data-table>
     </v-card>
@@ -334,9 +338,8 @@ export default {
   components: { AlertComponent, SelectFileCategory },
   data() {
     return {
-
       uploadReady: true,
-      filename:'choose file',
+      filename: "choose file",
       //DATE PICKER PROPERTY
       activePicker: null,
       date: null,
@@ -609,22 +612,22 @@ export default {
 
     //MODAL CLOSE
     close() {
-      this.dialog = false
-      this.fileReady = false
+      this.dialog = false;
+      this.fileReady = false;
       this.$nextTick(() => {
-        this.fileReady = true
-        this.form = Object.assign({}, this.defaultItem)
-        this.filename = 'choose file'
-        this.uploadReady = true
-        this.editedIndex = -1
-      })
+        this.fileReady = true;
+        this.form = Object.assign({}, this.defaultItem);
+        this.filename = "choose file";
+        this.uploadReady = true;
+        this.editedIndex = -1;
+      });
     },
 
     //CLOSE DELETE CONFIRMATION
     closeDelete() {
       this.dialogDelete = false;
       this.uploadReady = false;
-      this.filename = 'choose file'
+      this.filename = "choose file";
       this.$nextTick(() => {
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -663,8 +666,8 @@ export default {
       }
     },
     onChangeFile(e) {
-      this.form.file_location = e.target.files[0]
-      this.filename = e.target.files[0].name
+      this.form.file_location = e.target.files[0];
+      this.filename = e.target.files[0].name;
     },
 
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)

@@ -2,7 +2,7 @@
   <div class="mt-15">
     <div class="container shadow p-3 mb-5 bg-white">
       <div class="row">
-        <h1><i class="fa fa-archive"></i> Archive Documents</h1>
+        <h1><v-icon size="50" color="info">mdi-archive-outline</v-icon>Archived Management</h1>
         <archive-table/>
       </div>
     </div>

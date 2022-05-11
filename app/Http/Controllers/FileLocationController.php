@@ -77,7 +77,7 @@ class FileLocationController extends Controller
                 'file_id' => $request->file_id,
 
                 'file_location' => $filename
-                
+
             ]);
 
             return new FileLocationResource($file);
@@ -112,18 +112,17 @@ class FileLocationController extends Controller
             return new FileLocationResource($file);
         }
     }
-
     public function uploadReportsMonthly()
     {
 
-        $monthlyreports = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get()->groupBy(function ($date) {
+        $monthlyuploadreports = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get()->groupBy(function ($date) {
             $date_upload = Carbon::parse($date->created_at);
             $month = $date_upload->format('F Y');
             return "{$month}";
         });
 
 
-        return response($monthlyreports);
+        return response($monthlyuploadreports);
     }
     public function uploadReportsYearly()
     {
@@ -142,9 +141,8 @@ class FileLocationController extends Controller
         $file = FileLocation::findOrFail($id);
         $path = Storage::url($file->file_location);
 
-        return Storage::download($path); 
+        return Storage::download($path);
     }
-
     public function destroy($id)
     {
         $file = FileLocation::findOrFail($id);

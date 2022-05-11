@@ -2,7 +2,7 @@
   <div class="mt-15">
     <div class="container shadow p-3 mb-5 bg-white">
       <div class="row">
-        <h1><i class="fa fa-folder"></i> Documents</h1>
+        <h1><v-icon size="50" color="info">mdi-file-outline</v-icon>Document Management</h1>
         <v-card>
           <v-toolbar flat>
 
@@ -43,18 +43,18 @@
 
                <v-card flat v-if="i === 3">
                  <file-disposal-table/>
-                  
+
               </v-card>
 
               <v-card flat v-if="i === 4">
                   <file-category-table/>
               </v-card>
 
-              
+
             </v-tab-item>
           </v-tabs-items>
         </v-card>
-        
+
       </div>
     </div>
   </div>

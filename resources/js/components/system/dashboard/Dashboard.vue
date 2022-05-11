@@ -2,30 +2,36 @@
   <div class="mt-15">
     <div class="container shadow p-3 mb-5 bg-white">
       <v-row>
-        <v-col cols="12">
-          <dashboard-top-content />
+          <h1><v-icon size="50" color="info">mdi-view-dashboard</v-icon>Dashboard</h1>
+        <v-col cols="12" md="5" sm="7">
+          <system-summary />
+        </v-col>
+        <v-col cols="12" md="7" sm="9">
+            <upload-chart :chartData="uploadReport" :options="options"/>
         </v-col>
 
       </v-row>
       <v-row>
-        <v-col cols="12" md="6" sm="8">
-          <request-reports-chart :chartData="requestReport" :options="options"/>
+        <v-col cols="12" md="5" sm="7">
+            <request-summary></request-summary>
         </v-col>
-        <v-col cols="12" md="6" sm="8">
-          <upload-chart :chartData="uploadReport" :options="options"/>
+        <v-col cols="12" md="7" sm="9">
+          <request-reports-chart :chartData="requestReport" :options="options"/>
         </v-col>
       </v-row>
     </div>
   </div>
 </template>
 <script>
-import DashboardTopContent from "./DashboardTopContent.vue";
+import SystemSummary from "./SystemSummary.vue";
 import RequestReportsChart from './../reports/RequestChart.vue'
 import RequestReportsTable from './../reports/ReportsTable.vue'
+import RequestSummary from './RequestSummary.vue'
 import UploadChart from './../reports/UploadChart.vue'
 export default {
   components: {
-    DashboardTopContent,
+    SystemSummary,
+    RequestSummary,
     RequestReportsChart,
     RequestReportsTable,
     UploadChart

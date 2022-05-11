@@ -69,6 +69,23 @@ const getters = {
         }
         return total
     },
+    totalUnarchivedDocuments(state) {
+        let total = 0
+        let unarchive = state.files.filter(item => item.archive === 'Unarchive')
+        for (const obj of unarchive) {
+            total++
+        }
+        return total
+    },
+    totalDisposedDocuments(state) {
+        let total = 0
+        let dispose = state.files.filter(item => item.retention_status === 'Dispose')
+        for (const obj of dispose) {
+            total++
+        }
+        return total
+    },
+
 }
 
 /* STORE MUTATIONS */
@@ -589,7 +606,7 @@ const actions = {
             }, 1000);
         }
     },
-    
+
 
 }
 

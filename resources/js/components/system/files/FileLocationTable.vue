@@ -209,7 +209,24 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon
+
+            <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="info" @click="editItem(item)" v-show="auth.user_type === 'Staff'">
+              <v-icon x-small class="text-white"> mdi-pencil-outline </v-icon>
+            </v-btn>
+            <v-btn
+              value="center"
+              x-small
+              color="success"
+              @click="showFile(item)"
+            >
+              <v-icon x-small class="text-white"> mdi-eye-outline </v-icon>
+            </v-btn>
+          </v-btn-toggle>
+
+
+
+          <!-- <v-icon
             color="primary"
             small
             class="mr-2"
@@ -220,7 +237,7 @@
           </v-icon>
           <v-icon color="success" small class="mr-2" @click="showFile(item)">
             mdi-information
-          </v-icon>
+          </v-icon> -->
         </template>
       </v-data-table>
     </v-card>

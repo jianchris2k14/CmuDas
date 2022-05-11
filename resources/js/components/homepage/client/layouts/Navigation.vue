@@ -48,7 +48,7 @@
           <li class="nav-item"
           v-for="(item,i) in navigation" :key="i">
             <router-link class="nav-link" :to="item.itemPath">
-              <i :class="[item.itemIcon,item.itemIconColor]"></i> <span class="link">{{item.itemText}}</span>
+              <v-icon color="success" v-text="item.itemIcon"></v-icon> <span class="link">{{item.itemText}}</span>
             </router-link>
           </li>
         </ul>
@@ -72,19 +72,19 @@ export default {
             navigation:[
                 {
                     itemText:'Documents',
-                    itemIcon:'fa fa-folder',
+                    itemIcon:'mdi-file-outline',
                     itemIconColor:'text-success',
                     itemPath:'/client/clientsearch'
                 },
                 {
                     itemText:'Requests',
-                    itemIcon:'fa fa-chalkboard-teacher',
+                    itemIcon:'mdi-table',
                     itemIconColor:'text-success',
                     itemPath:'/client/requests'
                 },
                 {
                     itemText:'Profile',
-                    itemIcon:'fa fa-user-tie',
+                    itemIcon:'mdi-account',
                     itemIconColor:'text-success',
                     itemPath:'/client/clientprofile'
                 },

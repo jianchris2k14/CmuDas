@@ -51,7 +51,8 @@
           <li class="nav-item"
           v-for="(item,i) in navigation" :key="i">
             <router-link class="nav-link" :to="item.itemPath">
-              <i :class="[item.itemIcon,item.itemIconColor]"></i> <span class="link">{{item.itemText}}</span>
+              <!-- <i :class="[item.itemIcon,item.itemIconColor]"></i>  -->
+              <v-icon color="success" v-text="item.itemIcon"></v-icon><span class="link">{{item.itemText}}</span>
             </router-link>
           </li>
         </ul>
@@ -92,37 +93,37 @@ export default {
           this.navigation = [
                {
                     itemText:'Dashboard',
-                    itemIcon:'fa fa-tachometer-alt',
+                    itemIcon:'mdi-view-dashboard-outline',
                     itemIconColor:'text-success',
                     itemPath:'/system/dashboard'
                 },
                 {
                     itemText:'Document List',
-                    itemIcon:'fa fa-archive',
+                    itemIcon:'mdi-file-document-outline',
                     itemIconColor:'text-success',
                     itemPath:'/system/files'
                 },
                 {
                     itemText:'Archive',
-                    itemIcon:'fa fa-archive',
+                    itemIcon:'mdi-archive-outline',
                     itemIconColor:'text-success',
                     itemPath:'/system/archive'
                 },
                 {
                     itemText:'Client Manangement',
-                    itemIcon:'fa fa-user-tie',
+                    itemIcon:'mdi-account-group-outline',
                     itemIconColor:'text-success',
                     itemPath:'/system/clients'
                 },
                 {
                     itemText:'Staff Manangement',
-                    itemIcon:'fa fa-users',
+                    itemIcon:'mdi-account-supervisor-outline',
                     itemIconColor:'text-success',
                     itemPath:'/system/user'
                 },
                 {
                     itemText:'Reports',
-                    itemIcon:'fa fa-chart-bar',
+                    itemIcon:'mdi-chart-box-outline',
                     itemIconColor:'text-success',
                     itemPath:'/system/reports'
                 }
@@ -131,25 +132,25 @@ export default {
           this.navigation = [
                 {
                     itemText:'Dashboard',
-                    itemIcon:'fa fa-tachometer-alt',
+                    itemIcon:'mdi-view-dashboard-outline',
                     itemIconColor:'text-success',
                     itemPath:'/system/dashboard'
                 },
                 {
                     itemText:'Document Manangement',
-                    itemIcon:'fa fa-archive',
+                    itemIcon:'mdi-file-outline',
                     itemIconColor:'text-success',
                     itemPath:'/system/files'
                 },
                 {
                     itemText:'Request Manangement',
-                    itemIcon:'fa fa-chalkboard-teacher',
+                    itemIcon:'mdi-table',
                     itemIconColor:'text-success',
                     itemPath:'/system/requests'
                 },
                 {
                     itemText:'Archive',
-                    itemIcon:'fa fa-archive',
+                    itemIcon:'mdi-archive-outline',
                     itemIconColor:'text-success',
                     itemPath:'/system/archive'
                 },
@@ -164,6 +165,9 @@ export default {
 }
 </script>
 <style scoped>
+.icon-color {
+    color: #21c65e;
+}
 .link {
     color:#fff;
 }

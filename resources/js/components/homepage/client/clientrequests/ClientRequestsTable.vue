@@ -139,14 +139,12 @@
           >
             mdi-delete
           </v-icon> -->
-          <v-icon
-            color="success"
-            small
-            @click="showRequestedDocument(item)"
-            v-show="item.status === 'Approved'"
-          >
-            mdi-file
-          </v-icon>
+          <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="success" @click="showRequestedDocument(item)"
+            v-show="item.status === 'Approved'">
+              <v-icon x-small class="text-white"> mdi-eye-outline </v-icon>
+            </v-btn>
+          </v-btn-toggle>
         </template>
       </v-data-table>
     </v-card>
@@ -160,6 +158,7 @@ export default {
   components: { AlertComponent,WebViewer },
   data() {
     return {
+        icon:"justify",
       //TABLE SEARCH PROPERTY
       search: "",
 

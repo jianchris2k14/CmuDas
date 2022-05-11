@@ -197,12 +197,19 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon color="error" small @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
+            <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="info" @click="editItem(item)">
+              <v-icon x-small class="text-white"> mdi-pencil-outline </v-icon>
+            </v-btn>
+            <v-btn
+              value="center"
+              x-small
+              color="error"
+              @click="deleteItem(item)"
+            >
+              <v-icon x-small class="text-white"> mdi-trash-can-outline </v-icon>
+            </v-btn>
+          </v-btn-toggle>
         </template>
 
       </v-data-table>
@@ -217,6 +224,7 @@ export default {
     return {
       //TABLE SEARCH PROPERTY
       search: "",
+      icon:"justify",
 
     //Dialog Property
     dialog: false,

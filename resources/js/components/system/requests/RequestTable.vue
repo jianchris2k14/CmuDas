@@ -172,7 +172,36 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
+
+            <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="info"
+            @click="editItem(item)">
+              <v-icon x-small class="text-white"> mdi-pencil-outline </v-icon>
+            </v-btn>
+
+            <v-btn
+              value="center"
+              x-small
+              color="error"
+              @click="deleteItem(item)"
+              v-show="item.status === 'Approved'"
+            >
+              <v-icon x-small class="text-white"> mdi-trash-can-outline </v-icon>
+            </v-btn>
+            <v-btn
+              value="center"
+              x-small
+              color="success"
+              @click="showRequestForm(item)"
+              v-show="item.status === 'Pending'"
+            >
+              <v-icon x-small class="text-white"> mdi-file-outline </v-icon>
+            </v-btn>
+          </v-btn-toggle>
+
+
+
+          <!-- <v-icon color="primary" small class="mr-2" @click="editItem(item)">
             mdi-pencil
           </v-icon>
           <v-icon
@@ -191,7 +220,7 @@
             v-show="item.status === 'Pending'"
           >
             mdi-file
-          </v-icon>
+          </v-icon> -->
         </template>
       </v-data-table>
     </v-card>
@@ -203,6 +232,7 @@ export default {
   components: { AlertComponent },
   data() {
     return {
+        icon:"justify",
       //TABLE SEARCH PROPERTY
       search: "",
 

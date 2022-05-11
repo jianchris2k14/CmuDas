@@ -2,7 +2,7 @@
   <div class="mt-15">
     <div class="container shadow p-3 mb-5 bg-white">
       <div class="row">
-        <h1><i class="fa fa-chart-bar"></i> Reports</h1>
+        <h1><v-icon size="50" color="info">mdi-chart-box-outline</v-icon>Reports</h1>
         <v-card>
           <v-toolbar flat>
             <v-spacer></v-spacer>
@@ -27,10 +27,10 @@
               <v-card flat v-if="i === 1">
                  <reports-options @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
                 <div id="generaterequestreports">
-               
-                
+
+
                 <!-- REQUEST REPORT CHART TAB -->
-                
+
                   <h5>APPROVED REQUEST OVERALL: {{ totalApprovedRequest }}</h5>
                   <!-- REQUEST REPORTS COMPONENT -->
                   <div v-if="selection === 'Chart'">
@@ -86,7 +86,7 @@
                       </v-col>
                     </v-row>
                   </div>
-                </div> 
+                </div>
               </v-card>
             </v-tab-item>
           </v-tabs-items>
@@ -109,7 +109,7 @@ export default {
       selection: "Chart",
       icon: "justify",
       datatype:"requestreport",
-      
+
     };
   },
   computed: {
@@ -166,7 +166,7 @@ export default {
       return this.requestReportChart();
     },
     generateUploadReport() {
-      return this.uploadReportChart(); 
+      return this.uploadReportChart();
     },
 
     //CHART OPTIONS
@@ -190,20 +190,20 @@ export default {
        this.$nextTick(() => {
         this.selection = 'Chart'
       });
-      
+
     },
     clickRequestTab() {
       this.period= 'Daily'
        this.$nextTick(() => {
         this.selection = 'Chart'
       });
-      
+
     },
     getSelection(selection) {
       this.selection = selection
     },
     uploadReportChart() {
-      
+
       let request_reports = this.getUploadsData;
         let daily_date = request_reports.map((item) => item.date);
         let daily_total = request_reports.map((item) => item.total);
@@ -218,7 +218,7 @@ export default {
         ],
       };
       return chartData;
-      
+
     },
     requestReportChart() {
       let request_reports = this.getRequestData;
