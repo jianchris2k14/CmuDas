@@ -100,7 +100,7 @@
                     <h4 class="mb-1">{{items.filename | title }}</h4>
                      </v-card-title>
                      <div class="float-right">
-                      <v-btn text color="info" @click="titleToggler(items,true)">Show Title</v-btn>
+                        <v-btn text color="info" @click="titleToggler(items,true)">Show Title</v-btn>
                      </div>
                 </div>
                 <div class="mb-1 gray-bg" v-show="items.Show">
@@ -123,7 +123,7 @@
                     <p class="mb-1">{{items.description | summary }}</p>
                     <div class="float-right">
                          <div v-if="items.description.length >=50">
-                      <v-btn text color="info" @click="toggler(items,true)">Show More</v-btn>
+                          <v-btn text color="info" @click="toggler(items,true)">Show More</v-btn>
                          </div>
                     </div>
                 </div>
@@ -386,7 +386,7 @@ export default {
         var count = Object.keys(result).length;
         if (count === 0) {
           this.showMsg = true;
-          this.msg = "no match in our records. Please enter the exact filename";
+          this.msg = "no match in our records. Please enter the exact document name";
           return result;
         } else {
           this.showMsg = false;
@@ -437,7 +437,7 @@ export default {
       return text.substring(0, 150) + " ...";
     },
     title:function(title) {
-        return title.substring(0,15) + " ..."
+        return title.substring(0,50) + " ..."
     }
   },
   methods: {

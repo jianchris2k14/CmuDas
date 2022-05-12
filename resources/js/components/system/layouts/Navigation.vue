@@ -144,7 +144,7 @@ export default {
                 },
                 {
                     itemText:'Request Manangement',
-                    itemIcon:'mdi-table',
+                    itemIcon:'mdi-swap-horizontal',
                     itemIconColor:'text-success',
                     itemPath:'/system/requests'
                 },

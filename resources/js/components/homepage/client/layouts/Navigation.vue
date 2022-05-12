@@ -78,7 +78,7 @@ export default {
                 },
                 {
                     itemText:'Requests',
-                    itemIcon:'mdi-table',
+                    itemIcon:'mdi-swap-horizontal ',
                     itemIconColor:'text-success',
                     itemPath:'/client/requests'
                 },

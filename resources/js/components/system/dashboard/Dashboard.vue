@@ -92,23 +92,35 @@ export default {
         };
         return chartData
       },
+      
       uploadReportChart() {
 
-      let request_reports = this.fetchUploadReports;
-        let daily_date = request_reports.map((item) => item.date);
-        let daily_total = request_reports.map((item) => item.total);
+      let request_reports = this.fetchUploadReports
+        let date = request_reports.map((item) => item.date)
+        let totaluploaded = request_reports.map((item) => item.total_uploaded)
+        let totalarchive = request_reports.map((item) => item.total_archive)
+        let totaldispose = request_reports.map((item) => item.total_dispose)
         let chartData = {
-        labels: daily_date,
+        labels: this.isMonth ? date: date,
         datasets: [
           {
             label: "Upload Documents",
-            backgroundColor: ["#FFB74D",'#F44336','#9C27B0','#3F51B5','#009688','#8BC34A','#795548','#FF8A80','#4A148C','#004D40','#9E9E9E','#B3E5FC'],
-            data: daily_total,
+            backgroundColor: ["#1E88E5","#EF5350"],
+            data: totaluploaded,
+          },
+           {
+            label: "Archive",
+            backgroundColor: ["#FFB74D","#1DE9B6"],
+            data: totalarchive,
+          },
+           {
+            label: "Disposed",
+            backgroundColor: ["#EC407A","#AB47BC"],
+            data: totaldispose,
           },
         ],
       };
-      return chartData;
-
+      return chartData
     },
   },
   created() {

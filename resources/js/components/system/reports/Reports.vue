@@ -1,5 +1,6 @@
 <template>
   <div class="mt-15">
+    {{period}}
     <div class="container shadow p-3 mb-5 bg-white">
       <div class="row">
         <h1><v-icon size="50" color="info">mdi-chart-box-outline</v-icon>Reports</h1>
@@ -109,6 +110,7 @@ export default {
       selection: "Chart",
       icon: "justify",
       datatype:"requestreport",
+      isMonth:true
 
     };
   },
@@ -184,6 +186,11 @@ export default {
   methods: {
     getPeriod(period) {
       this.period=period
+      if(period === 'Monthly') {
+        this.isMonth = true
+      }else {
+        this.isMonth = false
+      }
     },
     clickUploadTab() {
       this.period= 'Monthly'
@@ -205,15 +212,27 @@ export default {
     uploadReportChart() {
 
       let request_reports = this.getUploadsData;
-        let daily_date = request_reports.map((item) => item.date);
-        let daily_total = request_reports.map((item) => item.total);
+        let date = request_reports.map((item) => item.date);
+        let totaluploaded = request_reports.map((item) => item.total_uploaded)
+        let totalarchive = request_reports.map((item) => item.total_archive)
+        let totaldispose = request_reports.map((item) => item.total_dispose)
         let chartData = {
-        labels: daily_date,
+        labels: this.isMonth ? date: date,
         datasets: [
           {
             label: "Upload Documents",
-            backgroundColor: ["#FFB74D",'#F44336','#9C27B0','#3F51B5','#009688','#8BC34A','#795548','#FF8A80','#4A148C','#004D40','#9E9E9E','#B3E5FC'],
-            data: daily_total,
+            backgroundColor: ["#1E88E5","#EF5350"],
+            data: totaluploaded,
+          },
+           {
+            label: "Archive",
+            backgroundColor: ["#FFB74D","#1DE9B6"],
+            data: totalarchive,
+          },
+           {
+            label: "Disposed",
+            backgroundColor: ["#EC407A","#AB47BC"],
+            data: totaldispose,
           },
         ],
       };

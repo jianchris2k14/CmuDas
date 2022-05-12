@@ -56,14 +56,14 @@
           <v-spacer></v-spacer>
 
           <!-- REQUEST FILE MANANGEMENT MODAL -->
-          <div>
+          <div class="mb-3">
             <v-btn-toggle v-model="icon" borderless>
               <v-btn color="error" :loading="isLoading" @click="deleteItem">
                 <span class="hidden-sm-and-down" @click="deleteItem"
                   >Delete</span
                 >
 
-                <v-icon right class="text-white"> mdi-delete </v-icon>
+                <v-icon right class="text-white"> mdi-trash-can-outline </v-icon>
               </v-btn>
             </v-btn-toggle>
           </div>

@@ -531,21 +531,8 @@ const actions = {
     async getUploadReportsMonthly({ commit }) {
         try {
             await axios.get('/api/uploadreportsmonthly').then((response) => {
-
-                let upload_reports = response.data
-
-                let data = []
-
-                for (let i = 0; i < Object.values(upload_reports).length; i++) {
-
-                    let date = Object.keys(upload_reports)[i]
-
-                    let total = Object.values(upload_reports)[i].filter(item => item.file_status === 'Approved').length
-
-                    data.push({ total, date })
-                }
-
-                commit('SET_UPLOAD_REPORTS_MONTHLY', data)
+                let montlyreports = response.data
+                commit('SET_UPLOAD_REPORTS_MONTHLY', montlyreports)
             }).catch((err) => {
 
                 console.log(err.response.data)
@@ -560,9 +547,9 @@ const actions = {
         try {
             await axios.get('/api/uploadreportsyearly').then((response) => {
 
-                let upload_reports = response.data
+                let yearlyreports = response.data
 
-                let data = []
+                /* let data = []
 
                 for (let i = 0; i < Object.values(upload_reports).length; i++) {
 
@@ -571,9 +558,9 @@ const actions = {
                     let total = Object.values(upload_reports)[i].filter(item => item.file_status === 'Approved').length
 
                     data.push({ total, date })
-                }
+                } */
 
-                commit('SET_UPLOAD_REPORTS_YEARLY', data)
+                commit('SET_UPLOAD_REPORTS_YEARLY', yearlyreports)
             }).catch((err) => {
 
                 console.log(err.response.data)
