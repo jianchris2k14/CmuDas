@@ -71,6 +71,9 @@
     <v-alert v-show="showMsg" outlined type="warning" prominent border="left">
       Filename {{ this.search }} {{ this.msg }}
     </v-alert>
+    <v-alert v-show="showcateg_msg" outlined type="warning" prominent border="left">
+      {{ this.msg }}
+    </v-alert>
     <!-- Alert Message -->
     <div v-if="msgStatus">
       <alert-component />
@@ -305,6 +308,8 @@ export default {
       /* FILE REQUEST PROPERTIES */
       pageOfItems: [],
       search: null,
+      categ_msg:"",
+      showcateg_msg:false,
       msg: "",
       showMsg: false,
       paragraph: "The quick brown fox jumps over the lazy dog",
@@ -375,6 +380,13 @@ export default {
         files = this.$store.getters.getDocuments;
       } else {
         files = this.$store.getters.filterFilesByCategory(this.category_id);
+        var count = Object.keys(files).length;
+         if (count === 0) {
+          this.showcateg_msg = true;
+          this.msg = "No documents found in this category";
+        } else {
+          this.showcateg_msg = false;
+        }
       }
       if (this.search) {
         let result = files.filter((item) => {

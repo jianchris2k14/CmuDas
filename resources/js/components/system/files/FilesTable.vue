@@ -52,7 +52,7 @@
           <v-toolbar flat>
             <!-- FILES MANAGEMENT MODALS -->
 
-            <v-dialog v-model="dialog" max-width="960px">
+            <v-dialog v-model="dialog" max-width="80%">
               <!-- ADD NEW FILE BUTTON -->
 
               <template v-slot:activator="{ on, attrs }">
@@ -84,6 +84,9 @@
                   <v-container>
                     <div v-show="auth.user_type === 'Chief'">
                       <v-form ref="form" @submit.prevent="save">
+                        <v-alert outlined type="info" prominent border="left">
+                          Make sure to validate the file throughly before approving this file
+                        </v-alert>
                         <v-select
                           v-model="form.file_status"
                           prepend-inner-icon="mdi-archive"
@@ -101,21 +104,25 @@
                     </div>
                     <div v-show="auth.user_type === 'Staff'">
                       <v-form ref="form" @submit.prevent="save">
-                        <v-text-field
+                        <v-container>
+                          
+                            <label for="filename">Filename</label>
+                            <v-text-field
                           v-show="
                             formTitle === 'New File' ||
                             formTitle === 'Update File'
                           "
                           v-model="form.filename"
                           :rules="rules.filename"
+                          @input="generateSlug"
                           prepend-inner-icon="mdi-file"
-                          label="Filename"
                           dense
                           outlined
                           required
                         >
                         </v-text-field>
-                        <v-text-field
+                        <label for="filecode">File Code</label>
+                            <v-text-field
                           v-show="
                             formTitle === 'New File' ||
                             formTitle === 'Update File'
@@ -123,26 +130,28 @@
                           v-model="form.code"
                           :rules="rules.code"
                           prepend-inner-icon="mdi-file-code"
-                          label="File Code"
                           dense
                           outlined
                           required
                         >
                         </v-text-field>
-                        <v-text-field
+                        <label for="slug">Slug</label>
+                         <v-text-field
                           v-show="
                             formTitle === 'New File' ||
                             formTitle === 'Update File'
                           "
                           v-model="form.slug"
                           :rules="rules.slug"
+                          disabled
                           prepend-inner-icon="mdi-information-outline"
-                          label="Slug"
                           dense
                           outlined
                           required
                         >
                         </v-text-field>
+
+                        <label for="category">Category</label>
                         <v-select
                           v-show="
                             formTitle === 'New File' ||
@@ -153,11 +162,12 @@
                           item-value="category_id"
                           v-model="form.category_id"
                           prepend-inner-icon="mdi-information-outline"
-                          label="Select Category"
                           outlined
                           dense
                         >
                         </v-select>
+
+                        <label for="doctype">Document Type</label>
                         <v-select
                           v-show="
                             formTitle === 'New File' ||
@@ -174,6 +184,8 @@
                         >
                         </v-select>
 
+                        <label for="desc">Description</label>
+                        
                         <v-textarea
                           v-show="
                             formTitle === 'New File' ||
@@ -184,9 +196,9 @@
                           prepend-inner-icon="mdi-text"
                           filled
                           name="input-7-4"
-                          label="File Description"
                         >
                         </v-textarea>
+                        <label for="retentiondate">Retention Date</label>
                         <!-- VUETIFY DATE PICKER -->
                         <v-menu
                           v-show="
@@ -208,7 +220,6 @@
                               "
                               v-model="date"
                               prepend-inner-icon="mdi-calendar"
-                              label="Retention Date"
                               :rules="rules.retention_date"
                               readonly
                               outlined
@@ -224,8 +235,18 @@
                             @change="saveDate"
                           ></v-date-picker>
                         </v-menu>
+                        </v-container>
 
-                        <div class="input-group mb-3">
+                        
+                        
+                        
+                        
+                        
+
+                        
+                        
+
+                        <!-- <div class="input-group mb-3">
                           <div class="input-group-prepend">
                             <span class="input-group-text"
                               ><v-icon>mdi-file-cabinet</v-icon></span
@@ -250,7 +271,7 @@
                               >{{ filename }}</label
                             >
                           </div>
-                        </div>
+                        </div> -->
 
                         <!--  <input
                           type="file"
@@ -291,6 +312,10 @@
                     Confirmation
                   </v-toolbar-title>
                 </v-toolbar>
+                <v-alert outlined type="error" prominent border="left">
+                      Once this file is archived this cannot be deleted in the system.
+                      It's recommended those permanent records.
+                    </v-alert>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item?</v-card-title
                 >
@@ -540,6 +565,11 @@ export default {
   },
 
   methods: {
+    generateSlug(event) {
+      if(event) {
+        this.form.slug = event
+      }
+    },
     getCategory(category) {
       this.category_id = category;
     },

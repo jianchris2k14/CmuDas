@@ -180,6 +180,10 @@
                           Confirmation
                       </v-toolbar-title>
                   </v-toolbar>
+                   <v-alert outlined type="error" prominent border="left">
+                      Once this file is archived this cannot be deleted in the system.
+                      It's recommended those permanent records.
+                    </v-alert>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item?</v-card-title
                 >

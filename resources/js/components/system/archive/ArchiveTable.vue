@@ -49,12 +49,9 @@
                 <v-card-title> </v-card-title>
                 <v-card-text>
                   <v-container>
-                    <v-alert outlined type="warning" prominent border="left">
-                      Please Read before making a request, make sure to secure
-                      the following: For students you can download your make
-                      sure your it is approved by your adviser. For faculty you
-                      can download your make sure it is addressed to the RMU
-                      Chief.
+                    <v-alert outlined type="info" prominent border="left">
+                      Once this file is archived this cannot be deleted in the system.
+                      It's recommended those permanent records.
                     </v-alert>
                     <v-form ref="form" @submit.prevent="save">
                       <v-select
