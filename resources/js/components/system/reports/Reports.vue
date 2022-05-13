@@ -221,17 +221,17 @@ export default {
         datasets: [
           {
             label: "Upload Documents",
-            backgroundColor: ["#1E88E5","#EF5350"],
+            backgroundColor: "#1E88E5",
             data: totaluploaded,
           },
            {
             label: "Archive",
-            backgroundColor: ["#FFB74D","#1DE9B6"],
+            backgroundColor: "#FFB74D",
             data: totalarchive,
           },
            {
             label: "Disposed",
-            backgroundColor: ["#EC407A","#AB47BC"],
+            backgroundColor: "#EC407A",
             data: totaldispose,
           },
         ],

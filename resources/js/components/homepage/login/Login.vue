@@ -11,7 +11,7 @@
         </v-layout>
         <div>
           <v-layout row justify-center align-center class="mt-10">
-            <v-card outlined max-width="800" height="450px">
+            <v-card max-width="800">
               <!-- Alert Message -->
               <div v-if="msgStatus">
                 <alert-component />
@@ -61,6 +61,7 @@
                     </v-row>
                   </v-form>
                 </v-container>
+                <a href="#" @click="forgotPassword()">Forgot password?</a>
               </v-card-text>
               <!-- Form Buttons -->
 
@@ -135,6 +136,9 @@ export default {
     },
   },
   methods: {
+    forgotPassword() {
+       this.$router.push({ name: "authentication",params:{action:'forgot-password'} });
+    },
     redirectToHome() {
       this.$router.push({ name: "homepage" });
     },
@@ -182,11 +186,12 @@ export default {
 <style scoped>
 .img {
   border:1px solid #000;
+
 }
 .right-container {
   /* background-image:url('../../../../../public/images/authentication.svg'); */
   background-color: #21c65e;
-  height: 100vh;
+  border: 1px solid #000;
 }
 ::v-deep .v-btn {
   padding-left: 12px;

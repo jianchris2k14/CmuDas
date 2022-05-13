@@ -1,6 +1,5 @@
 <template>
   <div class="container mt-15">
-      
       <!-- Alert Message -->
       <div v-if="msgStatus">
         <alert-component />
@@ -9,7 +8,7 @@
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay> -->
 
-      <v-card outlined>
+      <v-card class="elevation-5 flex d-flex flex-column" outlined>
         <v-card-text>
           <h3 class="display-7 text-uppercase">Login</h3>
           <p>Welcome to CMU Archive, please input your credentials below.</p>
@@ -53,6 +52,7 @@
               </v-row>
             </v-form>
           </v-container>
+
         </v-card-text>
         <!-- Form Buttons -->
 
@@ -69,7 +69,7 @@
           >
             </v-col>
           </v-row>
-          
+
         </v-card-actions>
       </v-card>
   </div>
@@ -93,7 +93,7 @@ export default {
         email: "",
         password: "",
       },
-      
+
 
       //Rules Validation Property
       rules: {

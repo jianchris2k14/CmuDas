@@ -92,7 +92,7 @@ export default {
         };
         return chartData
       },
-      
+
       uploadReportChart() {
 
       let request_reports = this.fetchUploadReports
@@ -101,21 +101,21 @@ export default {
         let totalarchive = request_reports.map((item) => item.total_archive)
         let totaldispose = request_reports.map((item) => item.total_dispose)
         let chartData = {
-        labels: this.isMonth ? date: date,
+        labels: date,
         datasets: [
           {
             label: "Upload Documents",
-            backgroundColor: ["#1E88E5","#EF5350"],
+            backgroundColor: "#1E88E5",
             data: totaluploaded,
           },
            {
             label: "Archive",
-            backgroundColor: ["#FFB74D","#1DE9B6"],
+            backgroundColor: "#FFB74D",
             data: totalarchive,
           },
            {
             label: "Disposed",
-            backgroundColor: ["#EC407A","#AB47BC"],
+            backgroundColor: "#EC407A",
             data: totaldispose,
           },
         ],

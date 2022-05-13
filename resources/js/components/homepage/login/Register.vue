@@ -10,10 +10,10 @@
           </div>
         </v-layout>
         <div>
-          <v-layout row justify-center align-center class="mt-10">
+          <v-layout row justify-center align-center class="mt-7">
             <v-card max-width="800">
 
-                
+
               <!-- Alert Message -->
               <div v-if="msgStatus">
                 <alert-component />
@@ -245,12 +245,12 @@ export default {
 </script>
 <style scoped>
 .img {
-  border:1px solid #000;
+    height: 150vh;
 }
 .right-container {
-  /* background-image:url('../../../../../public/images/authentication.svg'); */
+  background-image:url('../../../../../public/images/authentication.svg');
   background-color: #21c65e;
-  height: 112vh;
+  background-size: 120vh;
 }
 ::v-deep .v-btn {
   padding-left: 12px;

@@ -29,20 +29,39 @@
         show-select
         class="elevation-1 table-striped"
       >
+
         <template v-slot:item.expiration_date="{ item }">
           <span
             v-show="item.status === 'Approved' || item.status === 'Expired'"
             >{{ new Date(item.expiration_date).toLocaleDateString() }}</span
           >
         </template>
+
         <template v-slot:item.request_date="{ item }">
           <span>{{ new Date(item.request_date).toLocaleDateString() }}</span>
         </template>
         <template v-slot:item.status="{ item }">
-          <v-chip :color="getColor(item.status)" dark>
-            {{ item.status }}
-          </v-chip>
+            <div v-if="item.status === 'Denied'">
+                <v-tooltip color="error" right>
+                    <template v-slot:activator="{on,attrs}">
+                        <v-chip :color="getColor(item.status)" v-on="on" v-bind="attrs" dark>
+                            {{ item.status }}
+                        </v-chip>
+                    </template>
+
+                    ERROR MESSAGE HERE!
+                </v-tooltip>
+
+            </div>
+            <div v-else>
+                <v-chip :color="getColor(item.status)" dark>
+                            {{ item.status }}
+                        </v-chip>
+            </div>
+
         </template>
+
+
         <template v-slot:top>
           <h4>Request Log</h4>
 

@@ -39,10 +39,26 @@
         <template v-slot:item.retention_date="{ item }">
           <span>{{ new Date(item.retention_date).toLocaleDateString() }}</span>
         </template>
+
         <template v-slot:item.file_status="{ item }">
-          <v-chip :color="getColor(item.file_status)" dark>
-            {{ item.file_status }}
-          </v-chip>
+            <div v-if="item.status === 'Denied'">
+                <v-tooltip color="error" right>
+                    <template v-slot:activator="{on,attrs}">
+                        <v-chip :color="getColor(item.file_status)" v-on="on" v-bind="attrs" dark>
+                            {{ item.status }}
+                        </v-chip>
+                    </template>
+
+                    ERROR MESSAGE HERE!
+                </v-tooltip>
+
+            </div>
+            <div v-else>
+                <v-chip :color="getColor(item.file_status)" dark>
+                            {{ item.file_status }}
+                        </v-chip>
+            </div>
+
         </template>
 
         <template v-slot:top>
@@ -105,7 +121,7 @@
                     <div v-show="auth.user_type === 'Staff'">
                       <v-form ref="form" @submit.prevent="save">
                         <v-container>
-                          
+
                             <label for="filename">Filename</label>
                             <v-text-field
                           v-show="
@@ -185,7 +201,7 @@
                         </v-select>
 
                         <label for="desc">Description</label>
-                        
+
                         <v-textarea
                           v-show="
                             formTitle === 'New File' ||
@@ -237,14 +253,14 @@
                         </v-menu>
                         </v-container>
 
-                        
-                        
-                        
-                        
-                        
 
-                        
-                        
+
+
+
+
+
+
+
 
                         <!-- <div class="input-group mb-3">
                           <div class="input-group-prepend">

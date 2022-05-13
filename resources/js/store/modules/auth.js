@@ -35,7 +35,7 @@ const mutations = {
         state.user = value.data
     }
 }
-const actions = { 
+const actions = {
     async getUser({commit,rootState}) {
         try {
             await axios.get('/api/user').then((response) => {
@@ -55,14 +55,14 @@ const actions = {
                     commit('SET_USER',{})
                     commit('SET_AUTHENTICATED',false)
                  }
-                 
 
-                
+
+
             });
         } catch (error) {
             console.log(error)
         }
-        
+
     },
     async updateCurrentUser({commit,rootState},payload) {
         rootState.base.isLoading = true
@@ -74,7 +74,7 @@ const actions = {
                     status: "Success",
                     showMsg:true
                 })
-                
+
             }).catch((err) => {
                 console.log(err.response.data)
                 rootState.base.global = {
@@ -122,6 +122,15 @@ const actions = {
             console.log(e)
         }
     },
+    async forgotPassword({commit,rootState},data) {
+        axios.post('/api/forgotpassword',data).then((response) => {
+            console.log(response.data)
+        }).catch((error) => {
+            console.log(error.response.data)
+        }).finally(function() {
+            console.log("Done")
+        })
+    },
     async userLogout({commit,rootState}) {
         localStorage.removeItem('token')
         localStorage.removeItem('user_type')
@@ -136,7 +145,7 @@ const actions = {
         rootState.base.isLoading = false
 
     },
-    
+
 }
 
 export default {
