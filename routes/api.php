@@ -55,6 +55,7 @@ Route::post('/mail', [MailController::class, 'index']);
 Route::post('/mail', [MailController::class, 'sendEmail']);
 
 Route::post('/forgotpassword',[ForgotPasswordController::class,'sendLinkResponse']);
+Route::post('/passwordreset',[ForgotPasswordController::class,'sendResetResponse']);
 
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {

@@ -123,12 +123,41 @@ const actions = {
         }
     },
     async forgotPassword({commit,rootState},data) {
+        rootState.base.isLoading = true
         axios.post('/api/forgotpassword',data).then((response) => {
-            console.log(response.data)
+            rootState.base.global = Object.assign({
+                message:[{sucess:'Password Reset link has been sent to your email, please check your email'}],
+                status: "Success",
+                showMsg:true
+            })
         }).catch((error) => {
             console.log(error.response.data)
+            rootState.base.global = {
+                message:error.response.data,
+                status: "sww",
+                showMsg:true
+            }
         }).finally(function() {
-            console.log("Done")
+            rootState.base.isLoading = false
+        })
+    },
+    async passwordReset({commit,rootState},data) {
+        rootState.base.isLoading = true
+        await axios.post('/api/passwordreset',data).then((response) => {
+            rootState.base.global = Object.assign({
+                message:[{sucess:'Password successfully reset'}],
+                status: "Success",
+                showMsg:true
+            })
+        }).catch((error) => {
+            console.log(error.response.data)
+            rootState.base.global = {
+                message:error.response.data,
+                status: "sww",
+                showMsg:true
+            }
+        }).finally(function() {
+            rootState.base.isLoading = false
         })
     },
     async userLogout({commit,rootState}) {

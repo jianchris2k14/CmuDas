@@ -3,25 +3,25 @@
     <v-overlay :value="isLoading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <v-row class="">
-      <v-col cols="12" md="6" sm="8"  class="pa-3 d-flex flex-column">
-          <v-card v-if="action === 'login'">
+    <v-row class="flex">
+      <v-col cols="12" md="6" sm="8"  class="pa-3 d-flex flex-column mt-15">
+          <div v-if="action === 'login'">
               <login></login>
-          </v-card>
-          <v-card v-else-if="action === 'forgot-password'">
+          </div>
+          <div v-else-if="action === 'forgot-password'">
               <forgot-password></forgot-password>
-          </v-card>
-          <v-card v-else-if="action === 'reset-password'">
-              <h1>Password Reset</h1>
-          </v-card>
-          <v-card v-else>
+          </div>
+          <div v-else-if="action === 'reset-password'">
+              <reset-password></reset-password>
+          </div>
+          <div v-else>
               <register></register>
-          </v-card>
+          </div>
 
 
       </v-col>
       <v-col cols="12" md="6" sm="8" class="pa-3 d-flex flex-column right-container">
-        <img :src="loginInfoGraphic" class="mt-5 img" width="100%" />
+        <img :src="loginInfoGraphic" class="mt-n15 img" width="100%" />
       </v-col>
     </v-row>
   </div>
@@ -30,9 +30,10 @@
 import Login from './Login.vue'
 import Register from './Register.vue'
 import ForgotPassword from './ForgotPassword.vue'
+import ResetPassword from './ResetPassword.vue'
 import loginInfoGraphic from "../../../../../public/images/authentication.svg";
 export default {
-  components: { Login,Register,ForgotPassword },
+  components: { Login,Register,ForgotPassword,ResetPassword },
   data() {
     return {
       loginInfoGraphic: loginInfoGraphic,

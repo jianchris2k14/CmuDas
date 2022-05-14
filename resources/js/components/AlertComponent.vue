@@ -32,6 +32,39 @@
           </v-alert>
         </div>
       </div>
+      <div v-show="message.status === 'sww'">
+        <div class="errormsg">
+          <v-alert
+            text
+            type="error"
+            icon="mdi-alert-circle"
+            colored-border
+            border="left"
+          >
+            <v-col class="grow">
+              <h3 class="text-warning text-uppercase">Something went wrong!</h3>
+              <strong
+                ><h6 class="text-warning text-uppercase">
+                  {{ message.message.message }}
+                </h6></strong
+              >
+              
+              <div
+              class="text-warning"
+                v-for="(item, index) in message.message.errors"
+                :key="index.errors"
+              >
+              {{item}}
+                <ul v-for="(error,i) in item" :key="i" class="text-warning">
+                  {{
+                    i.item
+                  }}
+                </ul>
+              </div>
+            </v-col>
+          </v-alert>
+        </div>
+      </div>
       <div v-show="message.status === 'Success'">
         <div class="successmsg">
           <v-alert

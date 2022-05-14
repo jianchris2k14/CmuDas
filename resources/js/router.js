@@ -10,6 +10,7 @@ import HomepageLayout from './components/homepage/layouts/HomepageLayout.vue'
 
 
 import Authentication from './components/homepage/login/Authentication.vue'
+import PasswordReset from './components/homepage/login/ResetPassword.vue'
 
 
 /* CLIENT COMPONENTS */
@@ -41,6 +42,7 @@ import archive from './components/system/archive/Archive.vue'
 
 
 
+
 const routes = [
 
     {
@@ -65,6 +67,16 @@ const routes = [
                     title: "login"
                 },
             },
+            {
+                path: '/authentication/:action/:token/:email',
+                component: PasswordReset,
+                name: 'passwordreset',
+                meta: {
+                    guest: true,
+                    title: "passwordreset"
+                },
+            },
+
 
         ]
 
@@ -306,7 +318,6 @@ router.beforeEach((to, from, next) => {
 
             }
             else {
-
                 if (user_type === 'Client') {
                     next()
                 } else {

@@ -15,6 +15,10 @@ class ForgotPasswordController extends Controller
 {
     //
 
+    protected function getPasswordReset() {
+        
+    }
+
     protected function sendLinkResponse(Request $request)
     {
         $input = $request->only('email');
@@ -32,14 +36,17 @@ class ForgotPasswordController extends Controller
         if($response == Password::RESET_LINK_SENT)
         {
             $message = "Mail send successfully";
+            $response = ['data' => '','message' => $message];
+            return response($response,200);
 
         }
         else
         {
-            $message = "Email could not be sent to this email address";
+            $message = "Email could not be sent to this email address. Please enter your registered email address";
+            $response = ['data' => '','message' => $message];
+            return response($response,422);
         }
-        $response = ['data' => '','message' => $message];
-        return response($response,200);
+       
     }
     protected function sendResetResponse(Request $request)
     {

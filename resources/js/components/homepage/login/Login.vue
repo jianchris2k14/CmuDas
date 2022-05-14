@@ -3,14 +3,14 @@
         <v-layout row justify-center align-center>
           <div class="float-left">
             <v-col cols="12" md="3" sm="5">
-              <v-btn text @click="redirectToHome">
+              <v-btn text @click="$router.push({ name: 'homepage' })">
                 <v-icon>mdi-arrow-left</v-icon>Back to Home</v-btn
               >
             </v-col>
           </div>
         </v-layout>
-        <div>
-          <v-layout row justify-center align-center class="mt-10">
+        <div class="mt-15"> 
+          <v-layout row justify-center align-center>
             <v-card max-width="800">
               <!-- Alert Message -->
               <div v-if="msgStatus">
@@ -61,7 +61,7 @@
                     </v-row>
                   </v-form>
                 </v-container>
-                <a href="#" @click="forgotPassword()">Forgot password?</a>
+                <a href="#" @click="$router.push({ name: 'authentication',params:{action:'forgot-password'} })">Forgot password?</a>
               </v-card-text>
               <!-- Form Buttons -->
 
@@ -79,7 +79,7 @@
                     </v-btn>
                   </v-col>
                   <v-col cols="12" md="6" sm="4">
-                    <v-btn x-large width="100%" text @click="redirectRegister()"
+                    <v-btn x-large width="100%" text @click="$router.push({ name: 'authentication',params:{action:'register'} })"
                       >Create an Account</v-btn
                     >
                   </v-col>
@@ -181,6 +181,9 @@ export default {
       this.loginUser();
     },
   },
+  created() {
+    this.$root.$refs.Login = this
+  }
 };
 </script>
 <style scoped>
