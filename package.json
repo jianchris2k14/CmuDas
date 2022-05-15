@@ -35,6 +35,8 @@
         "chart.js": "^2.9.4",
         "html2canvas": "^1.4.1",
         "jquery": "^3.6.0",
+        "jspdf": "^2.5.1",
+        "jspdf-autotable": "^3.5.23",
         "jszip": "^3.7.1",
         "jw-vue-pagination": "^1.0.3",
         "pdfjs-dist": "^2.13.216",

@@ -65,7 +65,7 @@
               <v-card flat v-if="i === 2">
 
                 <!-- REPORTS SELECTION PERIOD AND REPORT TYPE -->
-                <reports-options @selectperiod="getPeriod" @selection="getSelection" documentid="uploadreports" id="options"/>
+                <reports-options @selectperiod="getPeriod" :reportsdata="getRequestData" @selection="getSelection" documentid="uploadreports" id="options"/>
                 <h5>APPROVED UPLOAD DOCUMENTS: {{ totalUploadDocuments }}</h5>
 
                 <div id="generateuploadreports">

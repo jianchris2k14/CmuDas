@@ -59,7 +59,7 @@
 <script>
 import html2canvas from "html2canvas";
 export default {
-  props: ["documentid"],
+  props: ["documentid","reportsdata"],
   computed: {
     getDocumentId() {
       let doc_id = this.documentid;
@@ -125,6 +125,44 @@ export default {
         });
     },
     printRequestReport() {
+      /* var data = this.reportsdata;
+      console.log(data)
+
+      var reports = [];
+      data.map(function (item) {
+        reports.push([
+          item.date,
+          item.total,
+        ]);
+      });
+      var sorted = reports.sort(function (a, b) {
+        if (a[1] === b[1]) {
+          return 0;
+        } else {
+          return a[1] < b[1] ? -1 : 1;
+        }
+      });
+
+      var doc = new jsPDF("p", "mm", "a4");
+      doc.autoTable({
+        head: [
+          [
+            "Date",
+            "Total Request",
+          ],
+        ],
+        body: sorted,
+        theme: "grid",
+        tableWidth: 180,
+        margin: { horizontal: 10 },
+        styles: {
+          overflow: "linebreak",
+          backg: 0.5,
+        },
+        bodyStyles: { valign: "top" },
+      });
+      doc.save("test.pdf"); */
+      
       let buttons = document.getElementById("buttons")
       buttons.style.visibility = "hidden"
       let options = document.getElementById("options")
@@ -167,12 +205,12 @@ export default {
           buttons.style.visibility = "visible"
           options.style.visibility = "visible"
 
-          /*  canvas.remove() */
+           canvas.remove()
         })
         .catch((err) => {
           console.log(err);
         });
-    },
+    }
   },
 };
 </script>
