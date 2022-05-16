@@ -25,7 +25,7 @@
           <v-tabs-items v-model="tabs">
             <v-tab-item v-for="i in 2" :key="i" :value="'mobile-tabs-5-' + i">
               <v-card flat v-if="i === 1">
-                 <reports-options @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
+                 <reports-options :requestreports="getRequestData" :report="reports" :filerequestreports="getFileRequestReports" :uploadreports="getUploadsData" @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
                 <div id="generaterequestreports">
 
 
@@ -64,7 +64,7 @@
               <v-card flat v-if="i === 2">
 
                 <!-- REPORTS SELECTION PERIOD AND REPORT TYPE -->
-                <reports-options @selectperiod="getPeriod" :reportsdata="getRequestData" @selection="getSelection" documentid="uploadreports" id="options"/>
+               <reports-options :requestreports="getRequestData" :report="reports" :filerequestreports="getFileRequestReports" :uploadreports="getUploadsData" @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
                 <h5>APPROVED UPLOAD DOCUMENTS: {{ totalUploadDocuments }}</h5>
 
                 <div id="generateuploadreports">
