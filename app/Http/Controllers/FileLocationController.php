@@ -131,7 +131,7 @@ class FileLocationController extends Controller
         ))
         ->groupBy(DB::raw('MONTH(created_at)'))
         ->get();
-       
+
 
 
 

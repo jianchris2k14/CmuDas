@@ -6,9 +6,9 @@
           @selectcategory="getCategory"
         ></select-file-category>
         <v-spacer></v-spacer>
-        <label>Search</label>
         <v-text-field
           v-model="search"
+          label="search"
           dense
           outlined
           prepend-inner-icon="mdi-magnify"

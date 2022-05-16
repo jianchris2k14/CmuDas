@@ -1,6 +1,5 @@
 <template>
   <div class="mt-15">
-    {{period}}
     <div class="container shadow p-3 mb-5 bg-white">
       <div class="row">
         <h1><v-icon size="50" color="info">mdi-chart-box-outline</v-icon>Reports</h1>
@@ -41,7 +40,7 @@
                     />
                   </div>
                   <div v-else-if="selection === 'Table'">
-                    <reports-table :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
+                    <reports-table :report="reports" :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
                   </div>
 
                   <div v-else>
@@ -54,7 +53,7 @@
                         />
                       </v-col>
                       <v-col cols="12" md="6" sm="8">
-                        <reports-table :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
+                        <reports-table :report="reports" :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
                       </v-col>
                     </v-row>
                   </div>
@@ -74,7 +73,7 @@
                     <upload-chart :chartData="generateUploadReport" :options="options"/>
                   </div>
                   <div v-else-if="selection === 'Table'">
-                    <reports-table :period="period" :data="getUploadsData"/>
+                    <reports-table :report="reports" :period="period" :data="getUploadsData"/>
                   </div>
 
                   <div v-else>
@@ -83,7 +82,7 @@
                         <upload-chart :chartData="generateUploadReport" :options="options"/>
                       </v-col>
                       <v-col cols="12" md="6" sm="8">
-                        <reports-table :period="period" :data="getUploadsData" />
+                        <reports-table :report="reports" :period="period" :data="getUploadsData" :filerequestreports="getFileRequestReports"/>
                       </v-col>
                     </v-row>
                   </div>
@@ -110,7 +109,8 @@ export default {
       selection: "Chart",
       icon: "justify",
       datatype:"requestreport",
-      isMonth:true
+      isMonth:true,
+      reports:'request_reports'
 
     };
   },
@@ -158,7 +158,7 @@ export default {
     },
     totalUploadDocuments() {
       let upload_docs = this.getUploadsData;
-      let total = upload_docs.reduce((n, { total }) => n + total, 0);
+      let total = upload_docs.reduce((n, { total_uploaded,total_dispose,total_archive }) => n + total_uploaded+total_archive + total_dispose, 0);
       return total;
     },
 
@@ -194,6 +194,7 @@ export default {
     },
     clickUploadTab() {
       this.period= 'Monthly'
+      this.reports = 'upload_reports'
        this.$nextTick(() => {
         this.selection = 'Chart'
       });
@@ -201,6 +202,7 @@ export default {
     },
     clickRequestTab() {
       this.period= 'Daily'
+      this.reports = 'request_reports'
        this.$nextTick(() => {
         this.selection = 'Chart'
       });
