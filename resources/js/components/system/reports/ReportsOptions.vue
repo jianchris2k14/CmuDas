@@ -51,6 +51,14 @@
           >
             <v-icon class="text-white"> mdi-image </v-icon>
           </v-btn>
+          <v-btn
+            value="left"
+            color="error"
+            small
+            @click="downloadRequestReportPDF()"
+          >
+            <v-icon class="text-white"> mdi-file-pdf-box </v-icon>
+          </v-btn>
         </v-btn-toggle>
       </v-col>
     </v-row>
@@ -58,8 +66,17 @@
 </template>
 <script>
 import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 export default {
-  props: ["documentid"],
+  props: [
+    "report",
+    "documentid",
+    "reportsdata",
+    "requestreports",
+    "uploadreports",
+    "filerequestreports",
+  ],
   computed: {
     getDocumentId() {
       let doc_id = this.documentid;
@@ -124,11 +141,119 @@ export default {
           console.log(err);
         });
     },
+    downloadRequestReportPDF() {
+      var request
+      var head = []
+      var reports = []
+
+      var filerequestArr = []
+      var filerequest
+      var filereqhead = []
+
+      var name
+      if (this.report === "request_reports") {
+
+        request = this.requestreports
+        request.map(function (item) {
+          reports.push([item.date, item.total]);
+        });
+        head = [["Date", "Total of Requests"]];
+
+
+        filerequest = this.filerequestreports
+        filerequest.map(function (item) {
+          filerequestArr.push([item.filename, item.category, item.totalrequests]);
+        });
+        filereqhead = [["File Name", "Category", "Total of Requests"]];
+
+      } else {
+        request = this.uploadreports;
+
+          request.map(function (item) {
+            reports.push([
+                item.date,
+              item.total_uploaded,
+              item.total_dispose,
+              item.total_archive,
+            ]);
+          });
+          head = [["Date", "Uploaded","Disposed","Archived"]];
+      }
+    var sortMonth = reports.sort(function(a,b) {
+         var months = ["January", "February", "March", "April", "May", "June",
+  	        "July", "August", "September", "October", "November", "December"];
+            return months.indexOf(a.date)
+    })
+    console.log(sortMonth)
+
+
+      var sorted = reports.sort(function (a, b) {
+        if (a[1] === b[1]) {
+          return 0;
+        } else {
+          return a[1] < b[1] ? -1 : 1;
+        }
+      });
+
+      var sortedFileRequest = filerequestArr.sort(function (a, b) {
+        if (a[1] === b[1]) {
+          return 0;
+        } else {
+          return a[1] < b[1] ? -1 : 1;
+        }
+      });
+
+      var doc = new jsPDF("p", "mm", "a4");
+      doc.setTextColor(100);
+      var pageSize = doc.internal.pageSize;
+      var pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
+      var text = doc.splitTextToSize(
+        "Central Midanao University",
+        pageWidth - 35,
+        {}
+      );
+      doc.setFontSize(10);
+      doc.text(text, 14, 50);
+      doc.autoTable({
+        head: filereqhead,
+        body: sortedFileRequest,
+        theme: "grid",
+        tableWidth: 180,
+        margin: { horizontal: 10 },
+        styles: {
+          overflow: "linebreak",
+          backg: 0.5,
+        },
+        bodyStyles: { valign: "top" },
+      });
+
+      doc.text(text, 14, 50);
+      doc.autoTable({
+        head: head,
+        body: sortMonth,
+        theme: "grid",
+        tableWidth: 180,
+        margin: { horizontal: 10 },
+        styles: {
+          overflow: "linebreak",
+          backg: 0.5,
+        },
+        bodyStyles: { valign: "top" },
+      });
+      doc.setFontSize(18);
+      doc.text("Digital Archiving System Reports", 105, 10, null, null, "center")
+      doc.setFontSize(10);
+      doc.text(text, 14, doc.lastAutoTable.finalY + 10);
+      doc.save(this.report);
+    },
+
+
+
     printRequestReport() {
-      let buttons = document.getElementById("buttons")
-      buttons.style.visibility = "hidden"
-      let options = document.getElementById("options")
-      options.style.visibility = "hidden"
+      let buttons = document.getElementById("buttons");
+      buttons.style.visibility = "hidden";
+      let options = document.getElementById("options");
+      options.style.visibility = "hidden";
       const content = document.querySelector(this.getDocumentId);
 
       html2canvas(content, {
@@ -164,10 +289,10 @@ export default {
           printWin.document.close();
           printWin.focus();
           printWin.print();
-          buttons.style.visibility = "visible"
-          options.style.visibility = "visible"
+          buttons.style.visibility = "visible";
+          options.style.visibility = "visible";
 
-          /*  canvas.remove() */
+          canvas.remove();
         })
         .catch((err) => {
           console.log(err);

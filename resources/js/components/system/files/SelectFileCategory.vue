@@ -7,12 +7,14 @@
           item-value="category_id"
           v-model="defaultSelect"
           label="Select Category"
+          outlined
+          prepend-inner-icon="mdi-format-list-bulleted-square"
           @change="onChangeCategory"
           dense
         >
         </v-select>
       </div>
-        
+
 
   </div>
 </template>
@@ -26,7 +28,7 @@ export default {
             category_id:0,
         },
         filecateg:[
-          { 
+          {
             category_id: 0,
             category: "All",
             created_at: "2022-04-26T01:56:19.000000Z",

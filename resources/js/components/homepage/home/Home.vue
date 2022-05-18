@@ -1,69 +1,72 @@
 <template>
   <div>
     <div class="section section-hero section-shaped">
-      <!-- <v-parallax
-        height="700"
-        class="mt-n16"
-        src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
-      > -->
-        <div class="page-header">
-          <div class="container shape-container align-items-center py-lg">
+      <div class="page-header">
+        <div class="container shape-container align-items-center py-lg">
+          <div class="row">
             
-            <div class="row">
-              <div class="col-md-6 mt-15">
-                <div v-show="auth.authenticated">
-                  <div class="col-lg-12 text-center">
+            <div class="col-md-6 mt-15">
+                <div class="col-lg-12">
                   <div
                     data-aos="fade-right"
                     data-aos-offset="300"
                     data-aos-easing="ease-in-sine"
                   >
-                    <h1 class="display-1 title">Central Mindanao</h1>
+                    <h6 class="display-8 title">Central Mindanao University</h6>
                   </div>
                   <div
                     data-aos="fade-left"
                     data-aos-offset="300"
                     data-aos-easing="ease-in-sine"
                   >
-                    <h1 class="display-4 subtitle">University</h1>
+                    <h3 class="display-6 subtitle">Digital Archiving System</h3>
                   </div>
                   <div data-aos="fade-up" data-aos-duration="3000">
-                    <h2
+                    <p
                       class="
-                        display-5
                         font-weight-normal
                         text-black
                         animate__animated animate__fadeIn
                       "
                     >
-                      Digital Archiving system
-                    </h2>
+                      <span class="sub-text">Students</span>
+                      ,<span class="sub-text">Faculty</span> and
+                      <span class="sub-text">Alumnus</span>
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididun t ut labore et dolore
+                    </p>
+
+                    <v-list dense>
+                      <v-list-item v-for="(item,i) in items" :key="i">
+
+                        <v-list-item-icon class="mt-3">
+                          <v-icon v-text="item.icon" color="success"></v-icon>
+                        </v-list-item-icon>
+
+                        <v-list-item-content>
+                          <v-list-item-title
+                          class="mt-n2"
+                            v-text="item.text"
+                          ></v-list-item-title>
+                        </v-list-item-content>
+
+                        <v-list-item-avatar>
+                          <v-img :src="item.avatar"></v-img>
+                        </v-list-item-avatar>
+                      </v-list-item>
+                    </v-list>
                   </div>
                 </div>
-                </div>
 
-                <account-management></account-management>
 
-              </div>
-              <div class="col-md-6">
-                <img :src="personalfiles">
-              </div>
             </div>
+            <div class="col-md-6">
+              <img :src="personalfiles" height="85%" />
+            </div>
+
+            
           </div>
         </div>
-      <!-- </v-parallax> -->
-
-      <div class="separator separator-bottom separator-skew zindex-100">
-        <svg
-          x="0"
-          y="0"
-          viewBox="0 0 2560 100"
-          preserveAspectRatio="none"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
-        </svg>
       </div>
     </div>
   </div>
@@ -74,14 +77,17 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+.sub-text {
+  color: #21c65e;
+}
 .btn-bg-green {
-  background-color: #1e8133;
+  background-color: #21c65e;
 }
 .btn-bg-yellow {
   background-color: #fecf14;
 }
 .bg-green {
-  background: linear-gradient(150deg, #2dce89 15%, #4be471 70%, #1eda3d 94%);
+  background: linear-gradient(150deg, #2dce89 15%, #21c65e 70%, #21c65e 94%);
   opacity: 0.3;
 }
 .bg-yellow {
@@ -90,21 +96,18 @@
 }
 .title {
   color: #fecf14;
-  font-family: Open Sans, sans-serif;
   text-transform: uppercase;
   font-size: 3.5rem;
   font-weight: bold;
-  -webkit-text-stroke: 2px #1e8133;
+  -webkit-text-stroke: 2px #21c65e;
   -webkit-text-fill-color: #fecf14;
 }
 .subtitle {
-  font-family: Open Sans, sans-serif;
-  color: #1e8133;
+  color: #21c65e;
   text-transform: uppercase;
-  font-size: 6rem;
+  font-size: 3rem;
   font-weight: bold;
-  -webkit-text-stroke: 2px #fecf14;
-  -webkit-text-fill-color: #1e8133;
+  color: #000000;
 }
 .office-img {
   width: 450px;
@@ -116,28 +119,57 @@
 }
 </style>
 <script>
-import AccountManagement from './../account/AccountManagement.vue'
-import Login from './../account/Login.vue'
-import Register from './../account/Register.vue'
+
+import Login from "./../account/Login.vue";
+import Register from "./../account/Register.vue";
 import office from "../../../../../public/assets/img/office/office.png";
-import personalfiles from '../../../../../public/images/personalfiles.svg'
+import personalfiles from "../../../../../public/images/personalfiles.svg";
 export default {
-  components:{
-    AccountManagement,
+  components: {
     Login,
-    Register
+    Register,
   },
   data() {
     return {
       officeicon: office,
-      personalfiles:personalfiles
-    }
+      personalfiles: personalfiles,
+      selectedItem: 1,
+      lockSelection: true,
+      inactiveClass: true,
+      items: [
+        {
+          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+          title: "Jason Oner",
+          icon: "mdi-circle-double",
+        },
+        {
+          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+          title: "Travis Howard",
+          icon: "mdi-circle-double",
+        },
+        {
+          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+          title: "Ali Connors",
+          icon: "mdi-circle-double",
+        },
+        {
+          text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+          title: "Cindy Baker",
+          icon: "mdi-circle-double",
+        },
+      ],
+      /* items: [
+        { text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', icon: 'mdi-circle-double',disabled:'disabled'},
+        { text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', icon: 'mdi-circle-double',disabled:'disabled'},
+        { text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', icon: 'mdi-circle-double',disabled:'disabled'},
+      ], */
+    };
   },
-  computed:{
+  computed: {
     auth() {
-      return this.$store.state.auth
-    }
-  }
+      return this.$store.state.auth;
+    },
+  },
 };
 </script>
 

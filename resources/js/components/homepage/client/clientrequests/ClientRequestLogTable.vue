@@ -6,6 +6,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -27,20 +29,39 @@
         show-select
         class="elevation-1 table-striped"
       >
+
         <template v-slot:item.expiration_date="{ item }">
           <span
             v-show="item.status === 'Approved' || item.status === 'Expired'"
             >{{ new Date(item.expiration_date).toLocaleDateString() }}</span
           >
         </template>
+
         <template v-slot:item.request_date="{ item }">
           <span>{{ new Date(item.request_date).toLocaleDateString() }}</span>
         </template>
         <template v-slot:item.status="{ item }">
-          <v-chip :color="getColor(item.status)" dark>
-            {{ item.status }}
-          </v-chip>
+            <div v-if="item.status === 'Denied'">
+                <v-tooltip color="error" right>
+                    <template v-slot:activator="{on,attrs}">
+                        <v-chip :color="getColor(item.status)" v-on="on" v-bind="attrs" dark>
+                            {{ item.status }}
+                        </v-chip>
+                    </template>
+
+                    ERROR MESSAGE HERE!
+                </v-tooltip>
+
+            </div>
+            <div v-else>
+                <v-chip :color="getColor(item.status)" dark>
+                            {{ item.status }}
+                        </v-chip>
+            </div>
+
         </template>
+
+
         <template v-slot:top>
           <h4>Request Log</h4>
 
@@ -54,14 +75,14 @@
           <v-spacer></v-spacer>
 
           <!-- REQUEST FILE MANANGEMENT MODAL -->
-          <div>
+          <div class="mb-3">
             <v-btn-toggle v-model="icon" borderless>
               <v-btn color="error" :loading="isLoading" @click="deleteItem">
                 <span class="hidden-sm-and-down" @click="deleteItem"
                   >Delete</span
                 >
 
-                <v-icon right class="text-white"> mdi-delete </v-icon>
+                <v-icon right class="text-white"> mdi-trash-can-outline </v-icon>
               </v-btn>
             </v-btn-toggle>
           </div>
@@ -132,6 +153,10 @@
                   Confirmation
                 </v-toolbar-title>
               </v-toolbar>
+               <v-alert outlined type="error" prominent border="left">
+                      Once this file is archived this cannot be deleted in the system.
+                      It's recommended those permanent records.
+                    </v-alert>
               <v-card-title class="text-h5"
                 >Are you sure you want to delete this item?</v-card-title
               >
@@ -282,7 +307,7 @@ export default {
       else return "orange";
     },
 
-    
+
 
     //DELETE REQUESTS DATA
     deleteItem(item) {

@@ -6,6 +6,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -99,6 +101,10 @@
                           Confirmation
                       </v-toolbar-title>
                   </v-toolbar>
+                   <v-alert outlined type="error" prominent border="left">
+                      Once this file is archived this cannot be deleted in the system.
+                      It's recommended those permanent records.
+                    </v-alert>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item?</v-card-title
                 >
@@ -119,12 +125,19 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon color="error" small @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
+            <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="info" @click="editItem(item)">
+              <v-icon x-small class="text-white"> mdi-pencil-outline </v-icon>
+            </v-btn>
+            <v-btn
+              value="center"
+              x-small
+              color="error"
+              @click="deleteItem(item)"
+            >
+              <v-icon x-small class="text-white">mdi-trash-can-outline</v-icon>
+            </v-btn>
+          </v-btn-toggle>
         </template>
 
       </v-data-table>
@@ -196,7 +209,7 @@ export default {
     }
   },
   computed: {
-      
+
     //FETCH CATEGORY DATA FROM STATE MANANGEMENT COMPUTED
     fetchCategory() {
       const category = this.$store.getters.getCategory
@@ -210,7 +223,7 @@ export default {
 
     //ISLOADING COMPUTED
     isLoading: {
-      get:function(){ 
+      get:function(){
         return this.$store.state.base.isLoading
       },
       set:function(newVal) {
@@ -278,7 +291,7 @@ export default {
       });
     },
 
-  
+
     //CALL STORE MANANGEMENT DISPATCH FOR UPDATING DATA TO STATE MANANGEMENT
     async updateCategory() {
         this.$store.dispatch("updateCategory",this.form)
@@ -302,7 +315,7 @@ export default {
 
     },
   },
-  
+
 
 };
 </script>

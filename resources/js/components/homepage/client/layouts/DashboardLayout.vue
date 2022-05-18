@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <v-app id="app">
         
         <navigation/>
         <div class="main-content">
@@ -7,7 +7,7 @@
             <dashboard-content/>
         </div>
 
-    </div>
+    </v-app>
 </template>
 
 <script>

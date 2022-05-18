@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\FileLocation;
+use App\Models\File;
 use Illuminate\Http\Request;
 use App\Http\Resources\FileLocationResource;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
+use Illuminate\Support\Facades\DB;
 
 class FileLocationController extends Controller
 {
@@ -17,7 +19,9 @@ class FileLocationController extends Controller
 
     public function index()
     {
-        $files = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get();
+        $files = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')
+        ->join('file_category','file_category.category_id','=','files.category_id')
+        ->get();
         /*         ->join('users','users.user_id', '=', 'files.user_id')
         ->select('users.name as name','files.*') */
         /*         ->paginate($this->pagination_no); */
@@ -75,7 +79,7 @@ class FileLocationController extends Controller
                 'file_id' => $request->file_id,
 
                 'file_location' => $filename
-                
+
             ]);
 
             return new FileLocationResource($file);
@@ -110,15 +114,25 @@ class FileLocationController extends Controller
             return new FileLocationResource($file);
         }
     }
-
     public function uploadReportsMonthly()
     {
 
-        $monthlyreports = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get()->groupBy(function ($date) {
+       /*  $monthlyuploadreports = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get()->groupBy(function ($date) {
             $date_upload = Carbon::parse($date->created_at);
             $month = $date_upload->format('F Y');
             return "{$month}";
-        });
+        }); */
+
+        $monthlyreports = File::select(DB::raw(
+            'MONTHNAME(created_at) as date,
+            COUNT(CASE WHEN file_status = "Approved" THEN 1 ELSE NULL END) as "total_uploaded",
+            COUNT(CASE WHEN retention_status = "Dispose" THEN 1 ELSE NULL END) as "total_dispose",
+            COUNT(CASE WHEN archive = "Archive" THEN 1 ELSE NULL END) as "total_archive"'
+        ))
+        ->groupBy(DB::raw('MONTH(created_at)'))
+        ->get();
+
+
 
 
         return response($monthlyreports);
@@ -126,11 +140,21 @@ class FileLocationController extends Controller
     public function uploadReportsYearly()
     {
 
-        $yearlyreports = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get()->groupBy(function ($date) {
+        /* $yearlyreports = FileLocation::leftJoin('files', 'files.file_id', '=', 'file_locations.file_id')->get()->groupBy(function ($date) {
             $date_upload = Carbon::parse($date->created_at);
             $month = $date_upload->format('Y');
             return "{$month}";
-        });
+        }); */
+
+        $yearlyreports = File::select(DB::raw(
+            '
+            YEAR(created_at) as date,
+            COUNT(CASE WHEN file_status = "Approved" THEN 1 ELSE NULL END) as "total_uploaded",
+            COUNT(CASE WHEN retention_status = "Dispose" THEN 1 ELSE NULL END) as "total_dispose",
+            COUNT(CASE WHEN archive = "Archive" THEN 1 ELSE NULL END) as "total_archive"'
+        ))
+        ->groupBy(DB::raw('YEAR(created_at)'))
+        ->get();
 
 
         return response($yearlyreports);
@@ -140,9 +164,8 @@ class FileLocationController extends Controller
         $file = FileLocation::findOrFail($id);
         $path = Storage::url($file->file_location);
 
-        return Storage::download($path); 
+        return Storage::download($path);
     }
-
     public function destroy($id)
     {
         $file = FileLocation::findOrFail($id);

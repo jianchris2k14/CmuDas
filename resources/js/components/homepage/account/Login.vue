@@ -1,6 +1,5 @@
 <template>
   <div class="container mt-15">
-      
       <!-- Alert Message -->
       <div v-if="msgStatus">
         <alert-component />
@@ -9,9 +8,10 @@
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay> -->
 
-      <v-card outlined>
+      <v-card class="elevation-5 flex d-flex flex-column" outlined>
         <v-card-text>
-          <h6 class="display-1 text-center text-uppercase"><v-icon large>mdi-account</v-icon> Signin</h6>
+          <h3 class="display-7 text-uppercase">Login</h3>
+          <p>Welcome to CMU Archive, please input your credentials below.</p>
           <v-container>
             <v-form
               ref="form"
@@ -52,17 +52,24 @@
               </v-row>
             </v-form>
           </v-container>
+
         </v-card-text>
         <!-- Form Buttons -->
 
         <v-card-actions>
-          <v-btn text @click="showRegister('Register')"
-            >Create an Account</v-btn
-          >
-          <v-spacer></v-spacer>
-          <v-btn :disabled="!rules.isValid" color="success" dark @click="save">
+          <v-row>
+            <v-col cols="12" md="6" sm="4">
+              <v-btn x-large :disabled="!rules.isValid" color="success" dark @click="save">
             Login
           </v-btn>
+            </v-col>
+            <v-col cols="12" md="6" sm="4">
+              <v-btn x-large width="100%" text @click="showRegister('Register')"
+            >Create an Account</v-btn
+          >
+            </v-col>
+          </v-row>
+
         </v-card-actions>
       </v-card>
   </div>
@@ -86,7 +93,7 @@ export default {
         email: "",
         password: "",
       },
-      
+
 
       //Rules Validation Property
       rules: {
@@ -153,3 +160,10 @@ export default {
   },
 };
 </script>
+<style scoped>
+::v-deep .v-btn {
+  padding-left: 12px;
+  padding-right: 12px;
+  width: 100%;
+}
+</style>

@@ -2,7 +2,7 @@
         <div class="mt-15">
             <div class="container shadow p-3 mb-5 bg-white">
                 <div class="row">
-                    <h1><i class="fa fa-users"></i> Users</h1>
+                    <h1><v-icon size="50" color="info">mdi-account-supervisor-outline</v-icon>Staff Management</h1>
                     <user-table/>
                 </div>
             </div>

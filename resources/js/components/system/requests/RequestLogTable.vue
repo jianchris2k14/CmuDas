@@ -6,6 +6,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -43,18 +45,11 @@
           </v-switch>
 
           <v-toolbar flat>
-            <v-row>
-              <v-col cols="12" md="11" sm="13">
-                <h4>List of Documents</h4>
-              </v-col>
-              <v-col
-                cols="12"
-                md="1"
-                sm="3"
+
+              <div
                 v-show="auth.user_type === 'Staff'"
               >
-                <v-row>
-                  <v-col cols="12" class="mb-3">
+
                     <v-btn-toggle v-model="icon" borderless>
                       <v-btn
                         color="error"
@@ -66,10 +61,8 @@
                         <v-icon right class="text-white"> mdi-delete </v-icon>
                       </v-btn>
                     </v-btn-toggle>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
+                  </div>
+
 
             <!-- Delete Confirmation Modal -->
             <v-dialog v-model="dialogDelete" max-width="500px">
@@ -79,6 +72,10 @@
                     Confirmation
                   </v-toolbar-title>
                 </v-toolbar>
+                 <v-alert outlined type="error" prominent border="left">
+                      Once this file is archived this cannot be deleted in the system.
+                      It's recommended those permanent records.
+                    </v-alert>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item(s)?</v-card-title
                 >

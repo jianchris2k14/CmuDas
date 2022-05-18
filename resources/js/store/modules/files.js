@@ -26,11 +26,17 @@ const getters = {
         }
         return total
     },
+    getAllDocs(state) {
+        return state.files.filter(item => item.archive === 'Unarchive' && item.retention_status === 'Active')
+    },
+    getFileLocations(state) {
+        return state.file_location.filter(item => item.archive === 'Unarchive' && item.retention_status === 'Active')
+    },
     getDocuments(state) {
-        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Archive' && item.retention_status === 'Active')
+        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Unarchive' && item.retention_status === 'Active')
     },
     getDocumentsForDisposal(state) {
-        let files = state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Archive' && item.retention_status === 'Active')
+        let files = state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Unarchive' && item.retention_status === 'Active')
         const now = new Date();
         let datenow = null
         now.setDate(now.getDate()).toString();
@@ -56,19 +62,36 @@ const getters = {
         return filesfordispose
     },
     filterFilesByCategory: (state) => (category_id) => {
-        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Archive' && item.category_id === category_id)
+        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Unarchive' && item.category_id === category_id)
     },
     getApprovedDocuments(state) {
         return state.files.filter(item => item.file_status === 'Approved')
     },
     totalArchiveDocuments(state) {
         let total = 0
-        let archive = state.files.filter(item => item.archive === 'Archive')
+        let archive = state.files.filter(item => item.archive === 'Unarchive')
         for (const obj of archive) {
             total++
         }
         return total
     },
+    totalUnarchivedDocuments(state) {
+        let total = 0
+        let unarchive = state.files.filter(item => item.archive === 'Unarchive')
+        for (const obj of unarchive) {
+            total++
+        }
+        return total
+    },
+    totalDisposedDocuments(state) {
+        let total = 0
+        let dispose = state.files.filter(item => item.retention_status === 'Dispose')
+        for (const obj of dispose) {
+            total++
+        }
+        return total
+    },
+
 }
 
 /* STORE MUTATIONS */
@@ -154,7 +177,8 @@ const mutations = {
 /* STORE ACTIONS */
 const actions = {
 
-    async getFileDisposal({commit}) {
+    async getFileDisposal({commit,rootState}) {
+        rootState.base.isLoading = true
         try {
             await axios.get('/api/filedisposal').then((response) => {
                 commit("GET_FILE_DISPOSAL", response.data)
@@ -162,6 +186,8 @@ const actions = {
 
                 console.log(err.response.data)
 
+            }).finally(function() {
+                rootState.base.isLoading = false
             });
 
         } catch (e) {
@@ -173,6 +199,7 @@ const actions = {
 
     /* FETCH FILE DATA FROM DATABASE */
     async getFileList({ commit, rootState }) {
+        rootState.base.isLoading = true
         try {
             await axios.get('/api/files').then((response) => {
                 commit("GET_FILES", response.data.data)
@@ -180,7 +207,9 @@ const actions = {
 
                 console.log(err.response.data)
 
-            });
+            }).finally(function() {
+                rootState.base.isLoading = false
+            });;
 
         } catch (e) {
 
@@ -508,21 +537,8 @@ const actions = {
     async getUploadReportsMonthly({ commit }) {
         try {
             await axios.get('/api/uploadreportsmonthly').then((response) => {
-
-                let upload_reports = response.data
-
-                let data = []
-
-                for (let i = 0; i < Object.values(upload_reports).length; i++) {
-
-                    let date = Object.keys(upload_reports)[i]
-
-                    let total = Object.values(upload_reports)[i].filter(item => item.file_status === 'Approved').length
-
-                    data.push({ total, date })
-                }
-
-                commit('SET_UPLOAD_REPORTS_MONTHLY', data)
+                let montlyreports = response.data
+                commit('SET_UPLOAD_REPORTS_MONTHLY', montlyreports)
             }).catch((err) => {
 
                 console.log(err.response.data)
@@ -537,9 +553,9 @@ const actions = {
         try {
             await axios.get('/api/uploadreportsyearly').then((response) => {
 
-                let upload_reports = response.data
+                let yearlyreports = response.data
 
-                let data = []
+                /* let data = []
 
                 for (let i = 0; i < Object.values(upload_reports).length; i++) {
 
@@ -548,9 +564,9 @@ const actions = {
                     let total = Object.values(upload_reports)[i].filter(item => item.file_status === 'Approved').length
 
                     data.push({ total, date })
-                }
+                } */
 
-                commit('SET_UPLOAD_REPORTS_YEARLY', data)
+                commit('SET_UPLOAD_REPORTS_YEARLY', yearlyreports)
             }).catch((err) => {
 
                 console.log(err.response.data)
@@ -583,7 +599,7 @@ const actions = {
             }, 1000);
         }
     },
-    
+
 
 }
 

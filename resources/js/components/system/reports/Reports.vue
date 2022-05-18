@@ -2,7 +2,7 @@
   <div class="mt-15">
     <div class="container shadow p-3 mb-5 bg-white">
       <div class="row">
-        <h1><i class="fa fa-chart-bar"></i> Reports</h1>
+        <h1><v-icon size="50" color="info">mdi-chart-box-outline</v-icon>Reports</h1>
         <v-card>
           <v-toolbar flat>
             <v-spacer></v-spacer>
@@ -25,12 +25,12 @@
           <v-tabs-items v-model="tabs">
             <v-tab-item v-for="i in 2" :key="i" :value="'mobile-tabs-5-' + i">
               <v-card flat v-if="i === 1">
-                 <reports-options @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
+                 <reports-options :requestreports="getRequestData" :report="reports" :filerequestreports="getFileRequestReports" :uploadreports="getUploadsData" @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
                 <div id="generaterequestreports">
-               
-                
+
+
                 <!-- REQUEST REPORT CHART TAB -->
-                
+
                   <h5>APPROVED REQUEST OVERALL: {{ totalApprovedRequest }}</h5>
                   <!-- REQUEST REPORTS COMPONENT -->
                   <div v-if="selection === 'Chart'">
@@ -40,7 +40,7 @@
                     />
                   </div>
                   <div v-else-if="selection === 'Table'">
-                    <reports-table :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
+                    <reports-table :report="reports" :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
                   </div>
 
                   <div v-else>
@@ -53,7 +53,7 @@
                         />
                       </v-col>
                       <v-col cols="12" md="6" sm="8">
-                        <reports-table :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
+                        <reports-table :report="reports" :period="period" :data="getRequestData" :filerequestreports="getFileRequestReports" />
                       </v-col>
                     </v-row>
                   </div>
@@ -64,7 +64,7 @@
               <v-card flat v-if="i === 2">
 
                 <!-- REPORTS SELECTION PERIOD AND REPORT TYPE -->
-                <reports-options @selectperiod="getPeriod" @selection="getSelection" documentid="uploadreports" id="options"/>
+               <reports-options :requestreports="getRequestData" :report="reports" :filerequestreports="getFileRequestReports" :uploadreports="getUploadsData" @selectperiod="getPeriod" @selection="getSelection" documentid="requestreports" id="options"/>
                 <h5>APPROVED UPLOAD DOCUMENTS: {{ totalUploadDocuments }}</h5>
 
                 <div id="generateuploadreports">
@@ -73,7 +73,7 @@
                     <upload-chart :chartData="generateUploadReport" :options="options"/>
                   </div>
                   <div v-else-if="selection === 'Table'">
-                    <reports-table :period="period" :data="getUploadsData"/>
+                    <reports-table :report="reports" :period="period" :data="getUploadsData"/>
                   </div>
 
                   <div v-else>
@@ -82,11 +82,11 @@
                         <upload-chart :chartData="generateUploadReport" :options="options"/>
                       </v-col>
                       <v-col cols="12" md="6" sm="8">
-                        <reports-table :period="period" :data="getUploadsData" />
+                        <reports-table :report="reports" :period="period" :data="getUploadsData" :filerequestreports="getFileRequestReports"/>
                       </v-col>
                     </v-row>
                   </div>
-                </div> 
+                </div>
               </v-card>
             </v-tab-item>
           </v-tabs-items>
@@ -109,7 +109,9 @@ export default {
       selection: "Chart",
       icon: "justify",
       datatype:"requestreport",
-      
+      isMonth:true,
+      reports:'request_reports'
+
     };
   },
   computed: {
@@ -156,7 +158,7 @@ export default {
     },
     totalUploadDocuments() {
       let upload_docs = this.getUploadsData;
-      let total = upload_docs.reduce((n, { total }) => n + total, 0);
+      let total = upload_docs.reduce((n, { total_uploaded,total_dispose,total_archive }) => n + total_uploaded+total_archive + total_dispose, 0);
       return total;
     },
 
@@ -166,7 +168,7 @@ export default {
       return this.requestReportChart();
     },
     generateUploadReport() {
-      return this.uploadReportChart(); 
+      return this.uploadReportChart();
     },
 
     //CHART OPTIONS
@@ -184,41 +186,60 @@ export default {
   methods: {
     getPeriod(period) {
       this.period=period
+      if(period === 'Monthly') {
+        this.isMonth = true
+      }else {
+        this.isMonth = false
+      }
     },
     clickUploadTab() {
       this.period= 'Monthly'
+      this.reports = 'upload_reports'
        this.$nextTick(() => {
         this.selection = 'Chart'
       });
-      
+
     },
     clickRequestTab() {
       this.period= 'Daily'
+      this.reports = 'request_reports'
        this.$nextTick(() => {
         this.selection = 'Chart'
       });
-      
+
     },
     getSelection(selection) {
       this.selection = selection
     },
     uploadReportChart() {
-      
+
       let request_reports = this.getUploadsData;
-        let daily_date = request_reports.map((item) => item.date);
-        let daily_total = request_reports.map((item) => item.total);
+        let date = request_reports.map((item) => item.date);
+        let totaluploaded = request_reports.map((item) => item.total_uploaded)
+        let totalarchive = request_reports.map((item) => item.total_archive)
+        let totaldispose = request_reports.map((item) => item.total_dispose)
         let chartData = {
-        labels: daily_date,
+        labels: this.isMonth ? date: date,
         datasets: [
           {
             label: "Upload Documents",
-            backgroundColor: ["#FFB74D",'#F44336','#9C27B0','#3F51B5','#009688','#8BC34A','#795548','#FF8A80','#4A148C','#004D40','#9E9E9E','#B3E5FC'],
-            data: daily_total,
+            backgroundColor: "#1E88E5",
+            data: totaluploaded,
+          },
+           {
+            label: "Archive",
+            backgroundColor: "#FFB74D",
+            data: totalarchive,
+          },
+           {
+            label: "Disposed",
+            backgroundColor: "#EC407A",
+            data: totaldispose,
           },
         ],
       };
       return chartData;
-      
+
     },
     requestReportChart() {
       let request_reports = this.getRequestData;

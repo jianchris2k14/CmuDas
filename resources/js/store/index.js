@@ -14,7 +14,6 @@ export default new Vuex.Store({
     plugins: [
         createdPersistedState({
             storage: window.localStorage,
-            key: 'yourkey',
             paths: [
               'auth',
             ],

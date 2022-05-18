@@ -26,13 +26,13 @@
       </ul>
       <!-- Collapse -->
       <div class="collapse navbar-collapse bg-dark" id="sidenav-collapse-main">
-        <!-- Collapse header -->
+
         <div class="navbar-collapse-header d-md-none">
           <div class="row">
             <div class="col-6 collapse-brand">
-              <a href="">
-                <!-- <img src="./assets/img/brand/blue.png"> -->
-              </a>
+              <!-- <a href="">
+                <img src="./assets/img/brand/blue.png">
+              </a> -->
             </div>
             <div class="col-6 collapse-close">
               <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle sidenav">
@@ -48,7 +48,7 @@
           <li class="nav-item"
           v-for="(item,i) in navigation" :key="i">
             <router-link class="nav-link" :to="item.itemPath">
-              <i :class="[item.itemIcon,item.itemIconColor]"></i> <span class="link">{{item.itemText}}</span>
+              <v-icon color="success" v-text="item.itemIcon"></v-icon> <span class="link">{{item.itemText}}</span>
             </router-link>
           </li>
         </ul>
@@ -71,23 +71,24 @@ export default {
             userlogo:userlogo,
             navigation:[
                 {
-                    itemText:'Profile',
-                    itemIcon:'fa fa-user-tie',
-                    itemIconColor:'text-warning',
-                    itemPath:'/client/clientprofile'
+                    itemText:'Documents',
+                    itemIcon:'mdi-file-outline',
+                    itemIconColor:'text-success',
+                    itemPath:'/client/clientsearch'
                 },
                 {
                     itemText:'Requests',
-                    itemIcon:'fa fa-chalkboard-teacher',
-                    itemIconColor:'text-red',
+                    itemIcon:'mdi-swap-horizontal ',
+                    itemIconColor:'text-success',
                     itemPath:'/client/requests'
                 },
                 {
-                    itemText:'Search',
-                    itemIcon:'fa fa-search',
-                    itemIconColor:'text-primary',
-                    itemPath:'/client/clientsearch'
+                    itemText:'Profile',
+                    itemIcon:'mdi-account',
+                    itemIconColor:'text-success',
+                    itemPath:'/client/clientprofile'
                 },
+
             ]
         }
     }
@@ -97,22 +98,22 @@ export default {
 .page-header-text {
   color: #ffffff;
 }
+.page-header {
+  background-color: #21c65e;
+}
 .link {
     color:#fff;
-}
-.bg-green {
-  background-color: #1e8133;
 }
 .nav-item {
   width:100%
 }
 .nav-item:hover {
-    background:#fcf825;
+    background:#d0fae4;
     color:#000;
     transition:0.6s ease-in-out;
 }
 .active {
-    background:#fcf825;
+    background:#d0fae4;
 
 }
 .active span {

@@ -8,6 +8,8 @@
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
+          dense
+          outlined
           label="Search"
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
@@ -103,7 +105,7 @@
                       <v-text-field
                         v-show="formTitle === 'Update File'"
                         v-model="form.file_id"
-                        prepend-icon="mdi-information-outline"
+                        prepend-inner-icon="mdi-information-outline"
                         label="File ID"
                         disabled
                         dense
@@ -111,14 +113,51 @@
                         required
                       >
                       </v-text-field>
-                      <input
+
+
+                      <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"
+                                ><v-icon>mdi-file-cabinet</v-icon></span
+                              >
+                            </div>
+                            <div class="custom-file">
+                              <input
+                                type="file"
+                                class="custom-file-input"
+                                id="exampleFormControlFile1"
+                                 v-show="formTitle === 'Update File'"
+                                v-if="uploadReady"
+                                :rules="rules.file_location"
+                                ref="fileupload"
+                                @change="onChangeFile"
+                                required
+                              />
+
+                              <label
+                                class="custom-file-label"
+                                for="inputGroupFile01"
+                                >{{ filename }}</label
+                              >
+                            </div>
+                          </div>
+                          <div v-if="isLoading">
+                            <v-progress-linear
+                              indeterminate
+                              color="yellow darken-2"
+                            ></v-progress-linear>
+                          </div>
+
+                      <!-- <input
                         type="file"
+                        class="custom-file-input" id="inputGroupFile01"
                         v-show="formTitle === 'Update File'"
+                         v-if="uploadReady"
                         :rules="rules.file_location"
                         ref="file"
-                        v-on:change="onChangeFile"
+                        @change="onChangeFile"
                         required
-                      />
+                      /> -->
                     </v-form>
                   </v-container>
                 </v-card-text>
@@ -148,6 +187,10 @@
                     Confirmation
                   </v-toolbar-title>
                 </v-toolbar>
+                 <v-alert outlined type="error" prominent border="left">
+                      Once this file is archived this cannot be deleted in the system.
+                      It's recommended those permanent records.
+                    </v-alert>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item(s)?</v-card-title
                 >
@@ -170,7 +213,24 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon
+
+            <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="info" @click="editItem(item)" v-show="auth.user_type === 'Staff'">
+              <v-icon x-small class="text-white"> mdi-pencil-outline </v-icon>
+            </v-btn>
+            <v-btn
+              value="center"
+              x-small
+              color="success"
+              @click="showFile(item)"
+            >
+              <v-icon x-small class="text-white"> mdi-eye-outline </v-icon>
+            </v-btn>
+          </v-btn-toggle>
+
+
+
+          <!-- <v-icon
             color="primary"
             small
             class="mr-2"
@@ -181,7 +241,7 @@
           </v-icon>
           <v-icon color="success" small class="mr-2" @click="showFile(item)">
             mdi-information
-          </v-icon>
+          </v-icon> -->
         </template>
       </v-data-table>
     </v-card>
@@ -194,6 +254,8 @@ export default {
   components: { AlertComponent, SelectFileCategory },
   data() {
     return {
+      uploadReady: true,
+      filename:'choose file',
       singleSelect: false,
       selected: [],
       icon: "justify",
@@ -209,6 +271,7 @@ export default {
       dialogDelete: false,
       viewdialog: false,
 
+      uploadPercentage:0,
       //NOTIFY PROPERTIES
       msgStatus: false,
 
@@ -287,7 +350,7 @@ export default {
     //FETCH FILE LOCATIONS FROM STATE MANANGEMENT COMPUTED
     fetchFileLocations() {
       if (this.category_id === 0) {
-        const file_location = this.$store.state.files.file_location;
+        const file_location = this.$store.getters.getFileLocations;
         return this._.orderBy(file_location, ["created_at"], ["desc"]);
       } else {
         const files = this.$store.getters.filterFilesByCategory(
@@ -309,13 +372,14 @@ export default {
     //ISLOADING COMPUTED
     isLoading: {
       get: function () {
-        return this.$store.state.base.isLoading;
+        return this.$store.state.base.isLoading
       },
 
       set: function (newVal) {
         return newVal;
       },
     },
+
   },
 
   watch: {
@@ -379,9 +443,12 @@ export default {
     //MODAL CLOSE
     close() {
       this.dialog = false;
-
+      this.uploadReady = false;
+      this.filename = 'choose file'
       this.$nextTick(() => {
         this.form = Object.assign({}, this.defaultItem);
+        this.filename = 'choose file'
+        this.uploadReady = true;
         this.editedIndex = -1;
       });
     },
@@ -409,8 +476,12 @@ export default {
         alert("Please select file");
       }
     },
-    onChangeFile() {
-      this.form.file_location = this.$refs.file.files[0];
+    onChangeFile(e) {
+      this.form.file_location = e.target.files[0];
+      this.filename = e.target.files[0].name;
+
+      /* this.form.file_location = this.$refs.file.files[0]
+      this.filename = this.$refs.file.files[0].name */
     },
 
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)

@@ -6,6 +6,8 @@
         <v-text-field
           v-model="search"
           label="Search"
+          outlined
+          dense
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -38,6 +40,7 @@
             <v-dialog v-model="dialog" max-width="960px">
               <v-card>
                 <v-toolbar color="primary" dark>
+                  <v-toolbar-title>Update File Status</v-toolbar-title>
                 </v-toolbar>
                 <v-card-title> </v-card-title>
                 <v-card-text>
@@ -86,9 +89,11 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small class="mr-2" @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
+            <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="info" @click="editItem(item)">
+              <v-icon x-small class="text-white"> mdi-pencil-outline </v-icon>
+            </v-btn>
+          </v-btn-toggle>
         </template>
 
       </v-data-table>
@@ -164,7 +169,7 @@ export default {
     }
   },
   computed: {
-      
+
     //FETCH CATEGORY DATA FROM STATE MANANGEMENT COMPUTED
     fetchCategory() {
       const category = this.$store.getters.getCategory
@@ -182,7 +187,7 @@ export default {
 
     //ISLOADING COMPUTED
     isLoading: {
-      get:function(){ 
+      get:function(){
         return this.$store.state.base.isLoading
       },
       set:function(newVal) {
@@ -235,7 +240,7 @@ export default {
       });
     },
 
-  
+
     //CALL STORE MANANGEMENT DISPATCH FOR UPDATING DATA TO STATE MANANGEMENT
     async updateFileForDisposal() {
         this.$store.dispatch("updateFile",this.form)
@@ -249,7 +254,7 @@ export default {
 
     },
   },
-  
+
 
 };
 </script>

@@ -2,7 +2,7 @@
   <div class="mt-15">
     <div class="container shadow p-3 mb-5 bg-white">
       <div class="row">
-        <h1><i class="fa fa-folder"></i> Documents</h1>
+        <h1><v-icon size="50" color="info">mdi-file-outline</v-icon>Document Management</h1>
         <v-card>
           <v-toolbar flat>
 
@@ -17,10 +17,10 @@
                 <v-tab href="#mobile-tabs-5-2" class="primary--text">
                   <v-icon>mdi-file-cabinet </v-icon> File Locations
                 </v-tab>
-                <v-tab href="#mobile-tabs-5-4" class="primary--text" v-show="auth.user_type === 'Staff'">
+                <v-tab href="#mobile-tabs-5-3" class="primary--text" v-show="auth.user_type === 'Staff'">
                   <v-icon>mdi-file-compare </v-icon> File Disposal
                 </v-tab>
-                <v-tab href="#mobile-tabs-5-5" class="primary--text" v-show="auth.user_type === 'Chief'">
+                <v-tab href="#mobile-tabs-5-4" class="primary--text" v-show="auth.user_type === 'Chief'">
                   <v-icon>mdi-file-compare </v-icon> File Category
                 </v-tab>
 
@@ -42,18 +42,19 @@
               </v-card>
 
                <v-card flat v-if="i === 3">
-                  <file-category-table/>
+                 <file-disposal-table/>
+
               </v-card>
 
               <v-card flat v-if="i === 4">
-                  <file-disposal-table/>
+                  <file-category-table/>
               </v-card>
 
-              
+
             </v-tab-item>
           </v-tabs-items>
         </v-card>
-        
+
       </div>
     </div>
   </div>

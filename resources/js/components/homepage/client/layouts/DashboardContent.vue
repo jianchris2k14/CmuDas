@@ -1,5 +1,5 @@
 <template>
-<div class="container">
+<div>
   <dashboard-header/>
     <transition class="fade" enter-active-class="animate__animated animate__fadeIn" mode="out-in">
      <router-view></router-view>
@@ -12,7 +12,7 @@ export default {
   components: {
     DashboardHeader,
   },
- 
+
 };
 </script>
 <style>

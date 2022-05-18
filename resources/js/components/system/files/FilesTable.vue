@@ -8,7 +8,9 @@
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
-          label="Search"
+          label="search"
+          dense
+          outlined
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
@@ -37,10 +39,26 @@
         <template v-slot:item.retention_date="{ item }">
           <span>{{ new Date(item.retention_date).toLocaleDateString() }}</span>
         </template>
+
         <template v-slot:item.file_status="{ item }">
-          <v-chip :color="getColor(item.file_status)" dark>
-            {{ item.file_status }}
-          </v-chip>
+            <div v-if="item.status === 'Denied'">
+                <v-tooltip color="error" right>
+                    <template v-slot:activator="{on,attrs}">
+                        <v-chip :color="getColor(item.file_status)" v-on="on" v-bind="attrs" dark>
+                            {{ item.status }}
+                        </v-chip>
+                    </template>
+
+                    ERROR MESSAGE HERE!
+                </v-tooltip>
+
+            </div>
+            <div v-else>
+                <v-chip :color="getColor(item.file_status)" dark>
+                            {{ item.file_status }}
+                        </v-chip>
+            </div>
+
         </template>
 
         <template v-slot:top>
@@ -50,7 +68,7 @@
           <v-toolbar flat>
             <!-- FILES MANAGEMENT MODALS -->
 
-            <v-dialog v-model="dialog" max-width="960px">
+            <v-dialog v-model="dialog" max-width="80%">
               <!-- ADD NEW FILE BUTTON -->
 
               <template v-slot:activator="{ on, attrs }">
@@ -65,7 +83,7 @@
                     </v-btn>
 
                     <v-btn value="center" color="error" @click="deleteItem">
-                      <span class="hidden-sm-and-down">Delete</span>
+                      <span class="hidden-sm-and-down text-white">Delete</span>
 
                       <v-icon right class="text-white"> mdi-delete </v-icon>
                     </v-btn>
@@ -82,9 +100,12 @@
                   <v-container>
                     <div v-show="auth.user_type === 'Chief'">
                       <v-form ref="form" @submit.prevent="save">
+                        <v-alert outlined type="info" prominent border="left">
+                          Make sure to validate the file throughly before approving this file
+                        </v-alert>
                         <v-select
                           v-model="form.file_status"
-                          prepend-icon="mdi-archive"
+                          prepend-inner-icon="mdi-archive"
                           :items="selectItem"
                           item-value="value"
                           item-text="text"
@@ -99,48 +120,57 @@
                     </div>
                     <div v-show="auth.user_type === 'Staff'">
                       <v-form ref="form" @submit.prevent="save">
-                        <v-text-field
+                        <v-container  v-show="
+                            formTitle === 'New File' ||
+                            formTitle === 'Update File'
+                          ">
+
+                            <label for="filename">Filename</label>
+                            <v-text-field
                           v-show="
                             formTitle === 'New File' ||
                             formTitle === 'Update File'
                           "
                           v-model="form.filename"
                           :rules="rules.filename"
-                          prepend-icon="mdi-file"
-                          label="Filename"
+                          @input="generateSlug"
+                          prepend-inner-icon="mdi-file"
                           dense
                           outlined
                           required
                         >
                         </v-text-field>
-                        <v-text-field
+                        <label for="filecode">File Code</label>
+                            <v-text-field
                           v-show="
                             formTitle === 'New File' ||
                             formTitle === 'Update File'
                           "
                           v-model="form.code"
                           :rules="rules.code"
-                          prepend-icon="mdi-file-code"
-                          label="File Code"
+                          prepend-inner-icon="mdi-file-code"
                           dense
                           outlined
                           required
                         >
                         </v-text-field>
-                        <v-text-field
+                        <label for="slug">Slug</label>
+                         <v-text-field
                           v-show="
                             formTitle === 'New File' ||
                             formTitle === 'Update File'
                           "
                           v-model="form.slug"
                           :rules="rules.slug"
-                          prepend-icon="mdi-information-outline"
-                          label="Slug"
+                          disabled
+                          prepend-inner-icon="mdi-information-outline"
                           dense
                           outlined
                           required
                         >
                         </v-text-field>
+
+                        <label for="category">Category</label>
                         <v-select
                           v-show="
                             formTitle === 'New File' ||
@@ -150,18 +180,19 @@
                           item-text="category"
                           item-value="category_id"
                           v-model="form.category_id"
-                          prepend-icon="mdi-information-outline"
-                          label="Select Category"
+                          prepend-inner-icon="mdi-information-outline"
                           outlined
                           dense
                         >
                         </v-select>
+
+                        <label for="doctype">Document Type</label>
                         <v-select
                           v-show="
                             formTitle === 'New File' ||
                             formTitle === 'Update File'
                           "
-                          prepend-icon="mdi-file-sign"
+                          prepend-inner-icon="mdi-file-sign"
                           :items="document_type"
                           label="Select Document Type"
                           v-model="form.document_type"
@@ -172,6 +203,8 @@
                         >
                         </v-select>
 
+                        <label for="desc">Description</label>
+
                         <v-textarea
                           v-show="
                             formTitle === 'New File' ||
@@ -179,12 +212,12 @@
                           "
                           v-model="form.description"
                           :rules="rules.description"
-                          prepend-icon="mdi-text"
+                          prepend-inner-icon="mdi-text"
                           filled
                           name="input-7-4"
-                          label="File Description"
                         >
                         </v-textarea>
+                        <label for="retentiondate">Retention Date</label>
                         <!-- VUETIFY DATE PICKER -->
                         <v-menu
                           v-show="
@@ -205,8 +238,7 @@
                                 formTitle === 'Update File'
                               "
                               v-model="date"
-                              prepend-icon="mdi-calendar"
-                              label="Retention Date"
+                              prepend-inner-icon="mdi-calendar"
                               :rules="rules.retention_date"
                               readonly
                               outlined
@@ -222,15 +254,36 @@
                             @change="saveDate"
                           ></v-date-picker>
                         </v-menu>
-                        <input
-                          type="file"
-                          v-show="formTitle === 'File Location'"
-                          :rules="rules.file_location"
-                          ref="file"
-                          v-if="fileReady"
-                          v-on:change="onChangeFile"
-                          required
-                        />
+                        </v-container>
+
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"
+                              ><v-icon>mdi-file-cabinet</v-icon></span
+                            >
+                          </div>
+                          <div class="custom-file">
+                            <input
+                              type="file"
+                              class="custom-file-input"
+                              id="exampleFormControlFile1"
+                              v-show="formTitle === 'File Location'"
+                              v-if="uploadReady"
+                              :rules="rules.file_location"
+                              ref="file"
+                              @change="onChangeFile"
+                              required
+                            />
+
+                            <label
+                              class="custom-file-label"
+                              for="inputGroupFile01"
+                              >{{ filename }}</label
+                            >
+                          </div>
+                        </div>
+
                       </v-form>
                     </div>
                   </v-container>
@@ -261,6 +314,10 @@
                     Confirmation
                   </v-toolbar-title>
                 </v-toolbar>
+                <v-alert outlined type="error" prominent border="left">
+                      Once this file is archived this cannot be deleted in the system.
+                      It's recommended those permanent records.
+                    </v-alert>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item?</v-card-title
                 >
@@ -283,17 +340,19 @@
 
         <!-- Table Actions Buttons -->
         <template v-slot:item.actions="{ item }">
-          <v-icon color="primary" small @click="editItem(item)">
-            mdi-pencil
-          </v-icon>
-          <v-icon
-            v-show="auth.user_type === 'Staff'"
-            color="success"
-            small
-            @click="editFileLocation(item)"
-          >
-            mdi-upload
-          </v-icon>
+          <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="info" @click="editItem(item)">
+              <v-icon x-small class="text-white"> mdi-pencil-outline </v-icon>
+            </v-btn>
+            <v-btn
+              value="center"
+              x-small
+              color="warning"
+              @click="editFileLocation(item)"
+            >
+              <v-icon x-small class="text-white"> mdi-upload-outline </v-icon>
+            </v-btn>
+          </v-btn-toggle>
         </template>
       </v-data-table>
     </v-card>
@@ -306,8 +365,8 @@ export default {
   components: { AlertComponent, SelectFileCategory },
   data() {
     return {
-
-      fileReady:true,
+      uploadReady: true,
+      filename: "choose file",
       //DATE PICKER PROPERTY
       activePicker: null,
       date: null,
@@ -394,7 +453,7 @@ export default {
         code: "",
         file_status: null,
         retention_status: "Active",
-        archive: "Archive",
+        archive: "Unarchive",
         document_type: "",
         file_id: null,
       },
@@ -414,7 +473,7 @@ export default {
         slug: "",
         user_id: null,
         description: "",
-        archive: "Archive",
+        archive: "Unarchive",
         file_location: null,
         file_status: null,
         retention_status: "Active",
@@ -450,7 +509,7 @@ export default {
     //fetch File Documents from state
     fetchFiles() {
       if (this.category_id === 0) {
-        const files = this.$store.state.files.files;
+        const files = this.$store.getters.getAllDocs;
         return this._.orderBy(files, ["created_at"], ["desc"]);
       } else {
         const files = this.$store.getters.filterFilesByCategory(
@@ -508,6 +567,11 @@ export default {
   },
 
   methods: {
+    generateSlug(event) {
+      if(event) {
+        this.form.slug = event
+      }
+    },
     getCategory(category) {
       this.category_id = category;
     },
@@ -526,7 +590,7 @@ export default {
 
     //EDIT FILE DATA
     /*     getUserID(event) {
-      
+
       this.form.user_id = event.target.value
 
     }, */
@@ -580,11 +644,13 @@ export default {
 
     //MODAL CLOSE
     close() {
-      this.dialog = false
-      this.fileReady = false
+      this.dialog = false;
+      this.fileReady = false;
       this.$nextTick(() => {
-        this.fileReady = true
+        this.fileReady = true;
         this.form = Object.assign({}, this.defaultItem);
+        this.filename = "choose file";
+        this.uploadReady = true;
         this.editedIndex = -1;
       });
     },
@@ -592,7 +658,8 @@ export default {
     //CLOSE DELETE CONFIRMATION
     closeDelete() {
       this.dialogDelete = false;
-
+      this.uploadReady = false;
+      this.filename = "choose file";
       this.$nextTick(() => {
         this.form = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -630,8 +697,9 @@ export default {
         alert("Please select file");
       }
     },
-    onChangeFile() {
-      this.form.file_location = this.$refs.file.files[0];
+    onChangeFile(e) {
+      this.form.file_location = e.target.files[0];
+      this.filename = e.target.files[0].name;
     },
 
     //SAVE BUTTON ( SEND FORM DATA TO DATABASE)

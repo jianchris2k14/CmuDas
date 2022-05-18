@@ -1,32 +1,98 @@
 <template>
   <v-container>
     <v-row>
-     
-            <!-- Alert Message -->
+      <!-- Alert Message -->
       <div v-if="msgStatus">
         <alert-component />
       </div>
 
       <v-col cols="12" md="4" sm="2">
         <div class="text-center">
-        <v-avatar size="260">
-          <img :src="userlogo" />
-        </v-avatar>
-        <v-divider></v-divider>
-        <a href="#" @click.prevent="downloadRequestForm({
-          url:'http://localhost:8000/storage/requestform/sample.pdf',
-          label:'CMUDAS_Request_form.pdf'
-        })">Download Request Form</a>
+          <v-avatar size="260">
+            <img :src="userlogo" />
+          </v-avatar>
+          <v-divider></v-divider>
         </div>
       </v-col>
-      
+
       <v-col cols="12" md="8" sm="6">
-        <v-card class="mx-auto" tile v-show="showInfo">
-          <v-list flat>
-            <v-subheader class="info text-uppercase text-white"
-              >Personal Information</v-subheader
-            >
-            <v-list-item-group>
+        <v-list flat>
+          <h2 class="text-uppercase personal-info">Personal Information</h2>
+
+          
+
+          <v-form
+            ref="form"
+            @submit.prevent="save"
+            v-model="rules.isValid"
+            lazy-validation
+            class="mt-5"
+          >
+            <v-row>
+              <v-col cols="12" class="mb-n7">
+                <v-text-field
+                  v-model="form.name"
+                  label="Name"
+                  outlined
+                  dense
+                  prepend-inner-icon="mdi-account"
+                  :rules="rules.editProfileRules.name"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" class="mb-n7">
+                <v-text-field
+                  v-model="form.email"
+                  label="Email"
+                  disabled
+                  outlined
+                  prepend-inner-icon="mdi-email"
+                  dense
+                  :rules="rules.editProfileRules.email"
+                  required
+                ></v-text-field>
+              </v-col>
+
+              <v-col sm="12" class="mb-n7">
+                <v-text-field
+                  v-model="form.address"
+                  label="Address"
+                  outlined
+                  dense
+                  prepend-inner-icon="mdi-map-marker"
+                  :rules="rules.editProfileRules.address"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col sm="12" class="mb-n7">
+                <v-text-field
+                  v-model="form.phone_no"
+                  label="Contact No."
+                  outlined
+                  dense
+                  prepend-inner-icon="mdi-phone"
+                  :rules="rules.editProfileRules.phone_no"
+                  required
+                  type="number"
+                ></v-text-field>
+              </v-col>
+              <!-- <v-col cols="12" class="mb-n7">
+                <v-text-field
+                  label="Current Password"
+                  v-model="form.password"
+                  outlined
+                  dense
+                  :append-icon="showpass ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="showpass ? 'text' : 'password'"
+                  @click:append="showpass = !showpass"
+                  :rules="rules.editProfileRules.password"
+                  required
+                >
+                </v-text-field>
+              </v-col> -->
+            </v-row>
+          </v-form>
+          <!-- <v-list-item-group>
               <v-list-item>
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
@@ -67,35 +133,82 @@
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-            </v-list-item-group>
-          </v-list>
-          <v-btn
-            color="info"
-            class="mt-10"
-            @click="editProfile(getUserProfile)"
-          >
-            <v-icon> mdi-pencil </v-icon>
-            Edit Profile
-          </v-btn>
-          <v-btn
-            color="warning"
-            class="mt-10"
-            @click="updatePassword(getUserProfile)"
-          >
-            <v-icon> mdi-pencil </v-icon>
-            Update Password
-          </v-btn>
-        </v-card>
+            </v-list-item-group> -->
+        </v-list>
+        
+        <v-dialog v-model="passworddialog" width="500">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="info" class="mt-10" v-bind="attrs" v-on="on" @click="editProfile(getUserProfile)">
+          <v-icon> mdi-pencil </v-icon>
+          Edit Profile
+        </v-btn>
+            </template>
 
-        <!-- User Management Modal -->
-        <div v-show="showForm">
-          <v-card>
-            <v-toolbar color="primary" dark>
-              <span class="text-uppercase">Update Profile</span>
-            </v-toolbar>
-            <v-card-text>
-              <v-container>
-                <v-form
+            <v-card>
+              <v-card-title class="text-h5 grey lighten-2">
+                Update Profile
+              </v-card-title>
+
+                <v-container>
+
+                    <v-text-field
+                      label="Enter your password"
+                      v-model="form.password"
+                      outlined
+                      dense
+                      :append-icon="showpass ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="showpass ? 'text' : 'password'"
+                      @click:append="showpass = !showpass"
+                      :rules="rules.editProfileRules.password"
+                      required
+                    >
+                    </v-text-field>
+                </v-container>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                 
+
+                <v-btn color="success" dark @click="save()">
+                  Save
+                </v-btn>
+                <v-btn color="error" dark @click="close()">
+                  Cancel
+                </v-btn>
+
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+        
+       
+
+
+        <v-dialog v-model="changepassworddialog" width="500">
+            <template v-slot:activator="{ on, attrs }">
+                 <v-btn
+          color="warning"
+          class="mt-10"
+          v-bind="attrs"
+          v-on="on"
+          @click="updatePassword(getUserProfile)"
+        >
+          <v-icon> mdi-pencil </v-icon>
+          Update Password
+        </v-btn>
+            </template>
+
+            <v-card>
+              <v-card-title class="text-h5 grey lighten-2">
+                Update Account Password
+              </v-card-title>
+
+
+                <v-container>
+
+                    <v-form
                   ref="form"
                   @submit.prevent="save"
                   v-model="rules.isValid"
@@ -150,115 +263,49 @@
                   </v-row>
                 </v-form>
 
+                </v-container>
 
+              <v-divider></v-divider>
 
-                <v-form
-                  ref="form"
-                  @submit.prevent="save"
-                  v-model="rules.isValid"
-                  lazy-validation
-                  v-show="isEditProfile"
-                >
-                  <v-row>
-                    <v-col cols="12" class="mb-n7">
-                      <v-text-field
-                        v-model="form.name"
-                        label="Name"
-                        outlined
-                        dense
-                        :rules="rules.editProfileRules.name"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" class="mb-n7">
-                      <v-text-field
-                        v-model="form.email"
-                        label="Email"
-                        disabled
-                        outlined
-                        dense
-                        :rules="rules.editProfileRules.email"
-                        required
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col sm="8" md="6" class="mb-n7">
-                      <v-text-field
-                        v-model="form.address"
-                        label="Address"
-                        outlined
-                        dense
-                        :rules="rules.editProfileRules.address"
-                        required
-                      ></v-text-field>
-                    </v-col>
-                    <v-col sm="8" md="6" class="mb-n7">
-                      <v-text-field
-                        v-model="form.phone_no"
-                        label="Contact No."
-                        outlined
-                        dense
-                        :rules="rules.editProfileRules.phone_no"
-                        required
-                        type="number"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" class="mb-n7">
-                      <v-text-field
-                        label="Current Password"
-                        v-model="form.password"
-                        outlined
-                        dense
-                        :append-icon="showpass ? 'mdi-eye' : 'mdi-eye-off'"
-                        :type="showpass ? 'text' : 'password'"
-                        @click:append="showpass = !showpass"
-                        :rules="rules.editProfileRules.password"
-                        required
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-form>
-              </v-container>
-            </v-card-text>
-
-            <!-- Form Buttons -->
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="error" dark @click="backtoProfile"> Cancel </v-btn>
-              <v-btn
-                :disabled="!rules.isValid"
-                color="success"
-                dark
-                @click="save"
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="success" 
+                dark 
+                @click="save()"
                 :loading="isLoading"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </div>
+                :disabled="!rules.isValid">
+                  Save
+                </v-btn>
+                <v-btn color="error" dark @click="close()">
+                  Cancel
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
-import AlertComponent from './../../../AlertComponent.vue'
+import AlertComponent from "./../../../AlertComponent.vue";
 import userlogo from "./../../../../../../public/assets/img/user.png";
 export default {
-    components:{AlertComponent},
+  components: { AlertComponent },
   computed: {
     getUserProfile() {
-      return this.$store.state.auth.user
+      return this.$store.state.auth.user;
     },
     isLoading() {
-      return this.$store.state.base.isLoading
+      return this.$store.state.base.isLoading;
     },
   },
   data() {
+    const user = this.getUserProfile;
     return {
-
-
+      passworddialog: false,
+      changepassworddialog:false,
+      user: user,
       dialog: false,
       showForm: false,
       showInfo: true,
@@ -267,7 +314,7 @@ export default {
       isEditProfile: false,
       isUpdatePassword: false,
       userlogo: userlogo,
-      msgStatus:false,
+      msgStatus: false,
 
       items: [
         {
@@ -290,16 +337,16 @@ export default {
 
       //FORM PROPERTIES
       form: {
-        name: "",
-        email: "",
-        address: "",
-        phone_no: "",
+        name: this.$store.state.auth.user.name,
+        email: this.$store.state.auth.user.email,
+        address: this.$store.state.auth.user.address,
+        phone_no: this.$store.state.auth.user.phone_no,
         password: "",
-        newpass:"",
+        newpass: "",
         newpass_confirmation: "",
-        user_type: "",
-        user_id: null,
-        updateType:"",
+        user_type: this.$store.state.auth.user.user_type,
+        user_id: this.$store.state.auth.user.user_id,
+        updateType: "",
       },
 
       //RULES VALIDATION PROPERTIES
@@ -338,58 +385,72 @@ export default {
   },
   methods: {
     editProfile(user) {
-        this.updateType = 'editprofile'
-      this.showForm = true
-      this.showInfo = false
+      this.passworddialog = true;
+      this.updateType = 'editprofile'
+      /* /* this.showForm = true
+      this.showInfo = false */
+
       this.isEditProfile = true
-      this.form = Object.assign({}, user)
     },
+    updateProfile() {
+
+    },
+
     updatePassword(user) {
-        this.user_type = 'updatepassword'
-      this.showForm = true
-      this.isUpdatePassword = true
-      this.showInfo = false
-      this.form = Object.assign({}, user)
+      this.changepassworddialog = true
+      this.user_type = "updatepassword"
+      this.showForm = true;
+      this.isUpdatePassword = true;
+      this.showInfo = false;
     },
     backtoProfile() {
-      this.showForm = false
-      this.showInfo = true
-      this.isEditProfile = false,
-      this.isUpdatePassword = false
+      this.showForm = false;
+      this.showInfo = true;
+      (this.isEditProfile = false), (this.isUpdatePassword = false);
     },
     //MODAL CLOSE
     close() {
-
+      this.updateType = ""
+      this.passworddialog = false
+      this.changepassworddialog = false
       this.$nextTick(() => {
-        this.form = Object.assign({}, this.defaultItem)
+        this.passworddialog = false
+        this.changepassworddialog = false
+        this.form.password = ""
+        this.form.newpass = ""
+        this.form.newpass_confirmation = ""
+        this.updateType = ""
         this.editedIndex = -1;
       });
     },
-    async downloadRequestForm({url,label}) {
-      const response = await axios.get(url,{
-        responseType:"blob"
-      })
-      const blob = new Blob([response.data],{
-        type:"application/pdf"
-      })
-      const link = document.createElement("a")
-      link.href = URL.createObjectURL(blob)
-      link.download = label
-      link.click()
-      URL.revokeObjectURL(link.href)
+    async downloadRequestForm({ url, label }) {
+      const response = await axios.get(url, {
+        responseType: "blob",
+      });
+      const blob = new Blob([response.data], {
+        type: "application/pdf",
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = label;
+      link.click();
+      URL.revokeObjectURL(link.href);
     },
     save() {
-        this.msgStatus = true
-        if(this.updateType === 'editprofile') {
-            this.$store.dispatch("updateCurrentUser",this.form)
-        }else {
-            this.$store.dispatch("updateCurrentUserPassword",this.form)
-        }
-        
-
+      this.msgStatus = true;
+      if (this.updateType === "editprofile") {
+        this.close()
+        this.$store.dispatch("updateCurrentUser", this.form);
+      } else {
+        this.close()
+        this.$store.dispatch("updateCurrentUserPassword", this.form);
+      }
     },
-  }
+  },
 };
 </script>
 <style scoped>
+.personal-info {
+  color: #21c65e;
+}
 </style>

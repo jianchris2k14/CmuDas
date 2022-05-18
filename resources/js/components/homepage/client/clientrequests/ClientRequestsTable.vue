@@ -6,10 +6,12 @@
         <v-text-field
           v-model="search"
           label="Search"
+          outlined
+          dense
           prepend-inner-icon="mdi-magnify"
         ></v-text-field>
       </v-card-title>
-      
+
 
       <!-- REQUESTS TABLE -->
       <v-data-table
@@ -107,6 +109,10 @@
                     Confirmation
                   </v-toolbar-title>
                 </v-toolbar>
+                 <v-alert outlined type="error" prominent border="left">
+                      Once this file is archived this cannot be deleted in the system.
+                      It's recommended those permanent records.
+                    </v-alert>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item?</v-card-title
                 >
@@ -137,14 +143,12 @@
           >
             mdi-delete
           </v-icon> -->
-          <v-icon
-            color="success"
-            small
-            @click="showRequestedDocument(item)"
-            v-show="item.status === 'Approved'"
-          >
-            mdi-file
-          </v-icon>
+          <v-btn-toggle v-model="icon" borderless>
+            <v-btn x-small value="left" color="success" @click="showRequestedDocument(item)"
+            v-show="item.status === 'Approved'">
+              <v-icon x-small class="text-white"> mdi-eye-outline </v-icon>
+            </v-btn>
+          </v-btn-toggle>
         </template>
       </v-data-table>
     </v-card>
@@ -158,6 +162,7 @@ export default {
   components: { AlertComponent,WebViewer },
   data() {
     return {
+        icon:"justify",
       //TABLE SEARCH PROPERTY
       search: "",
 
@@ -284,7 +289,7 @@ export default {
       if(!this.viewdialog) {
         this.$router.go()
       }
-      
+
 
       /* this.$router.go() */
       /* window.location.reload() */
@@ -308,7 +313,7 @@ export default {
         console.log(item)
         await this.$store.dispatch("showRequestDocument", item);
       }
-      
+
     },
 
     //DELETE REQUESTS DATA

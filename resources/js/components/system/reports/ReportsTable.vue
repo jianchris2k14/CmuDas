@@ -2,6 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12" sm="16" md="12">
+
         <v-card>
           <v-data-table
             :headers="headers"
@@ -11,7 +12,7 @@
           >
             <template v-slot:top>
               <v-toolbar flat>
-                <v-toolbar-title>Request Reports Table</v-toolbar-title>
+                <v-toolbar-title>{{table_title}}</v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
                 <v-spacer></v-spacer>
               </v-toolbar>
@@ -20,12 +21,13 @@
         </v-card>
       </v-col>
       <v-col cols="12">
-        <v-card>
+        <v-card v-show="report == 'request_reports'">
           <v-data-table
             :headers="fileRequestReportsTableHeader"
             :items="filerequestreports"
             dense
             class="elevation-1 table-striped"
+
           >
             <template v-slot:top>
               <v-toolbar flat>
@@ -41,25 +43,17 @@
   </v-container>
 </template>
 <script>
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
+
 export default {
-  props: ["period", "data", "filerequestreports"],
+  props: ["period", "data", "filerequestreports","report"],
   data() {
     return {
+        table_title:"",
+        icon:"justify",
       //TABLE HEADERS PROPERTIES REQUEST REPORTS
-      headers: [
-        {
-          text: "Date",
-          align: "start",
-          sortable: true,
-          value: "date",
-          class: "info text-black",
-        },
-        {
-          text: "Total of Requests",
-          value: "total",
-          class: "info text-black",
-        },
-      ],
+      headers: [],
       //TABLE HEADERS PROPERTIES REQUEST REPORTS
       fileRequestReportsTableHeader: [
         {
@@ -88,5 +82,47 @@ export default {
       usertype: ["Chief", "Staff"],
     };
   },
+
+  created() {
+      if(this.report === 'request_reports') {
+          this.table_title = 'Request Reports'
+          this.headers.push({
+          text: "Date",
+          align: "start",
+          sortable: true,
+          value: "date",
+          class: "info text-black",
+        },
+        {
+          text: "Total of Requests",
+          value: "total",
+          class: "info text-black",
+        })
+      }else {
+           this.table_title = 'Upload Document Reports'
+           this.headers.push({
+          text: "Date",
+          align: "start",
+          sortable: true,
+          value: "date",
+          class: "info text-black",
+        },
+         {
+          text: "Total Uploaded",
+          value: "total_uploaded",
+          class: "info text-black",
+        },
+        {
+          text: "Total Archived",
+          value: "total_archive",
+          class: "info text-black",
+        },
+        {
+          text: "Total Disposed",
+          value: "total_dispose",
+          class: "info text-black",
+        },)
+      }
+  }
 };
 </script>

@@ -2,33 +2,36 @@
   <div class="mt-15">
     <div class="container shadow p-3 mb-5 bg-white">
       <v-row>
-        <v-col cols="12" md="8" sm="10">
-          <dashboard-top-content />
+          <h1><v-icon size="50" color="info">mdi-view-dashboard</v-icon>Dashboard</h1>
+        <v-col cols="12" md="5" sm="7">
+          <system-summary />
         </v-col>
-        <v-col cols="12" md="4" sm="6">
-          <request-reports-table :period="period" :data="fetchRequestReports" :filerequestreports="getFileRequestReports"/>
+        <v-col cols="12" md="7" sm="9">
+            <upload-chart :chartData="uploadReport" :options="options"/>
         </v-col>
-        
+
       </v-row>
       <v-row>
-        <v-col cols="12" md="6" sm="8">
-          <request-reports-chart :chartData="requestReport" :options="options"/>
+        <v-col cols="12" md="5" sm="7">
+            <request-summary></request-summary>
         </v-col>
-        <v-col cols="12" md="6" sm="8">
-          <upload-chart :chartData="uploadReport" :options="options"/>
+        <v-col cols="12" md="7" sm="9">
+          <request-reports-chart :chartData="requestReport" :options="options"/>
         </v-col>
       </v-row>
     </div>
   </div>
 </template>
 <script>
-import DashboardTopContent from "./DashboardTopContent.vue";
+import SystemSummary from "./SystemSummary.vue";
 import RequestReportsChart from './../reports/RequestChart.vue'
 import RequestReportsTable from './../reports/ReportsTable.vue'
+import RequestSummary from './RequestSummary.vue'
 import UploadChart from './../reports/UploadChart.vue'
 export default {
   components: {
-    DashboardTopContent,
+    SystemSummary,
+    RequestSummary,
     RequestReportsChart,
     RequestReportsTable,
     UploadChart
@@ -42,7 +45,7 @@ export default {
     getFileRequestReports() {
       return this.$store.state.requests.file_request_reports
     },
-    
+
     fetchRequestReports() {
       return this.$store.state.requests.request_report
     },
@@ -89,23 +92,35 @@ export default {
         };
         return chartData
       },
+
       uploadReportChart() {
-      
-      let request_reports = this.fetchUploadReports;
-        let daily_date = request_reports.map((item) => item.date);
-        let daily_total = request_reports.map((item) => item.total);
+
+      let request_reports = this.fetchUploadReports
+        let date = request_reports.map((item) => item.date)
+        let totaluploaded = request_reports.map((item) => item.total_uploaded)
+        let totalarchive = request_reports.map((item) => item.total_archive)
+        let totaldispose = request_reports.map((item) => item.total_dispose)
         let chartData = {
-        labels: daily_date,
+        labels: date,
         datasets: [
           {
             label: "Upload Documents",
-            backgroundColor: ["#FFB74D",'#F44336','#9C27B0','#3F51B5','#009688','#8BC34A','#795548','#FF8A80','#4A148C','#004D40','#9E9E9E','#B3E5FC'],
-            data: daily_total,
+            backgroundColor: "#1E88E5",
+            data: totaluploaded,
+          },
+           {
+            label: "Archive",
+            backgroundColor: "#FFB74D",
+            data: totalarchive,
+          },
+           {
+            label: "Disposed",
+            backgroundColor: "#EC407A",
+            data: totaldispose,
           },
         ],
       };
-      return chartData;
-      
+      return chartData
     },
   },
   created() {

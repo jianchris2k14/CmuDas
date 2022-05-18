@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\FileLocationController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Models\FileLocation;
 use Illuminate\Routing\Router;
 
@@ -53,6 +54,9 @@ Route::get('/uploadreportsyearly',[FileLocationController::class, 'uploadReports
 Route::post('/mail', [MailController::class, 'index']);
 Route::post('/mail', [MailController::class, 'sendEmail']);
 
+Route::post('/forgotpassword',[ForgotPasswordController::class,'sendLinkResponse']);
+Route::post('/passwordreset',[ForgotPasswordController::class,'sendResetResponse']);
+
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', [AuthController::class,'user']);
@@ -71,7 +75,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/filecategory/{id}',[FileCategoryController::class,'update']);
     Route::delete('/filecategory/{id}',[FileCategoryController::class,'destroy']);
 
-    
+
 
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
@@ -86,7 +90,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/destroyfilelocationrecords', [FileLocationController::class, 'destroyRecords']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
-    
+
 });
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
