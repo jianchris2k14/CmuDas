@@ -22,15 +22,6 @@
       </v-col>
       <v-col cols="12">
         <v-card v-show="report == 'request_reports'">
-            <v-row>
-          <v-col cols="12" sm="16" id="buttons">
-            <v-btn-toggle v-model="icon" borderless id="button">
-              <v-btn value="left" color="error" small @click="downloadRequestReportPDF('filerequestreport')">
-                <v-icon class="text-white"> mdi-file-pdf-box </v-icon>
-              </v-btn>
-            </v-btn-toggle>
-          </v-col>
-        </v-row>
           <v-data-table
             :headers="fileRequestReportsTableHeader"
             :items="filerequestreports"
