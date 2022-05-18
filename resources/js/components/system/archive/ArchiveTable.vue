@@ -2,6 +2,9 @@
   <div class="container">
     <v-card>
       <v-card-title>
+          <select-file-category
+          @selectcategory="getCategory"
+        ></select-file-category>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -101,11 +104,13 @@
   </div>
 </template>
 <script>
+import SelectFileCategory from "./../files/SelectFileCategory.vue";
 import AlertComponent from "./../../AlertComponent.vue";
 export default {
-  components: { AlertComponent },
+  components: { AlertComponent,SelectFileCategory },
   data() {
     return {
+    category_id:0,
       icon: "justify",
       //TABLE SEARCH PROPERTY
       search: "",
@@ -167,14 +172,25 @@ export default {
     };
   },
   computed: {
+      category() {
+      return this.$store.state.filecategory;
+    },
+
     //FETCH FILES FROM STATE MANANGEMENT COMPUTED
     getUserId() {
       return this.$store.state.auth.user.user_id;
     },
     fetchDocuments() {
-      const documents = this.$store.getters.getApprovedDocuments;
 
-      return this._.orderBy(documents, ["created_at"], ["desc"]);
+        if (this.category_id === 0) {
+        const documents = this.$store.getters.getApprovedDocuments
+        return this._.orderBy(documents, ["created_at"], ["desc"]);
+      } else {
+        const documents = this.$store.getters.filterFilesByCategory(
+          this.category_id
+        );
+        return this._.orderBy(documents, ["created_at"], ["desc"]);
+      }
     },
 
     //FORM TITLE COMPUTED
@@ -211,6 +227,9 @@ export default {
   },
 
   methods: {
+    getCategory(category) {
+      this.category_id = category;
+    },
     getColor(item) {
       if (item === "Unarchive") return "red";
       else return "green";
