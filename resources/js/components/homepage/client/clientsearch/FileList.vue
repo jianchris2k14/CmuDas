@@ -103,7 +103,9 @@
                     <h4 class="mb-1">{{items.filename | title }}</h4>
                      </v-card-title>
                      <div class="float-right">
+                          <div v-if="items.filename.length >=50">
                         <v-btn text color="info" @click="titleToggler(items,true)">Show Title</v-btn>
+                          </div>
                      </div>
                 </div>
                 <div class="mb-1 gray-bg" v-show="items.Show">
@@ -111,7 +113,9 @@
                     <h4 class="mb-1" v-html="items.filename"></h4>
                     </v-card-title>
                     <div class="float-right">
+                         <div v-if="items.filename.length >=50">
                       <v-btn text color="info" @click="titleToggler(items,false)">Show Less</v-btn>
+                         </div>
                     </div>
                 </div>
               </v-row>
@@ -378,6 +382,13 @@ export default {
       let files = {};
       if (this.category_id === 0) {
         files = this.$store.getters.getDocuments;
+        var count = Object.keys(files).length;
+         if (count === 0) {
+          this.showcateg_msg = true;
+          this.msg = "No documents found in this category";
+        } else {
+          this.showcateg_msg = false;
+        }
       } else {
         files = this.$store.getters.filterFilesByCategory(this.category_id);
         var count = Object.keys(files).length;
@@ -399,6 +410,7 @@ export default {
         if (count === 0) {
           this.showMsg = true;
           this.msg = "no match in our records. Please enter the exact document name";
+           this.showcateg_msg = false;
           return result;
         } else {
           this.showMsg = false;
@@ -446,10 +458,10 @@ export default {
   },
   filters: {
     summary: function (text) {
-      return text.substring(0, 150) + " ...";
+      return text.substring(0, 150)
     },
     title:function(title) {
-        return title.substring(0,50) + " ..."
+        return title.substring(0,50)
     }
   },
   methods: {

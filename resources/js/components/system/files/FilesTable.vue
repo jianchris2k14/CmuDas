@@ -120,7 +120,10 @@
                     </div>
                     <div v-show="auth.user_type === 'Staff'">
                       <v-form ref="form" @submit.prevent="save">
-                        <v-container>
+                        <v-container  v-show="
+                            formTitle === 'New File' ||
+                            formTitle === 'Update File'
+                          ">
 
                             <label for="filename">Filename</label>
                             <v-text-field
@@ -254,15 +257,7 @@
                         </v-container>
 
 
-
-
-
-
-
-
-
-
-                        <!-- <div class="input-group mb-3">
+                        <div class="input-group mb-3">
                           <div class="input-group-prepend">
                             <span class="input-group-text"
                               ><v-icon>mdi-file-cabinet</v-icon></span
@@ -287,17 +282,8 @@
                               >{{ filename }}</label
                             >
                           </div>
-                        </div> -->
+                        </div>
 
-                        <!--  <input
-                          type="file"
-                          v-show="formTitle === 'File Location'"
-                          :rules="rules.file_location"
-                          ref="file"
-                          v-if="uploadReady"
-                          v-on:change="onChangeFile"
-                          required
-                        /> -->
                       </v-form>
                     </div>
                   </v-container>
@@ -467,7 +453,7 @@ export default {
         code: "",
         file_status: null,
         retention_status: "Active",
-        archive: "Archive",
+        archive: "Unarchive",
         document_type: "",
         file_id: null,
       },
@@ -487,7 +473,7 @@ export default {
         slug: "",
         user_id: null,
         description: "",
-        archive: "Archive",
+        archive: "Unarchive",
         file_location: null,
         file_status: null,
         retention_status: "Active",
@@ -523,7 +509,7 @@ export default {
     //fetch File Documents from state
     fetchFiles() {
       if (this.category_id === 0) {
-        const files = this.$store.state.files.files;
+        const files = this.$store.getters.getAllDocs;
         return this._.orderBy(files, ["created_at"], ["desc"]);
       } else {
         const files = this.$store.getters.filterFilesByCategory(

@@ -350,7 +350,7 @@ export default {
     //FETCH FILE LOCATIONS FROM STATE MANANGEMENT COMPUTED
     fetchFileLocations() {
       if (this.category_id === 0) {
-        const file_location = this.$store.state.files.file_location;
+        const file_location = this.$store.getters.getFileLocations;
         return this._.orderBy(file_location, ["created_at"], ["desc"]);
       } else {
         const files = this.$store.getters.filterFilesByCategory(

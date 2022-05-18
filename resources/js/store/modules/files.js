@@ -26,11 +26,17 @@ const getters = {
         }
         return total
     },
+    getAllDocs(state) {
+        return state.files.filter(item => item.archive === 'Unarchive' && item.retention_status === 'Active')
+    },
+    getFileLocations(state) {
+        return state.file_location.filter(item => item.archive === 'Unarchive' && item.retention_status === 'Active')
+    },
     getDocuments(state) {
-        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Archive' && item.retention_status === 'Active')
+        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Unarchive' && item.retention_status === 'Active')
     },
     getDocumentsForDisposal(state) {
-        let files = state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Archive' && item.retention_status === 'Active')
+        let files = state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Unarchive' && item.retention_status === 'Active')
         const now = new Date();
         let datenow = null
         now.setDate(now.getDate()).toString();
@@ -56,14 +62,14 @@ const getters = {
         return filesfordispose
     },
     filterFilesByCategory: (state) => (category_id) => {
-        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Archive' && item.category_id === category_id)
+        return state.file_location.filter(item => item.file_status === 'Approved' && item.archive === 'Unarchive' && item.category_id === category_id)
     },
     getApprovedDocuments(state) {
         return state.files.filter(item => item.file_status === 'Approved')
     },
     totalArchiveDocuments(state) {
         let total = 0
-        let archive = state.files.filter(item => item.archive === 'Archive')
+        let archive = state.files.filter(item => item.archive === 'Unarchive')
         for (const obj of archive) {
             total++
         }
